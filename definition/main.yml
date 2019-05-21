@@ -1,0 +1,10 @@
+projectName: UniversalCatalogs
+description: ''
+backend:
+  appName: UniversalCatalogs
+frontends: []
+roles: []
+documents: []
+entities: []
+sublogics: {}
+components: []
