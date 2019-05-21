@@ -78,8 +78,10 @@
   </ItemGroup>
   <ItemGroup>
     <!-- start:generated:entities -->
+    <Compile Include="Entities\Item.cs" />
     <!-- end:generated:entities -->
     <!-- start:generated:Logic -->
+    <Compile Include="Logic\ItemLogic.cs" />
     <!-- end:generated:Logic -->
     <Compile Include="Namespaces.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

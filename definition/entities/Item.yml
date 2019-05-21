@@ -1,0 +1,8 @@
+name: Item
+fields:
+  Item Number as Part Number: string
+  Item Description as Description: string
+relationships:
+  oneToParent: []
+  oneToMany: []
+  manyToOne: []

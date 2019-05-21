@@ -9,7 +9,7 @@ using ServiceStack.Api.OpenApi;
 using Reusable.CRUD.Contract;
 using Reusable.Rest.Implementations.SS;
 using Reusable.CRUD.Implementations.SS.Logic;
-//using MyApp.Logic;
+using MyApp.Logic;
 using MyApp.API;
 using ServiceStack.Text;
 using ServiceStack.Configuration;
@@ -155,6 +155,7 @@ namespace MyApp
 
             //This App:
             ///start:generated:di<<<
+            container.RegisterAutoWiredAs<ItemLogic, IItemLogic>();
             ///end:generated:di<<<
             #endregion
         }

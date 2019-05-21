@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <!-- start:generated:services -->
+    <Compile Include="ItemService.cs" />
     <!-- end:generated:services -->
     <Compile Include="MyServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,6 +1,6 @@
 namespace MyApp.Database
 {
-    //using MyApp.Logic.Entities;
+    using MyApp.Logic.Entities;
     using Reusable.CRUD.Entities;
     using Reusable.CRUD.JsonEntities;
     using System;   
@@ -18,6 +18,7 @@ namespace MyApp.Database
 
         #region App
         ///start:generated:dbsets<<<
+        public virtual DbSet<Item> Items { get; set; }
         ///end:generated:dbsets<<<
         #endregion
 
