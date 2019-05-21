@@ -1,0 +1,32 @@
+{
+  "name": "react-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@handsontable/react": "^3.0.0",
+    "@material-ui/core": "^3.9.3",
+    "@material-ui/icons": "^3.0.2",
+    "@zeit/next-css": "^1.0.1",
+    "@zeit/next-sass": "^1.0.1",
+    "handsontable": "^7.0.3",
+    "isomorphic-fetch": "^2.2.1",
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0",
+    "next": "^8.0.4",
+    "node-sass": "^4.11.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-draggable": "^3.3.0",
+    "react-js-pagination": "^3.0.2",
+    "typeface-roboto": "^0.0.54"
+  }
+}
