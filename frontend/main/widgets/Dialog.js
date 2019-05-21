@@ -20,11 +20,11 @@ function PaperComponent(props) {
 
 class ResponsiveDialog extends React.Component {
   render() {
-    const { fullScreen, children } = this.props;
+    const { fullScreen, children, dialogOpen, fullWidth, maxWidth } = this.props;
 
     return (
       <div>
-        <Dialog fullScreen={fullScreen} open={this.props.dialogOpen}>
+        <Dialog fullScreen={fullScreen} open={dialogOpen} fullWidth={fullWidth} maxWidth={maxWidth}>
           <DialogContent>{children}</DialogContent>
           <DialogActions />
         </Dialog>

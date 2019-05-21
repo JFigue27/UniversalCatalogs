@@ -1,6 +1,6 @@
-import React from "react";
-import _ from "lodash";
-import AuthService from "./AuthService";
+import React from 'react';
+import _ from 'lodash';
+import AuthService from './AuthService';
 
 class ListContainer extends React.Component {
   state = {
@@ -8,20 +8,20 @@ class ListContainer extends React.Component {
       service: null,
       paginate: true,
       limit: 10,
-      filters: "",
-      filterName: "myFilter",
-      sortName: "mySort"
+      filters: '',
+      filterName: 'myFilter',
+      sortName: 'mySort'
     },
     baseList: [],
     isLoading: false,
-    filterStorageKey: "myFilter",
-    sortStorageKey: "mySort",
+    filterStorageKey: 'myFilter',
+    sortStorageKey: 'mySort',
     filterOptions: {
       page: 1,
       limit: 10
     },
     sortOptions: {},
-    staticQueryParams: ""
+    staticQueryParams: ''
   };
 
   constructor(props, config) {
@@ -60,17 +60,11 @@ class ListContainer extends React.Component {
   };
 
   persistFilter = () => {
-    localStorage.setItem(
-      this.state.filterStorageKey,
-      JSON.stringify(this.state.filterOptions)
-    );
+    localStorage.setItem(this.state.filterStorageKey, JSON.stringify(this.state.filterOptions));
   };
 
   persistSort = () => {
-    localStorage.setItem(
-      this.state.sortStorageKey,
-      JSON.stringify(this.state.sortOptions)
-    );
+    localStorage.setItem(this.state.sortStorageKey, JSON.stringify(this.state.sortOptions));
   };
 
   setFilterOptions = () => {
@@ -139,11 +133,7 @@ class ListContainer extends React.Component {
         //Index List:
         for (let i = 0; i < this.state.baseList.length; i++) {
           let element = this.state.baseList[i];
-          element.itemIndex =
-            (this.state.filterOptions.page - 1) *
-              this.state.filterOptions.limit +
-            i +
-            1;
+          element.itemIndex = (this.state.filterOptions.page - 1) * this.state.filterOptions.limit + i + 1;
         }
 
         this.AFTER_LOAD();
@@ -156,22 +146,19 @@ class ListContainer extends React.Component {
   };
 
   makeQueryParameters = () => {
-    let result = "?";
+    let result = '?';
     Object.getOwnPropertyNames(this.state.filterOptions).forEach(prop => {
-      result += prop + "=" + this.state.filterOptions[prop] + "&";
+      result += prop + '=' + this.state.filterOptions[prop] + '&';
     });
     Object.getOwnPropertyNames(this.state.sortOptions).forEach(prop => {
-      result += "sort-" + prop + "=" + this.state.sortOptions[prop] + "&";
+      result += 'sort-' + prop + '=' + this.state.sortOptions[prop] + '&';
     });
-    result += this.state.staticQueryParams || "";
+    result += this.state.staticQueryParams || '';
     return result;
   };
 
   refresh = () => {
-    if (
-      !this.state.filterOptions ||
-      this.state.filterOptions.limit == undefined
-    ) {
+    if (!this.state.filterOptions || this.state.filterOptions.limit == undefined) {
       this.clearFilters();
     } else {
       this.updateList();
@@ -196,25 +183,23 @@ class ListContainer extends React.Component {
 
   removeItem = (event, item) => {
     if (event) event.stopPropagation();
-    if (confirm("Do you really want to delete it?")) console.log(item);
+    if (confirm('Do you really want to delete it?')) console.log(item);
   };
 
   removeSelected = () => {
-    throw "Not Implemented";
+    throw 'Not Implemented';
   };
 
   save = () => {
-    throw "Not Implemented";
+    throw 'Not Implemented';
   };
 
   createAndCheckout = async (event, item = {}) => {
     if (event) event.stopPropagation();
-    if (
-      confirm(`Please confirm to create a new ${this.service.config.EndPoint}`)
-    ) {
+    if (confirm(`Please confirm to create a new ${this.service.config.EndPoint}`)) {
       return await this.service.CreateAndCheckout(item).then(entity => {
         this.AFTER_CREATE_AND_CHECKOUT(entity);
-        console.log("success");
+        console.log('success');
         return entity;
       });
     }
@@ -222,27 +207,27 @@ class ListContainer extends React.Component {
 
   // Local Operations:============================================================
   undoItem = () => {
-    throw "Not Implemented";
+    throw 'Not Implemented';
   };
 
   selectAll = () => {
-    throw "Not Implemented";
+    throw 'Not Implemented';
   };
 
   unSelectAll = () => {
-    throw "Not Implemented";
+    throw 'Not Implemented';
   };
 
   checkItem = () => {
-    throw "Not Implemented";
+    throw 'Not Implemented';
   };
 
   getSelected = () => {
-    throw "Not Implemented";
+    throw 'Not Implemented';
   };
 
   getSelectedCount = () => {
-    throw "Not Implemented";
+    throw 'Not Implemented';
   };
 
   clear = () => {

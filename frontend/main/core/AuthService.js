@@ -1,13 +1,13 @@
-import "isomorphic-fetch";
-import AppConfig from "./AppConfig";
+import 'isomorphic-fetch';
+import AppConfig from './AppConfig';
 
 const request = async (method, endpoint, data) => {
   return await fetch(AppConfig.BaseURL + endpoint, {
     method: method,
-    mode: "cors",
-    cache: "no-cache",
+    mode: 'cors',
+    cache: 'no-cache',
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
+      'Content-Type': 'application/x-www-form-urlencoded'
     },
     data
   });
@@ -15,32 +15,32 @@ const request = async (method, endpoint, data) => {
 
 export default class AuthService {
   static fillAuthData = () => {
-    AuthService.auth = JSON.parse(localStorage.getItem("auth"));
+    AuthService.auth = JSON.parse(localStorage.getItem('auth'));
     return AuthService.auth;
   };
 
   static login = async (username, password) => {
     let data = `username=${username}&password=${password}`;
     try {
-      let response = await request("POST", "auth/credentials.json?" + data);
-      if (!response.ok) throw "Invalid";
+      let response = await request('POST', 'auth/credentials.json?' + data);
+      if (!response.ok) throw 'Invalid';
       let userAuth = await response.json();
       AuthService.auth = {
         user: userAuth
       };
-      localStorage.setItem("auth", JSON.stringify(AuthService.auth));
+      localStorage.setItem('auth', JSON.stringify(AuthService.auth));
       AuthService.ON_LOGIN();
       return AuthService.auth;
     } catch (e) {
       console.log(e);
-      throw "Invalid Username or Password.";
+      throw 'Invalid Username or Password.';
     }
   };
 
   static logout = async () => {
-    localStorage.removeItem("auth");
+    localStorage.removeItem('auth');
     AuthService.auth = null;
-    await request("GET", "auth/logout").then(r => {
+    await request('GET', 'auth/logout').then(r => {
       console.log(r);
     });
   };

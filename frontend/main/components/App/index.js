@@ -86,7 +86,7 @@ export default class extends React.Component {
       let { href } = props;
       return (
         <Link href={href} passHref>
-          <Tab component="a" {...props} />
+          <Tab component='a' {...props} />
         </Link>
       );
     }
@@ -102,12 +102,12 @@ export default class extends React.Component {
         </style>
         <Head>
           <title>My App</title>
-          <meta charSet="utf-8" />
-          <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
-          <link rel="stylesheet" href="/static/styles/bootstrap.css" />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-          <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+          <meta charSet='utf-8' />
+          <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no' />
+          <link rel='stylesheet' href='/static/styles/bootstrap.css' />
+          <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,500' />
+          <link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons' />
+          <link rel='icon' type='image/x-icon' href='/static/favicon.ico' />
           <style>
             {`
               body {
@@ -119,27 +119,27 @@ export default class extends React.Component {
         <Dialog dialogOpen={this.state.loginOpen} fullScreen={true}>
           <Login onCloseLogin={this.closeLoginDialog} />
         </Dialog>
-        <AppBar position="fixed">
+        <AppBar position='fixed'>
           <Toolbar>
-            <IconButton color="inherit" onClick={this.toggleDrawer('right', true)}>
+            <IconButton color='inherit' onClick={this.toggleDrawer('right', true)}>
               <Icon>menu</Icon>
             </IconButton>
-            <Typography variant="h6" color="inherit">
+            <Typography variant='h6' color='inherit'>
               My App
             </Typography>
             <Grid item xs />
 
-            <Tabs variant="standard" value={this.state.currentTab} onChange={this.handleTabsChange}>
+            <Tabs variant='standard' value={this.state.currentTab} onChange={this.handleTabsChange}>
               {this.pages.map(page => {
                 return <LinkTab key={page.label} label={page.label} href={page.href} />;
               })}
             </Tabs>
 
-            <IconButton aria-owns={open ? 'menu-appbar' : undefined} aria-haspopup="true" onClick={this.handleMenu} color="inherit">
+            <IconButton aria-owns={open ? 'menu-appbar' : undefined} aria-haspopup='true' onClick={this.handleMenu} color='inherit'>
               <Icon>account_circle</Icon>
             </IconButton>
             <Menu
-              id="menu-appbar"
+              id='menu-appbar'
               anchorEl={anchorEl}
               anchorOrigin={{
                 vertical: 'top',
@@ -157,13 +157,13 @@ export default class extends React.Component {
             </Menu>
           </Toolbar>
         </AppBar>
-        <Drawer anchor="left" open={this.state.right} onClose={this.toggleDrawer('right', false)}>
-          <div tabIndex={0} role="button" onClick={this.toggleDrawer('right', false)} onKeyDown={this.toggleDrawer('right', false)}>
+        <Drawer anchor='left' open={this.state.right} onClose={this.toggleDrawer('right', false)}>
+          <div tabIndex={0} role='button' onClick={this.toggleDrawer('right', false)} onKeyDown={this.toggleDrawer('right', false)}>
             <div style={{ width: 200 }}>Content</div>
           </div>
         </Drawer>
         <Grid container>
-          <Grid container direction="column" item xs={12} style={{ padding: 20 }}>
+          <Grid container direction='column' item xs={12} style={{ padding: 20 }}>
             {this.props.children}
           </Grid>
         </Grid>

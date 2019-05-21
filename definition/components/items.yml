@@ -12,6 +12,12 @@ layout:
                 - button: openItem
             - Item Number
             - Item Description
+  - dialog:
+      id: item
+      ok: Save
+      width: sm
+      content:
+        - component: item.form
   - nav:
       - search
       - space

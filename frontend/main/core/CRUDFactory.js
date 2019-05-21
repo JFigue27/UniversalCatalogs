@@ -1,21 +1,20 @@
-import "isomorphic-fetch";
-import AppConfig from "./AppConfig";
-import AuthService from "../core/AuthService";
+import 'isomorphic-fetch';
+import AppConfig from './AppConfig';
+import AuthService from '../core/AuthService';
 
 const Request = async (method, url, data) => {
   if (AuthService.auth == null) AuthService.fillAuthData();
 
   const config = {
     method: method,
-    mode: "cors",
-    cache: "no-cache",
+    mode: 'cors',
+    cache: 'no-cache',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${AuthService.auth.user.BearerToken}`
     }
   };
-  if (["POST", "PUT", "DELETE"].includes(method))
-    config.body = JSON.stringify(data);
+  if (['POST', 'PUT', 'DELETE'].includes(method)) config.body = JSON.stringify(data);
   const response = await fetch(AppConfig.BaseURL + url, config);
   if (response.status == 401) throw response;
   return await response.json();
@@ -29,100 +28,72 @@ export class CRUDFactory {
 
   async InsertEntity(entity) {
     this.ADAPTER_OUT(entity);
-    return await Request("POST", this.EndPoint, entity)
+    return await Request('POST', this.EndPoint, entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
 
   async CreateAndCheckout(entity) {
     this.ADAPTER_OUT(entity);
-    return await Request("POST", this.EndPoint + "/CreateAndCheckout", entity)
+    return await Request('POST', this.EndPoint + '/CreateAndCheckout', entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
 
   async CreateInstance(entity) {
-    return await Request("POST", this.EndPoint + "/CreateInstance", entity)
+    return await Request('POST', this.EndPoint + '/CreateInstance', entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
 
   async Get(operation) {
-    return await Request("GET", this.EndPoint + "/" + operation).catch(
-      this.GeneralError
-    );
+    return await Request('GET', this.EndPoint + '/' + operation).catch(this.GeneralError);
   }
 
   async Post(operation, entity = null) {
-    return await Request("POST", this.EndPoint + "/" + operation, entity).catch(
-      this.GeneralError
-    );
+    return await Request('POST', this.EndPoint + '/' + operation, entity).catch(this.GeneralError);
   }
 
-  async GetPaged(limit, page, params = "?") {
-    return await Request(
-      "GET",
-      this.EndPoint +
-        "/getPaged/" +
-        limit +
-        "/" +
-        page +
-        params +
-        "&noCache=" +
-        Number(new Date())
-    )
+  async GetPaged(limit, page, params = '?') {
+    return await Request('GET', this.EndPoint + '/getPaged/' + limit + '/' + page + params + '&noCache=' + Number(new Date()))
       .then(r => this.UseCommonResponse(r, true))
       .catch(this.GeneralError);
   }
 
   async GetSingleWhere(property, value) {
     if (property && value) {
-      return await Request(
-        "GET",
-        this.EndPoint +
-          "/GetSingleWhere/" +
-          property +
-          "/" +
-          value +
-          "?noCache=" +
-          Number(new Date())
-      )
+      return await Request('GET', this.EndPoint + '/GetSingleWhere/' + property + '/' + value + '?noCache=' + Number(new Date()))
         .then(r => this.UseCommonResponse(r))
         .catch(this.GeneralError);
     } else {
-      return Promise.reject(
-        "Both Property and Value is required to run GetSingleWhere."
-      );
+      return Promise.reject('Both Property and Value is required to run GetSingleWhere.');
     }
   }
 
   async LoadEntities(params) {
-    return await Request(
-      "GET",
-      this.EndPoint + params + "&noCache=" + Number(new Date())
-    )
+    return await Request('GET', this.EndPoint + params + '&noCache=' + Number(new Date()))
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
 
   async LoadEntity(id) {
     if (id) {
-      return await Request("GET", this.EndPoint + "/" + id)
+      return await Request('GET', this.EndPoint + '/' + id)
         .then(r => this.UseCommonResponse(r))
         .catch(this.GeneralError);
     } else {
-      return Promise.reject("Id not found");
+      return Promise.reject('Id not found');
     }
   }
 
   async Remove(entity) {
-    return await Request("DELETE", this.EndPoint, entity)
+    return await Request('DELETE', this.EndPoint, entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
 
   async RemoveEntity(id) {
-    return await Request("DELETE", this.EndPoint + "/" + id)
+    return await Request('DELETE', this.EndPoint + '/' + id)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
@@ -136,18 +107,18 @@ export class CRUDFactory {
   }
 
   async SendTestEmail(entity) {
-    return await Request("POST", this.EndPoint + "/SendTestEmail", "=" + entity)
+    return await Request('POST', this.EndPoint + '/SendTestEmail', '=' + entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
 
   async SetProperty(entity, sProperty, Value, qParams) {
-    throw "Not Implemented.";
+    throw 'Not Implemented.';
   }
 
   async UpdateEntity(entity) {
     this.ADAPTER_OUT(entity);
-    return await Request("PUT", this.EndPoint + "/" + entity.id, "=" + entity)
+    return await Request('PUT', this.EndPoint + '/' + entity.id, '=' + entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
@@ -182,16 +153,14 @@ export class CRUDFactory {
   populateCatalogValues(entity) {
     for (let catalog in this.catalogs) {
       if (this.catalogs.hasOwnProperty(catalog)) {
-        entity["" + catalog] = this.catalogs[catalog].getById(
-          entity["" + catalog + "Key"]
-        );
+        entity['' + catalog] = this.catalogs[catalog].getById(entity['' + catalog + 'Key']);
       }
     }
   }
 
   UseCommonResponse = (response, returnCommonResponse) => {
     //Make sure it is a commonResponse:
-    if (!response || !response.hasOwnProperty("ErrorThrown")) throw response;
+    if (!response || !response.hasOwnProperty('ErrorThrown')) throw response;
 
     //Check for Error:
     if (response.ErrorThrown) throw response;
@@ -199,7 +168,7 @@ export class CRUDFactory {
     //Call Adapter In Hook:
     if (Array.isArray(response.Result)) {
       response.Result.forEach(entity => this.ADAPTER_IN(entity));
-    } else if (typeof response.Result === "object") {
+    } else if (typeof response.Result === 'object') {
       this.ADAPTER_IN(response.Result);
     }
 
@@ -218,7 +187,7 @@ export class CRUDFactory {
     //Call Adapter In Hook:
     if (Array.isArray(response.Result)) {
       response.Result.forEach(entity => this.ADAPTER_IN(entity));
-    } else if (typeof response.Result === "object") {
+    } else if (typeof response.Result === 'object') {
       this.ADAPTER_IN(response.Result);
     }
 
@@ -237,7 +206,7 @@ export class CRUDFactory {
     //Call Adapter In Hook:
     if (Array.isArray(response.Result)) {
       response.Result.forEach(entity => this.ADAPTER_IN(entity));
-    } else if (typeof response.Result === "object") {
+    } else if (typeof response.Result === 'object') {
       this.ADAPTER_IN(response.Result);
     }
 
@@ -252,7 +221,7 @@ export class CRUDFactory {
     //CommonResponse wrapper
     if (response.ErrorThrown) {
       switch (response.ErrorType) {
-        case "MESSAGE":
+        case 'MESSAGE':
           alertify.alert(response.ResponseDescription);
       }
       return Promise.resolve();
@@ -260,8 +229,8 @@ export class CRUDFactory {
     //ServiceStack wrapper
     else if (response.ResponseStatus) {
       switch (response.ResponseStatus.ErrorCode) {
-        case "KnownError":
-        case "SqlException":
+        case 'KnownError':
+        case 'SqlException':
         default:
           console.log(response);
           console.log(response.ResponseStatus.StackTrace);
@@ -273,7 +242,7 @@ export class CRUDFactory {
       switch (response.status) {
         case 401:
           AuthService.OpenLogin();
-          return Promise.reject("Your session has expired. Log in again");
+          return Promise.reject('Your session has expired. Log in again');
       }
     }
     return Promise.reject(response.statusText);

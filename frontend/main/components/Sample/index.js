@@ -38,37 +38,37 @@ export default class extends React.Component {
         <div>
           <h2>Buttons</h2>
           TODO
-          <Button variant="contained" color="primary">
+          <Button variant='contained' color='primary'>
             contained
           </Button>
-          <Button variant="extendedFab" color="primary">
+          <Button variant='extendedFab' color='primary'>
             extendedFab
           </Button>
-          <Button variant="fab" color="primary">
+          <Button variant='fab' color='primary'>
             fab
           </Button>
-          <Button variant="flat" color="primary">
+          <Button variant='flat' color='primary'>
             flat
           </Button>
-          <Button variant="outlined" color="secondary">
+          <Button variant='outlined' color='secondary'>
             outlined
           </Button>
-          <Button variant="raised" color="secondary">
+          <Button variant='raised' color='secondary'>
             raised
           </Button>
-          <Button variant="text" color="secondary">
+          <Button variant='text' color='secondary'>
             text
           </Button>
           <h3>Create</h3>
-          <Button variant="contained" color="primary" onClick={this.props.create}>
+          <Button variant='contained' color='primary' onClick={this.props.create}>
             <Add /> New
           </Button>
           <h3>Create and Checkout</h3>
-          <Button variant="contained" color="primary" onClick={this.props.createAndCheckout}>
+          <Button variant='contained' color='primary' onClick={this.props.createAndCheckout}>
             <Add /> New
           </Button>
           <h3>Save</h3>
-          <Button variant="contained" color="primary" onClick={this.props.save}>
+          <Button variant='contained' color='primary' onClick={this.props.save}>
             <Add /> Save
           </Button>
           <h3>Finalize</h3>

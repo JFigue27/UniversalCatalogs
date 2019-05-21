@@ -28,34 +28,34 @@ const Login = props => {
     }
   };
   return (
-    <div className="container-fluid">
-      <div className="login">
-        <Card className="card">
+    <div className='container-fluid'>
+      <div className='login'>
+        <Card className='card'>
           <form onSubmit={login}>
             <CardContent>
-              <Typography style={{ margin: '40px 5px' }} variant="h4" align="center" color="inherit">
+              <Typography style={{ margin: '40px 5px' }} variant='h4' align='center' color='inherit'>
                 Universal Catalogs
               </Typography>
               {/* <div className="finger">
                 <Fingerprint style={{ fontSize: 80 }} />
               </div> */}
-              <div className="text-field">
-                <TextField required fullWidth label="Usuario" margin="normal" onChange={event => setUsername(event.target.value)} />
+              <div className='text-field'>
+                <TextField required fullWidth label='Usuario' margin='normal' onChange={event => setUsername(event.target.value)} />
               </div>
-              <div className="text-field">
+              <div className='text-field'>
                 <TextField
                   required
                   fullWidth
-                  label="Contraseña"
-                  type="password"
-                  autoComplete="current-password"
-                  margin="normal"
+                  label='Contraseña'
+                  type='password'
+                  autoComplete='current-password'
+                  margin='normal'
                   onChange={event => setPassword(event.target.value)}
                 />
               </div>
               {error && <p>{error}</p>}
-              <div className="botton">
-                <Fab variant="extended" aria-label="Delete" type="submit">
+              <div className='botton'>
+                <Fab variant='extended' aria-label='Delete' type='submit'>
                   <Lock />
                   Inicio de Sesion
                 </Fab>

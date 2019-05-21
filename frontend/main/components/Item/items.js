@@ -1,17 +1,12 @@
-import { Grid, Typography, AppBar, Toolbar } from "@material-ui/core";
-import {
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody
-} from "@material-ui/core";
-import { Button, Icon } from "@material-ui/core";
-import SearchBox from "../../widgets/Searchbox";
-import Pagination from "react-js-pagination";
-import moment from "moment";
+import { Grid, Typography, AppBar, Toolbar } from '@material-ui/core';
+import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+import { Button, Icon } from '@material-ui/core';
+import SearchBox from '../../widgets/Searchbox';
+import Pagination from 'react-js-pagination';
+import moment from 'moment';
+import Dialog from '../../widgets/Dialog';
 
-import ItemsListContainer from "./item.list.container";
+import ItemsListContainer from './item.list.container';
 
 const config = {
   limit: 20
@@ -20,7 +15,12 @@ const config = {
 class Items extends ItemsListContainer {
   constructor(props) {
     super(props, config);
+    this.state.itemIsOpen = false;
   }
+
+  AFTER_CREATE = instance => {
+    this.openItemDialog();
+  };
 
   ON_OPEN_ITEM = entity => {
     console.log(entity);
@@ -30,22 +30,21 @@ class Items extends ItemsListContainer {
     console.log(entity);
   };
 
+  openItemDialog = () => {
+    this.setState({
+      itemIsOpen: true
+    });
+  };
+
   render() {
     return (
       <div>
-        <Grid
-          className="container-fluid"
-          container
-          direction="column"
-          item
-          xs={12}
-          style={{ padding: 20 }}
-        >
-          <Typography variant="h6" className="" color="inherit">
+        <Grid className='container-fluid' container direction='column' item xs={12} style={{ padding: 20 }}>
+          <Typography variant='h6' className='' color='inherit'>
             OEEs
           </Typography>
           <pre>{JSON.stringify(this.state, null, 3)}</pre>
-          <Grid container direction="row">
+          <Grid container direction='row'>
             <Grid item xs />
             <Pagination
               activePage={this.state.filterOptions.page}
@@ -57,7 +56,7 @@ class Items extends ItemsListContainer {
               }}
             />
           </Grid>
-          <Table className="">
+          <Table className=''>
             <TableHead>
               <TableRow>
                 <TableCell />
@@ -70,23 +69,16 @@ class Items extends ItemsListContainer {
                 this.state.baseList.map(item => (
                   <TableRow key={item.Id}>
                     <TableCell>
-                      <Grid
-                        container
-                        direction="row"
-                        className="row"
-                        justify="center"
-                        alignItems="center"
-                        spacing={8}
-                      >
+                      <Grid container direction='row' className='row' justify='center' alignItems='center' spacing={8}>
                         <Grid item>
                           <Button
-                            variant="contained"
-                            color="default"
-                            className=""
+                            variant='contained'
+                            color='default'
+                            className=''
                             onClick={event => {
                               this.openItem(event, item);
                             }}
-                            size="small"
+                            size='small'
                           >
                             <Icon>edit</Icon>Open
                           </Button>
@@ -100,14 +92,17 @@ class Items extends ItemsListContainer {
             </TableBody>
           </Table>
         </Grid>
-        <AppBar position="fixed" style={{ top: "auto", bottom: 0 }}>
-          <Toolbar variant="dense">
+        <Dialog dialogOpen={this.state.itemIsOpen} fullWidth={true} maxWidth={'sm'} fullScreen={false}>
+          hola
+        </Dialog>
+        <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
+          <Toolbar variant='dense'>
             <SearchBox bindFilterInput={this.bindFilterInput} />
             <Grid item xs />
             <Button
-              variant="contained"
-              color="default"
-              className=""
+              variant='contained'
+              color='default'
+              className=''
               onClick={event => {
                 this.createInstance(event, {});
               }}
