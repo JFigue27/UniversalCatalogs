@@ -10,7 +10,7 @@ import withMobileDialog from '@material-ui/core/withMobileDialog';
 import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
 
-function PaperComponent(props) {
+function DraggableDialog(props) {
   return (
     <Draggable>
       <Paper {...props} />
@@ -18,23 +18,32 @@ function PaperComponent(props) {
   );
 }
 
-class ResponsiveDialog extends React.Component {
+class DialogWidget extends React.Component {
   render() {
-    const { fullScreen, children, dialogOpen, fullWidth, maxWidth } = this.props;
-
+    const { draggable, okLabel, children, title, onClose, ok, open, maxWidth, fullScreen } = this.props;
+    console.log(draggable);
     return (
-      <div>
-        <Dialog fullScreen={fullScreen} open={dialogOpen} fullWidth={fullWidth} maxWidth={maxWidth}>
-          <DialogContent>{children}</DialogContent>
-          <DialogActions />
-        </Dialog>
-      </div>
+      <Dialog
+        fullScreen={fullScreen}
+        open={open}
+        onClose={onClose}
+        maxWidth={maxWidth}
+        fullWidth={true}
+        PaperComponent={draggable && !fullScreen ? DraggableDialog : Paper}
+      >
+        {title && <DialogTitle>{title}</DialogTitle>}
+        <DialogContent>{children}</DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} color='primary'>
+            Close
+          </Button>
+          <Button onClick={ok} color='primary'>
+            {okLabel || 'OK'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
   }
 }
 
-ResponsiveDialog.propTypes = {
-  fullScreen: PropTypes.bool.isRequired
-};
-
-export default withMobileDialog()(ResponsiveDialog);
+export default withMobileDialog()(DialogWidget);

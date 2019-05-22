@@ -4,9 +4,10 @@ import { Button, Icon } from '@material-ui/core';
 import SearchBox from '../../widgets/Searchbox';
 import Pagination from 'react-js-pagination';
 import moment from 'moment';
-import Dialog from '../../widgets/Dialog';
-
 import ItemsListContainer from './item.list.container';
+import Dialog from '../../widgets/Dialog';
+import Item from './item.form';
+///start:slot:dependencies<<<///end:slot:dependencies<<<
 
 const config = {
   limit: 20
@@ -15,32 +16,15 @@ const config = {
 class Items extends ItemsListContainer {
   constructor(props) {
     super(props, config);
-    this.state.itemIsOpen = false;
   }
 
-  AFTER_CREATE = instance => {
-    this.openItemDialog();
-  };
-
-  ON_OPEN_ITEM = entity => {
-    console.log(entity);
-  };
-
-  AFTER_CREATE_AND_CHECKOUT = entity => {
-    console.log(entity);
-  };
-
-  openItemDialog = () => {
-    this.setState({
-      itemIsOpen: true
-    });
-  };
+  ///start:slot:js<<<///end:slot:js<<<
 
   render() {
     return (
-      <div>
+      <>
         <Grid className='container-fluid' container direction='column' item xs={12} style={{ padding: 20 }}>
-          <Typography variant='h6' className='' color='inherit'>
+          <Typography variant='h2' className='' gutterBottom>
             OEEs
           </Typography>
           <pre>{JSON.stringify(this.state, null, 3)}</pre>
@@ -92,8 +76,8 @@ class Items extends ItemsListContainer {
             </TableBody>
           </Table>
         </Grid>
-        <Dialog dialogOpen={this.state.itemIsOpen} fullWidth={true} maxWidth={'sm'} fullScreen={false}>
-          hola
+        <Dialog open={this.state.itemIsOpen} onClose={this.closeItemDialog} maxWidth={'sm'} ok={this.onOkItemDialog} draggable>
+          <Item />
         </Dialog>
         <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
           <Toolbar variant='dense'>
@@ -111,7 +95,7 @@ class Items extends ItemsListContainer {
             </Button>
           </Toolbar>
         </AppBar>
-      </div>
+      </>
     );
   }
 }
