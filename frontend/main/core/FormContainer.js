@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from 'next/router';
 import _ from 'lodash';
 import AuthService from './AuthService';
 
@@ -29,28 +30,35 @@ class FormContainer extends React.Component {
     const id = entityOrId;
     const entity = entityOrId;
 
-    this.setState({
-      isLoading: true
-    });
+    // this.setState({
+    //   isLoading: true
+    // });
 
     if (entityOrId === null) {
+      debugger;
       this.setState({
         baseEntity: {},
         isLoading: false
       });
+      debugger;
     }
     //Open by ID
     else if (!isNaN(id) && id > 0) {
       //TODO: Catch non-existent record
+      debugger;
       return this.service.LoadEntity(id).then(entity => {
+        debugger;
         this.AFTER_LOAD(entity);
+        debugger;
         this.setState({
           isLoading: false
         });
+        debugger;
       });
     }
     //Create
     else if ((entity instanceof Object || typeof entity == 'object') && !entity.hasOwnProperty('Id')) {
+      debugger;
       return this.createInstance(entity);
     }
     //Open direct object
@@ -65,6 +73,7 @@ class FormContainer extends React.Component {
   };
 
   createInstance = async (event, predefined) => {
+    console.log('FormContainer.createInstance');
     // let theArguments = Array.prototype.slice.call(arguments);
     return await this.service.CreateInstance(predefined).then(instance => {
       // theArguments.unshift(instance);
@@ -90,8 +99,9 @@ class FormContainer extends React.Component {
   };
 
   save = async () => {
-    return await this.service.Save(this.state.baseEntity).then(() => {
-      console.log('saved.');
+    return await this.service.Save(this.state.baseEntity).then(entity => {
+      this.AFTER_SAVE(entity);
+      this.setState({ baseEntity: entity });
     });
   };
 
@@ -193,7 +203,17 @@ class FormContainer extends React.Component {
       });
   };
 
+  onDialogOk = async () => {
+    await this.save();
+  };
+
   // Local Operations:============================================================
+  handleInputChange = (event, field) => {
+    let baseEntity = this.state.baseEntity;
+    baseEntity[field] = event.target.value;
+    this.setState({ baseEntity });
+  };
+
   getCurrentUser = () => {
     return AuthService.auth.user;
   };

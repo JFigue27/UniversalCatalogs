@@ -5,9 +5,11 @@ using ServiceStack;
 using ServiceStack.OrmLite;
 using System;
 using System.Threading.Tasks;
+using ServiceStack.Text;
 
 namespace MyApp.API
 {
+    [Authenticate]
     public class ItemService : Service
     {
         public IItemLogic Logic { get; set; }
@@ -49,7 +51,10 @@ namespace MyApp.API
         {
             Logic.SetDb(Db);
             var entity = request.ConvertTo<Item>();
-            return new CommonResponse(Logic.CreateInstance(entity));
+            return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
+            {
+                ResultScope = () => JsConfig.With(new Config { IncludeNullValues = true })
+            };
         }
 
         public object Post(InsertItem request)

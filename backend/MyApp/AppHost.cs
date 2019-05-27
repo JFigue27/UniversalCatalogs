@@ -47,7 +47,7 @@ namespace MyApp
                 //DebugMode = false
             });
 
-            JsConfig.IncludeNullValues = true;
+            JsConfig.IncludeNullValues = false;
             JsConfig.ExcludeTypeInfo = true;
             JsConfig.DateHandler = DateHandler.ISO8601;
 

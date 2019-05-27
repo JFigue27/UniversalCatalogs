@@ -2,4 +2,7 @@ name: item.form
 type: form
 entity: Item
 layout:
-  - title: 'This is the [item.form] component.'
+  - content:
+      - title: Item
+      - field: Item Number
+      - field: Item Description

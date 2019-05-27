@@ -1,8 +1,9 @@
 import React from 'react';
 import _ from 'lodash';
+import FormContainer from './FormContainer';
 import AuthService from './AuthService';
 
-class ListContainer extends React.Component {
+class ListContainer extends FormContainer {
   state = {
     config: {
       service: null,
@@ -237,18 +238,19 @@ class ListContainer extends React.Component {
   };
 
   // Events:======================================================================
-  openItem = entity => {
+  openItem = (event, item) => {
     // var theArguments = Array.prototype.slice.call(arguments);
     // this.ON_OPEN_ITEM.apply(this, theArguments);
-    this.ON_OPEN_ITEM(entity);
+    this.ON_OPEN_ITEM(item);
   };
 
   pageChanged = (newPage, limit) => {
-    this.setState({
-      filterOptions: {
-        page: newPage
-      }
-    });
+    this.state.filterOptions.page = newPage;
+    // this.setState({
+    //   filterOptions: {
+    //     page: newPage
+    //   }
+    // });
     if (limit > 0) {
       this.setState({
         filterOptions: {

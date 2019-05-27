@@ -14,7 +14,6 @@ class ItemsListContainer extends ListContainer {
   constructor(props, config) {
     Object.assign(defaultConfig, config);
     super(props, defaultConfig);
-    this.state.itemIsOpen = false;
   }
 
   componentDidMount() {
@@ -26,27 +25,30 @@ class ItemsListContainer extends ListContainer {
     ///start:slot:afterLoad<<<///end:slot:afterLoad<<<
   };
 
-  ON_OPEN_ITEM = entity => {
-    console.log('ON_OPEN_ITEM', entity);
-    ///start:slot:onOpenItem<<<///end:slot:onOpenItem<<<
+  ON_OPEN_ITEM = item => {
+    console.log('ON_OPEN_ITEM', item);
+    ///start:slot:onOpenItem<<<
+    console.log(item);
+    this.openItemDialog(item);
+    ///end:slot:onOpenItem<<<
   };
 
   AFTER_CREATE = instance => {
     console.log('AFTER_CREATE', instance);
     ///start:slot:afterCreate<<<
-    this.openItemDialog();
+    this.openItemDialog(instance);
     ///end:slot:afterCreate<<<
   };
 
-  openItemDialog = () => {
+  openItemDialog = item => {
     this.setState({
-      itemIsOpen: true
+      itemDialog: item
     });
   };
 
   closeItemDialog = () => {
     this.setState({
-      itemIsOpen: false
+      itemDialog: false
     });
   };
 

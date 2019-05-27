@@ -25,9 +25,9 @@ class Items extends ItemsListContainer {
       <>
         <Grid className='container-fluid' container direction='column' item xs={12} style={{ padding: 20 }}>
           <Typography variant='h2' className='' gutterBottom>
-            OEEs
+            Items
           </Typography>
-          <pre>{JSON.stringify(this.state, null, 3)}</pre>
+          {/* <pre>{JSON.stringify(this.state, null, 3)}</pre> */}
           <Grid container direction='row'>
             <Grid item xs />
             <Pagination
@@ -36,7 +36,8 @@ class Items extends ItemsListContainer {
               totalItemsCount={this.state.filterOptions.totalItems}
               pageRangeDisplayed={5}
               onChange={newPage => {
-                this.state.pageChanged(newPage);
+                console.log('new page: ' + newPage);
+                this.pageChanged(newPage);
               }}
             />
           </Grid>
@@ -76,8 +77,8 @@ class Items extends ItemsListContainer {
             </TableBody>
           </Table>
         </Grid>
-        <Dialog open={this.state.itemIsOpen} onClose={this.closeItemDialog} maxWidth={'sm'} ok={this.onOkItemDialog} draggable>
-          <Item />
+        <Dialog open={!!this.state.itemDialog} onClose={this.closeItemDialog}>
+          {dialog => <Item dialog={dialog} entity={this.state.itemDialog} />}
         </Dialog>
         <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
           <Toolbar variant='dense'>

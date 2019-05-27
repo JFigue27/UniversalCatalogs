@@ -99,7 +99,7 @@ export class CRUDFactory {
   }
 
   async Save(entity) {
-    if (entity.id > 0) {
+    if (entity.Id > 0) {
       return await this.UpdateEntity(entity);
     } else {
       return await this.InsertEntity(entity);
@@ -118,7 +118,7 @@ export class CRUDFactory {
 
   async UpdateEntity(entity) {
     this.ADAPTER_OUT(entity);
-    return await Request('PUT', this.EndPoint + '/' + entity.id, '=' + entity)
+    return await Request('PUT', this.EndPoint, '=' + entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
@@ -126,7 +126,7 @@ export class CRUDFactory {
   // LOCAL OPERATIONS
   getById(id) {
     for (let i = 0; i < this.arrAllRecords.length; i++) {
-      if (id == this.arrAllRecords[i].id) {
+      if (id == this.arrAllRecords[i].Id) {
         return 0;
       }
       return null;
