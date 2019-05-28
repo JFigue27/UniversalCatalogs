@@ -6,7 +6,7 @@ import Pagination from 'react-js-pagination';
 import moment from 'moment';
 import ItemsListContainer from './item.list.container';
 import Dialog from '../../widgets/Dialog';
-import Item from './item.form';
+import ItemForm from './item.form.js';
 ///start:slot:dependencies<<<///end:slot:dependencies<<<
 
 const config = {
@@ -27,7 +27,6 @@ class Items extends ItemsListContainer {
           <Typography variant='h2' className='' gutterBottom>
             Items
           </Typography>
-          {/* <pre>{JSON.stringify(this.state, null, 3)}</pre> */}
           <Grid container direction='row'>
             <Grid item xs />
             <Pagination
@@ -36,7 +35,6 @@ class Items extends ItemsListContainer {
               totalItemsCount={this.state.filterOptions.totalItems}
               pageRangeDisplayed={5}
               onChange={newPage => {
-                console.log('new page: ' + newPage);
                 this.pageChanged(newPage);
               }}
             />
@@ -77,8 +75,8 @@ class Items extends ItemsListContainer {
             </TableBody>
           </Table>
         </Grid>
-        <Dialog open={!!this.state.itemDialog} onClose={this.closeItemDialog}>
-          {dialog => <Item dialog={dialog} entity={this.state.itemDialog} />}
+        <Dialog open={!!this.state.itemDialog} onClose={this.closeDialog}>
+          {dialog => <ItemForm dialog={dialog} data={this.state.itemDialog} />}
         </Dialog>
         <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
           <Toolbar variant='dense'>

@@ -9,3 +9,4 @@ ServiceStack ASP.NET v4.5 Empty Web project
     $ npm install -g @servicestack/cli
 
     $ dotnet-new web-netfx ProjectName
+

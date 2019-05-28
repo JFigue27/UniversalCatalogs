@@ -101,7 +101,7 @@ export default class extends React.Component {
           `}
         </style>
         <Head>
-          <title>My App</title>
+          <title>Universal Catalogs</title>
           <meta charSet='utf-8' />
           <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no' />
           <link rel='stylesheet' href='/static/styles/bootstrap.css' />

@@ -13,7 +13,7 @@ class Item extends ItemFormContainer {
   }
 
   componentDidMount() {
-    this.load(this.props.entity);
+    this.load(this.props.data);
   }
 
   AFTER_SAVE = () => {

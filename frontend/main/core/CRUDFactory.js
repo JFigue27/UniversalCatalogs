@@ -107,7 +107,7 @@ export class CRUDFactory {
   }
 
   async SendTestEmail(entity) {
-    return await Request('POST', this.EndPoint + '/SendTestEmail', '=' + entity)
+    return await Request('POST', this.EndPoint + '/SendTestEmail', entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
@@ -118,7 +118,7 @@ export class CRUDFactory {
 
   async UpdateEntity(entity) {
     this.ADAPTER_OUT(entity);
-    return await Request('PUT', this.EndPoint, '=' + entity)
+    return await Request('PUT', this.EndPoint, entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }

@@ -270,11 +270,11 @@ class ListContainer extends FormContainer {
 
   ON_OPEN_ITEM = entity => {};
 
-  AFTER_REMOVE = () => {};
-
-  AFTER_CREATE = () => {};
+  AFTER_CREATE = instance => {};
 
   AFTER_CREATE_AND_CHECKOUT = entity => {};
+
+  AFTER_REMOVE = () => {};
 
   render() {
     return <div />;

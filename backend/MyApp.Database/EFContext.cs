@@ -3,7 +3,7 @@ namespace MyApp.Database
     using MyApp.Logic.Entities;
     using Reusable.CRUD.Entities;
     using Reusable.CRUD.JsonEntities;
-    using System;   
+    using System;
     using System.Configuration;
     using System.Data.Entity;
     using System.Data.Entity.ModelConfiguration.Conventions;

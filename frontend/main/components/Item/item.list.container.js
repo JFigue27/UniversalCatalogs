@@ -28,31 +28,15 @@ class ItemsListContainer extends ListContainer {
   ON_OPEN_ITEM = item => {
     console.log('ON_OPEN_ITEM', item);
     ///start:slot:onOpenItem<<<
-    console.log(item);
-    this.openItemDialog(item);
+    this.openDialog(item);
     ///end:slot:onOpenItem<<<
   };
 
   AFTER_CREATE = instance => {
     console.log('AFTER_CREATE', instance);
     ///start:slot:afterCreate<<<
-    this.openItemDialog(instance);
+    this.openDialog(instance);
     ///end:slot:afterCreate<<<
-  };
-
-  openItemDialog = item => {
-    this.setState({
-      itemDialog: item
-    });
-  };
-
-  closeItemDialog = feedback => {
-    if (feedback == 'ok') {
-      this.refresh();
-    }
-    this.setState({
-      itemDialog: false
-    });
   };
 
   AFTER_CREATE_AND_CHECKOUT = entity => {
@@ -63,6 +47,21 @@ class ItemsListContainer extends ListContainer {
   AFTER_REMOVE = () => {
     console.log('AFTER_REMOVE');
     ///start:slot:afterRemove<<<///end:slot:afterRemove<<<
+  };
+
+  openDialog = item => {
+    this.setState({
+      itemDialog: item
+    });
+  };
+
+  closeDialog = feedback => {
+    if (feedback == 'ok') {
+      this.refresh();
+    }
+    this.setState({
+      itemDialog: false
+    });
   };
 
   ///start:slot:js<<<

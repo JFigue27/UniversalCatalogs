@@ -3,8 +3,8 @@ type: list
 entity: Item
 layout:
   - container-fluid:
-      - display: OEEs
-      - json: this.state
+      - display: Items
+      # - json: this.state
       - pagination
       - table:
           columns:

@@ -68,13 +68,13 @@ namespace MyApp
             {
                 ApiDeclarationFilter = declaration =>
                 {
-                    declaration.Info.Title = "Production";
+                    declaration.Info.Title = "Universal Catalogs";
                     //declaration.Info.Contact = new ServiceStack.Api.OpenApi.Specification.OpenApiContact()
                     //{
                     //    Email = "apacheco@capsonic.com",
                     //    Name = "Alfredo Pacheco"
                     //};
-                    declaration.Info.Description = "Production App to help on metrics, rankings, bottlenecks.";
+                    declaration.Info.Description = "";
                 },
                 OperationFilter = (verb, op) =>
                 {

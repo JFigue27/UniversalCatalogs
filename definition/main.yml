@@ -1,7 +1,5 @@
 projectName: UniversalCatalogs
 description: ''
-backend:
-  appName: UniversalCatalogs
 frontends: []
 roles: []
 documents: []

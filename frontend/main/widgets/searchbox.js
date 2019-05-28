@@ -56,7 +56,7 @@ const searchBox = props => {
         <SearchIcon />
       </div>
       <InputBase
-        placeholder='Search…'
+        placeholder='Search...'
         name='filterGeneral'
         onChange={event => {
           props.bindFilterInput(event);
