@@ -116,8 +116,8 @@ export default class extends React.Component {
               `}
           </style>
         </Head>
-        <Dialog dialogOpen={this.state.loginOpen} fullScreen={true}>
-          <Login onCloseLogin={this.closeLoginDialog} />
+        <Dialog open={this.state.loginOpen} onClose={this.closeLoginDialog} fullScreen={true} actionsOff>
+          {() => <Login onCloseLogin={this.closeLoginDialog} />}
         </Dialog>
         <AppBar position='fixed'>
           <Toolbar>
@@ -125,7 +125,7 @@ export default class extends React.Component {
               <Icon>menu</Icon>
             </IconButton>
             <Typography variant='h6' color='inherit'>
-              My App
+              Universal Catalogs
             </Typography>
             <Grid item xs />
 

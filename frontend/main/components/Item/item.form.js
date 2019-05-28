@@ -18,7 +18,7 @@ class Item extends ItemFormContainer {
 
   AFTER_SAVE = () => {
     const { dialog } = this.props;
-    if (dialog) dialog.close();
+    if (dialog) dialog.close('ok');
   };
 
   ///start:slot:js<<<///end:slot:js<<<

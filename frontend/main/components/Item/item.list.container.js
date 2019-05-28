@@ -46,15 +46,13 @@ class ItemsListContainer extends ListContainer {
     });
   };
 
-  closeItemDialog = () => {
+  closeItemDialog = feedback => {
+    if (feedback == 'ok') {
+      this.refresh();
+    }
     this.setState({
       itemDialog: false
     });
-  };
-
-  onOkItemDialog = () => {
-    console.log('on ok');
-    this.closeItemDialog();
   };
 
   AFTER_CREATE_AND_CHECKOUT = entity => {
