@@ -31,9 +31,6 @@ class Item extends ItemFormContainer {
     return (
       <>
         <Grid className='' container direction='column' item xs={12}>
-          <Typography variant='h3' className='' gutterBottom>
-            Item
-          </Typography>
           <TextField
             label='Item Number'
             value={this.state.baseEntity.ItemNumber || ''}

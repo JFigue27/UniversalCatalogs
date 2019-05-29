@@ -10,7 +10,7 @@ import Draggable from 'react-draggable';
 
 function DraggableDialog(props) {
   return (
-    <Draggable>
+    <Draggable cancel={'[class*="MuiDialogContent-root"]'}>
       <Paper {...props} />
     </Draggable>
   );
@@ -34,7 +34,7 @@ class DialogWidget extends React.Component {
         PaperComponent={draggable && !fullScreen ? DraggableDialog : Paper}
       >
         {title && <DialogTitle>{title}</DialogTitle>}
-        <DialogContent>{children(this)}</DialogContent>
+        <DialogContent dividers={true}>{children(this)}</DialogContent>
         {!actionsOff && (
           <DialogActions>
             <Button onClick={onClose} color='primary'>

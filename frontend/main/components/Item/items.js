@@ -38,7 +38,7 @@ class Items extends ItemsListContainer {
               }}
             />
           </Grid>
-          <Table className=''>
+          <Table className='' size='small'>
             <TableHead>
               <TableRow>
                 <TableCell />
@@ -74,7 +74,7 @@ class Items extends ItemsListContainer {
             </TableBody>
           </Table>
         </Grid>
-        <Dialog open={!!this.state.itemDialog} onClose={this.closeDialog}>
+        <Dialog open={!!this.state.itemDialog} onClose={this.closeDialog} title='Item' draggable>
           {dialog => <ItemForm dialog={dialog} data={this.state.itemDialog} />}
         </Dialog>
         <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
