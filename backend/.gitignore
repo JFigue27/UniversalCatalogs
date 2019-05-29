@@ -292,3 +292,4 @@ __pycache__/
 *.xsd.cs
 
 ss_license.txt
+Web.Release.config
