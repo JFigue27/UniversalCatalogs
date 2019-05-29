@@ -22,7 +22,8 @@ export default class extends React.Component {
     auth: true,
     anchorEl: null,
     currentTab: 0,
-    loginOpen: false
+    loginOpen: false,
+    loading: true
   };
 
   classes = {
@@ -38,12 +39,15 @@ export default class extends React.Component {
     }
   };
 
-  async componentDidMount() {
+  componentDidMount() {
     AuthService.fillAuthData();
     AuthService.OpenLogin = this.openLoginDialog;
     if (!AuthService.auth) {
       AuthService.OpenLogin();
     }
+    this.setState({
+      loading: false
+    });
     //  else {
     //   AuthService.auth.user = await userService.GetByUserName(AuthService.auth.user.UserName);
     //   localStorage.setItem('authData', JSON.stringify(AuthService.auth));
@@ -92,7 +96,7 @@ export default class extends React.Component {
     }
 
     return (
-      <div>
+      <div style={{ visibility: this.state.loading ? 'hidden' : 'visible' }}>
         <style global jsx>
           {`
             body {
