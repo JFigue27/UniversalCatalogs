@@ -1,0 +1,5 @@
+{
+  "version": 2,
+  "name": "universal-catalogs",
+  "builds": [{ "src": "package.json", "use": "@now/next" }]
+}

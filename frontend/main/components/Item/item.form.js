@@ -1,5 +1,5 @@
-import moment from 'moment';
-import DialogActions from '@material-ui/core/DialogActions';
+// import moment from 'moment';
+// import DialogActions from '@material-ui/core/DialogActions';
 import { Grid, Button, Typography, TextField } from '@material-ui/core';
 import ItemFormContainer from './item.form.container';
 
@@ -13,6 +13,7 @@ class Item extends ItemFormContainer {
   }
 
   componentDidMount() {
+    console.log('Form did mount');
     this.load(this.props.data);
   }
 
@@ -29,7 +30,6 @@ class Item extends ItemFormContainer {
 
     return (
       <>
-        <pre>{JSON.stringify(this.state.baseEntity, null, 3)}</pre>
         <Grid className='' container direction='column' item xs={12}>
           <Typography variant='h3' className='' gutterBottom>
             Item

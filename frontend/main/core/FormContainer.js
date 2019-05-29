@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import AuthService from './AuthService';
 
 class FormContainer extends React.Component {

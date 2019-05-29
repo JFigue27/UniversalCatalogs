@@ -1,7 +1,22 @@
 import React from 'react';
-import _ from 'lodash';
 import FormContainer from './FormContainer';
 import AuthService from './AuthService';
+
+function debounce(func, wait, immediate) {
+  var timeout;
+  return function() {
+    var context = this,
+      args = arguments;
+    var later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+}
 
 class ListContainer extends FormContainer {
   state = {
@@ -30,7 +45,7 @@ class ListContainer extends FormContainer {
     if (config) Object.assign(this.state.config, config);
     this.service = this.state.config.service;
 
-    this.debouncedRefresh = _.debounce(this.refresh, 300);
+    this.debouncedRefresh = debounce(this.refresh, 300);
     AuthService.ON_LOGIN = this.refresh;
   }
 
@@ -40,7 +55,7 @@ class ListContainer extends FormContainer {
   };
 
   componentWillUnmount() {
-    this.debouncedRefresh.cancel();
+    if (this.debouncedRefresh.cancel) this.debouncedRefresh.cancel();
   }
 
   // Filtering / Sorting and Local Storage:=======================================

@@ -3,7 +3,7 @@ import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/c
 import { Button, Icon } from '@material-ui/core';
 import SearchBox from '../../widgets/Searchbox';
 import Pagination from 'react-js-pagination';
-import moment from 'moment';
+// import moment from 'moment';
 import ItemsListContainer from './item.list.container';
 import Dialog from '../../widgets/Dialog';
 import ItemForm from './item.form.js';
