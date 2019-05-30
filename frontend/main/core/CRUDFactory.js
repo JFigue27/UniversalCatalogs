@@ -15,7 +15,13 @@ const Request = async (method, url, data) => {
     }
   };
   if (['POST', 'PUT', 'DELETE'].includes(method)) config.body = JSON.stringify(data);
-  const response = await fetch(AppConfig.BaseURL + url, config);
+  let response;
+  try {
+    response = await fetch(AppConfig.BaseURL + url, config);
+  } catch (e) {
+    console.log(e);
+    alert('Failed to fetch. Probably server is down.');
+  }
   if (response.status == 401) throw response;
   return await response.json();
 };

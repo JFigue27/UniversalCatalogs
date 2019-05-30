@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -124,7 +124,6 @@
     <Compile Include="CRUD\Contract\Track\Trackable.cs" />
     <Compile Include="CRUD\Contract\IUserLogic.cs" />
     <Compile Include="CRUD\Entities\AdvancedSort.cs" />
-    <Compile Include="CRUD\Entities\Application.cs" />
     <Compile Include="CRUD\Entities\Approval.cs" />
     <Compile Include="CRUD\Entities\ApprovalApprover.cs" />
     <Compile Include="CRUD\Entities\Department.cs" />
@@ -132,7 +131,6 @@
     <Compile Include="CRUD\Entities\JsonEntities\Catalog.cs" />
     <Compile Include="CRUD\Entities\JsonEntities\Contact.cs" />
     <Compile Include="CRUD\Entities\Revision.cs" />
-    <Compile Include="CRUD\Entities\Role.cs" />
     <Compile Include="CRUD\Entities\Task.cs" />
     <Compile Include="CRUD\Entities\Token.cs" />
     <Compile Include="CRUD\Entities\Track.cs" />
@@ -149,13 +147,11 @@
     <Compile Include="Rest\CommonResponse.cs" />
     <Compile Include="CRUD\Implementations\SS\Logic\TrackLogic.cs" />
     <Compile Include="CRUD\Implementations\SS\Logic\TokenLogic.cs" />
-    <Compile Include="CRUD\Implementations\SS\Logic\RoleLogic.cs" />
     <Compile Include="CRUD\Implementations\SS\Logic\RevisionLogic.cs" />
     <Compile Include="CRUD\Implementations\SS\Logic\DepartmentLogic.cs" />
     <Compile Include="Rest\Implementations\SS\CacheService.cs" />
     <Compile Include="Rest\Implementations\SS\TrackService.cs" />
     <Compile Include="Rest\Implementations\SS\TokenService.cs" />
-    <Compile Include="Rest\Implementations\SS\RoleService.cs" />
     <Compile Include="Rest\Implementations\SS\RevisionService.cs" />
     <Compile Include="Rest\Implementations\SS\DepartmentService.cs" />
     <Compile Include="Rest\Implementations\SS\AttachmentService.cs" />

@@ -36,10 +36,7 @@ namespace Reusable.CRUD.Entities
         public long? DepartmentId { get; set; }
 
         [Reference]
-        public ICollection<ApprovalApprover> Approvals { get; set; }
-
-        [Reference]
-        public ICollection<Role> Roles { get; set; }
+        public List<ApprovalApprover> Approvals { get; set; }
 
         [Ignore]
         [NotMapped]

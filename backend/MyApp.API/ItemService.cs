@@ -85,6 +85,7 @@ namespace MyApp.API
         private void InTransaction(params Action[] Operations)
         {
             Logic.SetDb(Db);
+            Logic.SetAuth(GetSession());
             using (var transaction = Db.OpenTransaction())
             {
                 try

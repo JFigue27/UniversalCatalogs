@@ -17,7 +17,6 @@ namespace Reusable.CRUD.Implementations.SS.Logic
         protected override SqlExpression<User> OnGetList(SqlExpression<User> query)
         {
             return query
-                .LeftJoin<Role>()
                 .Where(e => e.Role != "Administrator")
                 .OrderBy(e => e.Role)
                 .ThenBy(e => e.Value);

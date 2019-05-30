@@ -14,6 +14,7 @@ layout:
             - Item Description
   - dialog:
       id: item
+      title: Item
       ok: Save
       width: sm
       content:

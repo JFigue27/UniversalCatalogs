@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 
 namespace Reusable.CRUD.Contract
 {
-    public interface IRoleLogic : ILogicWrite<Role>, ILogicWriteAsync<Role> { }
-
     public interface IUserLogic : IDocumentLogic<User>, IDocumentLogicAsync<User> {
         User GetByUserName(string UserName);
         List<User> GetByRole(string Role);

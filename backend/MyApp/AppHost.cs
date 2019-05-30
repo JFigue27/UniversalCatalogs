@@ -147,7 +147,6 @@ namespace MyApp
             container.RegisterAutoWiredAs<ApprovalLogic, IApprovalLogic>();
             container.RegisterAutoWiredAs<DepartmentLogic, IDepartmentLogic>();
             container.RegisterAutoWiredAs<RevisionLogic, IRevisionLogic>();
-            container.RegisterAutoWiredAs<RoleLogic, IRoleLogic>();
             container.RegisterAutoWiredAs<TaskLogic, ITaskLogic>();
             container.RegisterAutoWiredAs<TokenLogic, ITokenLogic>();
             container.RegisterAutoWiredAs<TrackLogic, ITrackLogic>();

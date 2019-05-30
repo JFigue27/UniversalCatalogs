@@ -3,6 +3,5 @@ type: form
 entity: Item
 layout:
   - content:
-      - title: Item
       - field: Item Number
       - field: Item Description
