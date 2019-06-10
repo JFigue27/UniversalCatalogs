@@ -2,4 +2,5 @@ name: main
 displayName: Universal Catalogs
 pages:
   items: items
+  areas: areas
 components: []
