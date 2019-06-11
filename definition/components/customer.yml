@@ -1,0 +1,6 @@
+name: customer
+type: form
+entity: Customer
+layout:
+  - content:
+      - field: Value

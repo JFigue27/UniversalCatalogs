@@ -10,30 +10,30 @@ using ServiceStack.Text;
 namespace MyApp.API
 {
     [Authenticate]
-    public class EmployeeService : Service
+    public class WorkstationService : Service
     {
-        public IEmployeeLogic Logic { get; set; }
+        public IWorkstationLogic Logic { get; set; }
 
         #region Endpoints - Generic Read Only
-        public async Task<object> Get(GetAllEmployees request)
+        public async Task<object> Get(GetAllWorkstations request)
         {
             Logic.SetDb(Db);
             return await Logic.GetAllAsync();
         }
 
-        public async Task<object> Get(GetEmployeeById request)
+        public async Task<object> Get(GetWorkstationById request)
         {
             Logic.SetDb(Db);
             return await Logic.GetByIdAsync(request.Id);
         }
 
-        public async Task<object> Get(GetEmployeeWhere request)
+        public async Task<object> Get(GetWorkstationWhere request)
         {
             Logic.SetDb(Db);
             return await Logic.GetSingleWhereAsync(request.Property, request.Value);
         }
 
-        public async Task<object> Get(GetPagedEmployees request)
+        public async Task<object> Get(GetPagedWorkstations request)
         {
             Logic.SetDb(Db);
             Logic.Request = Request;
@@ -47,32 +47,32 @@ namespace MyApp.API
         #endregion
 
         #region Endpoints - Generic Write
-        public object Post(CreateEmployeeInstance request)
+        public object Post(CreateWorkstationInstance request)
         {
             Logic.SetDb(Db);
-            var entity = request.ConvertTo<Employee>();
+            var entity = request.ConvertTo<Workstation>();
             return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
             {
                 ResultScope = () => JsConfig.With(new Config { IncludeNullValues = true })
             };
         }
 
-        public object Post(InsertEmployee request)
+        public object Post(InsertWorkstation request)
         {
-            var entity = request.ConvertTo<Employee>();
+            var entity = request.ConvertTo<Workstation>();
             InTransaction(() => Logic.Add(ref entity));
             return new CommonResponse(Logic.GetById(entity.Id));
         }
 
-        public object Put(UpdateEmployee request)
+        public object Put(UpdateWorkstation request)
         {
-            var entity = request.ConvertTo<Employee>();
+            var entity = request.ConvertTo<Workstation>();
             InTransaction(() => Logic.Update(entity));
             return new CommonResponse(Logic.GetById(entity.Id));
         }
-        public object Delete(DeleteEmployee request)
+        public object Delete(DeleteWorkstation request)
         {
-            var entity = request.ConvertTo<Employee>();
+            var entity = request.ConvertTo<Workstation>();
             InTransaction(() => Logic.Remove(entity));
             return new CommonResponse();
         }
@@ -111,30 +111,30 @@ namespace MyApp.API
     #endregion
 
     #region Generic Read Only
-    [Route("/Employee", "GET")]
-    public class GetAllEmployees : GetAll<Employee> { }
+    [Route("/Workstation", "GET")]
+    public class GetAllWorkstations : GetAll<Workstation> { }
 
-    [Route("/Employee/{Id}", "GET")]
-    public class GetEmployeeById : GetSingleById<Employee> { }
+    [Route("/Workstation/{Id}", "GET")]
+    public class GetWorkstationById : GetSingleById<Workstation> { }
 
-    [Route("/Employee/GetSingleWhere/{Property}/{Value}", "GET")]
-    public class GetEmployeeWhere : GetSingleWhere<Employee> { }
+    [Route("/Workstation/GetSingleWhere/{Property}/{Value}", "GET")]
+    public class GetWorkstationWhere : GetSingleWhere<Workstation> { }
 
-    [Route("/Employee/GetPaged/{Limit}/{Page}", "GET")]
-    public class GetPagedEmployees : GetPaged<Employee> { }
+    [Route("/Workstation/GetPaged/{Limit}/{Page}", "GET")]
+    public class GetPagedWorkstations : GetPaged<Workstation> { }
     #endregion
 
     #region Generic Write
-    [Route("/Employee/CreateInstance", "POST")]
-    public class CreateEmployeeInstance : Employee { }
+    [Route("/Workstation/CreateInstance", "POST")]
+    public class CreateWorkstationInstance : Workstation { }
 
-    [Route("/Employee", "POST")]
-    public class InsertEmployee : Employee { }
+    [Route("/Workstation", "POST")]
+    public class InsertWorkstation : Workstation { }
 
-    [Route("/Employee", "PUT")]
-    public class UpdateEmployee : Employee { }
+    [Route("/Workstation", "PUT")]
+    public class UpdateWorkstation : Workstation { }
 
-    [Route("/Employee/{Id}", "DELETE")]
-    public class DeleteEmployee : Employee { }
+    [Route("/Workstation/{Id}", "DELETE")]
+    public class DeleteWorkstation : Workstation { }
     #endregion
 }

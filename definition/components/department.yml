@@ -1,0 +1,6 @@
+name: department
+type: form
+entity: Department
+layout:
+  - content:
+      - field: Value

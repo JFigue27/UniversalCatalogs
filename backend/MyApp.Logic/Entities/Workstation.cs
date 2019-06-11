@@ -6,9 +6,9 @@ using System.Collections.Generic;
 
 namespace MyApp.Logic.Entities
 {
-    public class Employee : BaseEntity
+    public class Workstation : BaseEntity
     {
-        public Employee()
+        public Workstation()
         {
             
 

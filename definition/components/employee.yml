@@ -1,0 +1,6 @@
+name: employee
+type: form
+entity: Employee
+layout:
+  - content:
+      - field: Value

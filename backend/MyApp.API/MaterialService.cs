@@ -10,30 +10,30 @@ using ServiceStack.Text;
 namespace MyApp.API
 {
     [Authenticate]
-    public class EmployeeService : Service
+    public class MaterialService : Service
     {
-        public IEmployeeLogic Logic { get; set; }
+        public IMaterialLogic Logic { get; set; }
 
         #region Endpoints - Generic Read Only
-        public async Task<object> Get(GetAllEmployees request)
+        public async Task<object> Get(GetAllMaterials request)
         {
             Logic.SetDb(Db);
             return await Logic.GetAllAsync();
         }
 
-        public async Task<object> Get(GetEmployeeById request)
+        public async Task<object> Get(GetMaterialById request)
         {
             Logic.SetDb(Db);
             return await Logic.GetByIdAsync(request.Id);
         }
 
-        public async Task<object> Get(GetEmployeeWhere request)
+        public async Task<object> Get(GetMaterialWhere request)
         {
             Logic.SetDb(Db);
             return await Logic.GetSingleWhereAsync(request.Property, request.Value);
         }
 
-        public async Task<object> Get(GetPagedEmployees request)
+        public async Task<object> Get(GetPagedMaterials request)
         {
             Logic.SetDb(Db);
             Logic.Request = Request;
@@ -47,32 +47,32 @@ namespace MyApp.API
         #endregion
 
         #region Endpoints - Generic Write
-        public object Post(CreateEmployeeInstance request)
+        public object Post(CreateMaterialInstance request)
         {
             Logic.SetDb(Db);
-            var entity = request.ConvertTo<Employee>();
+            var entity = request.ConvertTo<Material>();
             return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
             {
                 ResultScope = () => JsConfig.With(new Config { IncludeNullValues = true })
             };
         }
 
-        public object Post(InsertEmployee request)
+        public object Post(InsertMaterial request)
         {
-            var entity = request.ConvertTo<Employee>();
+            var entity = request.ConvertTo<Material>();
             InTransaction(() => Logic.Add(ref entity));
             return new CommonResponse(Logic.GetById(entity.Id));
         }
 
-        public object Put(UpdateEmployee request)
+        public object Put(UpdateMaterial request)
         {
-            var entity = request.ConvertTo<Employee>();
+            var entity = request.ConvertTo<Material>();
             InTransaction(() => Logic.Update(entity));
             return new CommonResponse(Logic.GetById(entity.Id));
         }
-        public object Delete(DeleteEmployee request)
+        public object Delete(DeleteMaterial request)
         {
-            var entity = request.ConvertTo<Employee>();
+            var entity = request.ConvertTo<Material>();
             InTransaction(() => Logic.Remove(entity));
             return new CommonResponse();
         }
@@ -111,30 +111,30 @@ namespace MyApp.API
     #endregion
 
     #region Generic Read Only
-    [Route("/Employee", "GET")]
-    public class GetAllEmployees : GetAll<Employee> { }
+    [Route("/Material", "GET")]
+    public class GetAllMaterials : GetAll<Material> { }
 
-    [Route("/Employee/{Id}", "GET")]
-    public class GetEmployeeById : GetSingleById<Employee> { }
+    [Route("/Material/{Id}", "GET")]
+    public class GetMaterialById : GetSingleById<Material> { }
 
-    [Route("/Employee/GetSingleWhere/{Property}/{Value}", "GET")]
-    public class GetEmployeeWhere : GetSingleWhere<Employee> { }
+    [Route("/Material/GetSingleWhere/{Property}/{Value}", "GET")]
+    public class GetMaterialWhere : GetSingleWhere<Material> { }
 
-    [Route("/Employee/GetPaged/{Limit}/{Page}", "GET")]
-    public class GetPagedEmployees : GetPaged<Employee> { }
+    [Route("/Material/GetPaged/{Limit}/{Page}", "GET")]
+    public class GetPagedMaterials : GetPaged<Material> { }
     #endregion
 
     #region Generic Write
-    [Route("/Employee/CreateInstance", "POST")]
-    public class CreateEmployeeInstance : Employee { }
+    [Route("/Material/CreateInstance", "POST")]
+    public class CreateMaterialInstance : Material { }
 
-    [Route("/Employee", "POST")]
-    public class InsertEmployee : Employee { }
+    [Route("/Material", "POST")]
+    public class InsertMaterial : Material { }
 
-    [Route("/Employee", "PUT")]
-    public class UpdateEmployee : Employee { }
+    [Route("/Material", "PUT")]
+    public class UpdateMaterial : Material { }
 
-    [Route("/Employee/{Id}", "DELETE")]
-    public class DeleteEmployee : Employee { }
+    [Route("/Material/{Id}", "DELETE")]
+    public class DeleteMaterial : Material { }
     #endregion
 }

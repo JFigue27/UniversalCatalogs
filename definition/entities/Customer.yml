@@ -1,6 +1,6 @@
-name: Employee
+name: Customer
 fields:
-  Value as Employee: string
+  Value as Customer: string
 relationships:
   oneToParent: []
   oneToMany: []

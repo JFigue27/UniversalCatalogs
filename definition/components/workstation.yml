@@ -1,0 +1,6 @@
+name: workstation
+type: form
+entity: Workstation
+layout:
+  - content:
+      - field: Value

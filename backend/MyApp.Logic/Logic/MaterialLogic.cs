@@ -9,54 +9,54 @@ using System.Data;
 
 namespace MyApp.Logic
 {
-    public interface IEmployeeLogic : ILogicWrite<Employee>, ILogicWriteAsync<Employee>
+    public interface IMaterialLogic : ILogicWrite<Material>, ILogicWriteAsync<Material>
     {
         ///start:slot:interface<<<///end:slot:interface<<<
     }
 
-    public class EmployeeLogic : LogicWrite<Employee>, ILogicWriteAsync<Employee>, IEmployeeLogic
+    public class MaterialLogic : LogicWrite<Material>, ILogicWriteAsync<Material>, IMaterialLogic
     {
         ///start:slot:init<<<///end:slot:init<<<
 
         ///start:slot:ctor<<<///end:slot:ctor<<<
 
-        protected override Employee OnCreateInstance(Employee entity)
+        protected override Material OnCreateInstance(Material entity)
         {
             ///start:slot:createInstance<<<///end:slot:createInstance<<<
 
             return entity;
         }
 
-        protected override SqlExpression<Employee> OnGetList(SqlExpression<Employee> query)
+        protected override SqlExpression<Material> OnGetList(SqlExpression<Material> query)
         {
             ///start:slot:listQuery<<<///end:slot:listQuery<<<
 
             return query;
         }
 
-        protected override SqlExpression<Employee> OnGetSingle(SqlExpression<Employee> query)
+        protected override SqlExpression<Material> OnGetSingle(SqlExpression<Material> query)
         {
             ///start:slot:singleQuery<<<///end:slot:singleQuery<<<
 
             return query;
         }
 
-        protected override void OnBeforeSaving(Employee entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
+        protected override void OnBeforeSaving(Material entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             ///start:slot:beforeSave<<<///end:slot:beforeSave<<<
         }
 
-        protected override void OnAfterSaving(Employee entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
+        protected override void OnAfterSaving(Material entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             ///start:slot:afterSave<<<///end:slot:afterSave<<<
         }
 
-        protected override void OnBeforeRemoving(Employee entity)
+        protected override void OnBeforeRemoving(Material entity)
         {
             ///start:slot:beforeRemove<<<///end:slot:beforeRemove<<<
         }
 
-        protected override IEnumerable<Employee> AdapterOut(params Employee[] entities)
+        protected override IEnumerable<Material> AdapterOut(params Material[] entities)
         {
             ///start:slot:adapterOut<<<///end:slot:adapterOut<<<
 

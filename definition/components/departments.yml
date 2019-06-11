@@ -1,0 +1,23 @@
+name: departments
+type: list
+entity: Department
+layout:
+  - container-fluid:
+      - h4: Departments
+      - pagination
+      - table:
+          columns:
+            - row:
+                - button: openItem
+            - Value
+  - dialog:
+      id: department
+      title: Department
+      ok: Save
+      width: sm
+      content:
+        - component: department
+  - nav:
+      - search
+      - space
+      - button: create

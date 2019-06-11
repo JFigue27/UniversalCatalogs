@@ -1,0 +1,23 @@
+name: materials
+type: list
+entity: Material
+layout:
+  - container-fluid:
+      - h4: Materials
+      - pagination
+      - table:
+          columns:
+            - row:
+                - button: openItem
+            - Value
+  - dialog:
+      id: material
+      title: Material
+      ok: Save
+      width: sm
+      content:
+        - component: material
+  - nav:
+      - search
+      - space
+      - button: create

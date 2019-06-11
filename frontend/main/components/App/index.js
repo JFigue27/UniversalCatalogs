@@ -11,7 +11,12 @@ export default class extends React.Component {
   pages = [
     ///start:slot:pages<<<
     { href: '/items', label: 'Items' },
-    { href: '/areas', label: 'Areas' }
+    { href: '/areas', label: 'Areas' },
+    { href: '/materials', label: 'Materials' },
+    { href: '/workstations', label: 'Workstations' },
+    { href: '/employees', label: 'Employees' },
+    { href: '/customers', label: 'Customers' },
+    { href: '/deparments', label: 'Deparments' }
     ///end:slot:pages<<<
   ];
 

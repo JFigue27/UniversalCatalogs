@@ -1,6 +1,6 @@
-name: Employee
+name: Material
 fields:
-  Value as Employee: string
+  Value as Material: string
 relationships:
   oneToParent: []
   oneToMany: []

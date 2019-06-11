@@ -1,0 +1,23 @@
+name: customers
+type: list
+entity: Customer
+layout:
+  - container-fluid:
+      - h4: Customers
+      - pagination
+      - table:
+          columns:
+            - row:
+                - button: openItem
+            - Value
+  - dialog:
+      id: customer
+      title: Customer
+      ok: Save
+      width: sm
+      content:
+        - component: customer
+  - nav:
+      - search
+      - space
+      - button: create

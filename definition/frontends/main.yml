@@ -3,4 +3,9 @@ displayName: Universal Catalogs
 pages:
   items: items
   areas: areas
+  materials: materials
+  workstations: workstations
+  employees: employees
+  customers: customers
+  deparments: departments
 components: []

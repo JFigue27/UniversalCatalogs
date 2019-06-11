@@ -1,0 +1,23 @@
+name: workstations
+type: list
+entity: Workstation
+layout:
+  - container-fluid:
+      - h4: Workstations
+      - pagination
+      - table:
+          columns:
+            - row:
+                - button: openItem
+            - Value
+  - dialog:
+      id: workstation
+      title: Workstation
+      ok: Save
+      width: sm
+      content:
+        - component: workstation
+  - nav:
+      - search
+      - space
+      - button: create

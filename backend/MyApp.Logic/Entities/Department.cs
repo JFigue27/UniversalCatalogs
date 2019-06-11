@@ -6,17 +6,17 @@ using System.Collections.Generic;
 
 namespace MyApp.Logic.Entities
 {
-    public class Employee : BaseEntity
+    public class Department : BaseEntity
     {
-        public Employee()
+        public Department()
         {
             
 
-            ///start:slot:ctor<<<///end:slot:ctor<<<
+            
         }
 
         public string Value { get; set; }
 
-        ///start:slot:properties<<<///end:slot:properties<<<
+        
     }
 }

@@ -83,14 +83,20 @@
   </ItemGroup>
   <ItemGroup>
     <!-- start:generated:entities -->
-    <Compile Include="Entities\Item.cs" />
-    <Compile Include="Entities\Employee.cs" />
     <Compile Include="Entities\Area.cs" />
+    <Compile Include="Entities\Customer.cs" />
+    <Compile Include="Entities\Employee.cs" />
+    <Compile Include="Entities\Item.cs" />
+    <Compile Include="Entities\Material.cs" />
+    <Compile Include="Entities\Workstation.cs" />
     <!-- end:generated:entities -->
     <!-- start:generated:Logic -->
-    <Compile Include="Logic\ItemLogic.cs" />
-    <Compile Include="Logic\EmployeeLogic.cs" />
     <Compile Include="Logic\AreaLogic.cs" />
+    <Compile Include="Logic\CustomerLogic.cs" />
+    <Compile Include="Logic\EmployeeLogic.cs" />
+    <Compile Include="Logic\ItemLogic.cs" />
+    <Compile Include="Logic\MaterialLogic.cs" />
+    <Compile Include="Logic\WorkstationLogic.cs" />
     <!-- end:generated:Logic -->
     <Compile Include="Namespaces.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

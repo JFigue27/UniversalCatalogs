@@ -1,6 +1,6 @@
-name: Employee
+name: Workstation
 fields:
-  Value as Employee: string
+  Value as Workstation: string
 relationships:
   oneToParent: []
   oneToMany: []

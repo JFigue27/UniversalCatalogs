@@ -1,0 +1,6 @@
+name: material
+type: form
+entity: Material
+layout:
+  - content:
+      - field: Value

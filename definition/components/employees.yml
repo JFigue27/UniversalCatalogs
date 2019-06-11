@@ -1,0 +1,23 @@
+name: employees
+type: list
+entity: Employee
+layout:
+  - container-fluid:
+      - h4: Employees
+      - pagination
+      - table:
+          columns:
+            - row:
+                - button: openItem
+            - Value
+  - dialog:
+      id: employee
+      title: Employee
+      ok: Save
+      width: sm
+      content:
+        - component: employee
+  - nav:
+      - search
+      - space
+      - button: create

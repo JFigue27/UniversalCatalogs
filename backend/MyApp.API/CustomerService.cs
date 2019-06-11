@@ -10,30 +10,30 @@ using ServiceStack.Text;
 namespace MyApp.API
 {
     [Authenticate]
-    public class EmployeeService : Service
+    public class CustomerService : Service
     {
-        public IEmployeeLogic Logic { get; set; }
+        public ICustomerLogic Logic { get; set; }
 
         #region Endpoints - Generic Read Only
-        public async Task<object> Get(GetAllEmployees request)
+        public async Task<object> Get(GetAllCustomers request)
         {
             Logic.SetDb(Db);
             return await Logic.GetAllAsync();
         }
 
-        public async Task<object> Get(GetEmployeeById request)
+        public async Task<object> Get(GetCustomerById request)
         {
             Logic.SetDb(Db);
             return await Logic.GetByIdAsync(request.Id);
         }
 
-        public async Task<object> Get(GetEmployeeWhere request)
+        public async Task<object> Get(GetCustomerWhere request)
         {
             Logic.SetDb(Db);
             return await Logic.GetSingleWhereAsync(request.Property, request.Value);
         }
 
-        public async Task<object> Get(GetPagedEmployees request)
+        public async Task<object> Get(GetPagedCustomers request)
         {
             Logic.SetDb(Db);
             Logic.Request = Request;
@@ -47,32 +47,32 @@ namespace MyApp.API
         #endregion
 
         #region Endpoints - Generic Write
-        public object Post(CreateEmployeeInstance request)
+        public object Post(CreateCustomerInstance request)
         {
             Logic.SetDb(Db);
-            var entity = request.ConvertTo<Employee>();
+            var entity = request.ConvertTo<Customer>();
             return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
             {
                 ResultScope = () => JsConfig.With(new Config { IncludeNullValues = true })
             };
         }
 
-        public object Post(InsertEmployee request)
+        public object Post(InsertCustomer request)
         {
-            var entity = request.ConvertTo<Employee>();
+            var entity = request.ConvertTo<Customer>();
             InTransaction(() => Logic.Add(ref entity));
             return new CommonResponse(Logic.GetById(entity.Id));
         }
 
-        public object Put(UpdateEmployee request)
+        public object Put(UpdateCustomer request)
         {
-            var entity = request.ConvertTo<Employee>();
+            var entity = request.ConvertTo<Customer>();
             InTransaction(() => Logic.Update(entity));
             return new CommonResponse(Logic.GetById(entity.Id));
         }
-        public object Delete(DeleteEmployee request)
+        public object Delete(DeleteCustomer request)
         {
-            var entity = request.ConvertTo<Employee>();
+            var entity = request.ConvertTo<Customer>();
             InTransaction(() => Logic.Remove(entity));
             return new CommonResponse();
         }
@@ -111,30 +111,30 @@ namespace MyApp.API
     #endregion
 
     #region Generic Read Only
-    [Route("/Employee", "GET")]
-    public class GetAllEmployees : GetAll<Employee> { }
+    [Route("/Customer", "GET")]
+    public class GetAllCustomers : GetAll<Customer> { }
 
-    [Route("/Employee/{Id}", "GET")]
-    public class GetEmployeeById : GetSingleById<Employee> { }
+    [Route("/Customer/{Id}", "GET")]
+    public class GetCustomerById : GetSingleById<Customer> { }
 
-    [Route("/Employee/GetSingleWhere/{Property}/{Value}", "GET")]
-    public class GetEmployeeWhere : GetSingleWhere<Employee> { }
+    [Route("/Customer/GetSingleWhere/{Property}/{Value}", "GET")]
+    public class GetCustomerWhere : GetSingleWhere<Customer> { }
 
-    [Route("/Employee/GetPaged/{Limit}/{Page}", "GET")]
-    public class GetPagedEmployees : GetPaged<Employee> { }
+    [Route("/Customer/GetPaged/{Limit}/{Page}", "GET")]
+    public class GetPagedCustomers : GetPaged<Customer> { }
     #endregion
 
     #region Generic Write
-    [Route("/Employee/CreateInstance", "POST")]
-    public class CreateEmployeeInstance : Employee { }
+    [Route("/Customer/CreateInstance", "POST")]
+    public class CreateCustomerInstance : Customer { }
 
-    [Route("/Employee", "POST")]
-    public class InsertEmployee : Employee { }
+    [Route("/Customer", "POST")]
+    public class InsertCustomer : Customer { }
 
-    [Route("/Employee", "PUT")]
-    public class UpdateEmployee : Employee { }
+    [Route("/Customer", "PUT")]
+    public class UpdateCustomer : Customer { }
 
-    [Route("/Employee/{Id}", "DELETE")]
-    public class DeleteEmployee : Employee { }
+    [Route("/Customer/{Id}", "DELETE")]
+    public class DeleteCustomer : Customer { }
     #endregion
 }
