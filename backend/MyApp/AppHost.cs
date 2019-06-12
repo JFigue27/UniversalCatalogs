@@ -97,7 +97,6 @@ namespace MyApp
             var authProviders = new List<IAuthProvider>
             {
                 new JwtAuthProvider(AppSettings) {
-                    AuthKey = AesUtils.CreateKey(),
                     RequireSecureConnection = false
                 },
                 new CredentialsAuthProvider()
@@ -113,11 +112,13 @@ namespace MyApp
 
             Plugins.Add(new RegistrationFeature());
 
-            //authRepo.CreateUserAuth(new UserAuth
-            //{
-            //    UserName = "admin",
-            //    Roles = new List<string> { RoleNames.Admin }
-            //}, "admin");
+            //var admin = authRepo.GetUserAuthByUserName("admin");
+            //if (admin == null)
+            //    authRepo.CreateUserAuth(new UserAuth
+            //    {
+            //        UserName = "admin",
+            //        Roles = new List<string> { RoleNames.Admin }
+            //    }, "admin");
             #endregion
 
             //TODO:

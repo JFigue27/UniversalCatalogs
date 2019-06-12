@@ -27,7 +27,7 @@ namespace Reusable.Reports
 
         private bool inTable = false;
 
-        private ExcelRange insertValue(object value, string sType, int offset, TextAlign AlignMode = TextAlign.LEFT, Precision Decimals = Precision.ZERO, NumberTypes Type = NumberTypes.NUMBER, int mergeCols = 1, int? rowsOccuppied = null, float fontSize = 9, bool fontBold = false, ExcelVerticalAlignment VerticalAlign = ExcelVerticalAlignment.Center, int? col = null, int? row = null)
+        private ExcelRange InsertValue(object value, string sType, int offset, TextAlign AlignMode = TextAlign.LEFT, Precision Decimals = Precision.ZERO, NumberTypes Type = NumberTypes.NUMBER, int mergeCols = 1, int? rowsOccuppied = null, float fontSize = 9, bool fontBold = false, ExcelVerticalAlignment VerticalAlign = ExcelVerticalAlignment.Center, int? col = null, int? row = null)
         {
             int targetColumn;
             int targetRow;
@@ -158,6 +158,25 @@ namespace Reusable.Reports
                         try
                         {
                             if ((decimal)(double)value < 0)
+                            {
+                                cell.Style.Font.Color.SetColor(Color.Red);
+                            }
+                        }
+                        catch { }
+                    }
+                    break;
+                case "int":
+                    FormatNumber(cell, Type: NumberTypes.NUMBER, Decimals: 0);
+                    if (value == null)
+                    {
+                        cell.Value = 0;
+                    }
+                    else
+                    {
+                        cell.Value = value;
+                        try
+                        {
+                            if ((int)value < 0)
                             {
                                 cell.Style.Font.Color.SetColor(Color.Red);
                             }
@@ -344,7 +363,7 @@ namespace Reusable.Reports
             return cell;
         }
 
-        private void tab()
+        protected void tab()
         {
             colIndex++;
         }
@@ -540,12 +559,12 @@ namespace Reusable.Reports
 
             return cell;
         }
-        protected void pageBreak()
+        protected void PageBreak()
         {
             ws.Row(rowIndex).PageBreak = true;
             NewLine();
         }
-        protected void deduceColPageBreak()
+        protected void DeduceColPageBreak()
         {
             for (int i = 1; i < maxColIndex; i++)
             {
@@ -575,51 +594,55 @@ namespace Reusable.Reports
         //Insert Values
         protected ExcelRange InsertDate(DateTime? value, int colOffset = 0, TextAlign AlignMode = TextAlign.CENTER, int? col = null, int? row = null)
         {
-            return insertValue(value, "date", colOffset, AlignMode, col: col, row: row);
+            return InsertValue(value, "date", colOffset, AlignMode, col: col, row: row);
         }
         protected ExcelRange InsertDateTime(DateTime? value, int colOffset = 0, TextAlign AlignMode = TextAlign.CENTER, int? col = null, int? row = null)
         {
-            return insertValue(value, "datetime", colOffset, AlignMode, col: col, row: row);
+            return InsertValue(value, "datetime", colOffset, AlignMode, col: col, row: row);
         }
         protected ExcelRange InsertTitle(string value, int colOffset = 0, TextAlign AlignMode = TextAlign.LEFT, int? col = null, int? row = null)
         {
-            return insertValue(value, "title", colOffset, AlignMode, col: col, row: row);
+            return InsertValue(value, "title", colOffset, AlignMode, col: col, row: row);
         }
         protected ExcelRange InsertSubtitle(string value, int colOffset = 0, TextAlign AlignMode = TextAlign.LEFT, int? col = null, int? row = null)
         {
-            return insertValue(value, "subtitle", colOffset, AlignMode, col: col, row: row);
+            return InsertValue(value, "subtitle", colOffset, AlignMode, col: col, row: row);
         }
         protected ExcelRange InsertLabel(string value, int colOffset = 0, TextAlign AlignMode = TextAlign.RIGHT, int? col = null, int? row = null)
         {
-            return insertValue(value, "label", colOffset, AlignMode, col: col, row: row);
+            return InsertValue(value, "label", colOffset, AlignMode, col: col, row: row);
         }
         protected ExcelRange InsertCurrency(decimal? value, int colOffset = 0, Precision Decimals = Precision.TWO, int? col = null, int? row = null)
         {
-            return insertValue(value, "currency", colOffset, Decimals: Decimals, col: col, row: row);
+            return InsertValue(value, "currency", colOffset, Decimals: Decimals, col: col, row: row);
         }
         protected ExcelRange InsertCurrency(double value, int colOffset = 0, Precision Decimals = Precision.TWO, int? col = null, int? row = null)
         {
-            return insertValue(value, "currency", colOffset, Decimals: Decimals, col: col, row: row);
+            return InsertValue(value, "currency", colOffset, Decimals: Decimals, col: col, row: row);
         }
         protected ExcelRange InsertString(string value, int colOffset = 0, TextAlign AlignMode = TextAlign.LEFT, float fontSize = 9, bool fontBold = false, ExcelVerticalAlignment VerticalAlign = ExcelVerticalAlignment.Center, int? col = null, int? row = null)
         {
-            return insertValue(value, "string", colOffset, AlignMode, fontSize: fontSize, fontBold: fontBold, VerticalAlign: VerticalAlign, col: col, row: row);
+            return InsertValue(value, "string", colOffset, AlignMode, fontSize: fontSize, fontBold: fontBold, VerticalAlign: VerticalAlign, col: col, row: row);
         }
         protected ExcelRange InsertNumber(decimal? value, int colOffset = 0, Precision Decimals = Precision.ZERO, int? col = null, int? row = null)
         {
-            return insertValue(value, "number", colOffset, Decimals: Decimals, col: col, row: row);
+            return InsertValue(value, "number", colOffset, Decimals: Decimals, col: col, row: row);
         }
         protected ExcelRange InsertNumber(double value, int colOffset = 0, Precision Decimals = Precision.ZERO, int? col = null, int? row = null)
         {
-            return insertValue(value, "double", colOffset, Decimals: Decimals, col: col, row: row);
+            return InsertValue(value, "double", colOffset, Decimals: Decimals, col: col, row: row);
+        }
+        protected ExcelRange InsertNumber(int value, int colOffset = 0, int? col = null, int? row = null)
+        {
+            return InsertValue(value, "int", colOffset, col: col, row: row);
         }
         protected ExcelRange InsertPercentage(double? value, int colOffset = 0, Precision Decimals = Precision.ZERO, TextAlign AlignMode = TextAlign.LEFT, int? col = null, int? row = null)
         {
-            return insertValue(value, "percentage", colOffset, AlignMode, Decimals: Decimals, col: col, row: row);
+            return InsertValue(value, "percentage", colOffset, AlignMode, Decimals: Decimals, col: col, row: row);
         }
         protected ExcelRange InsertParagraph(string value, int colOffset = 0, TextAlign AlignMode = TextAlign.LEFT, int mergeCols = 1, int? rowsOccuppied = null)
         {
-            return insertValue(value, "paragraph", colOffset, AlignMode, mergeCols: mergeCols, rowsOccuppied: rowsOccuppied);
+            return InsertValue(value, "paragraph", colOffset, AlignMode, mergeCols: mergeCols, rowsOccuppied: rowsOccuppied);
         }
         protected void InsertImage(Bitmap theImage, int colOffset = 0, int colsOccuppied = 1, int sizePercentage = 100, int rowHeight = 12, int rowOffsetPixels = 0, int colOffsetPixels = 0)
         {
@@ -638,7 +661,7 @@ namespace Reusable.Reports
         }
         protected ExcelRange InsertBool(bool? value, int colOffset = 0, int? col = null, int? row = null)
         {
-            return insertValue(value, "bool", colOffset, col: col, row: row);
+            return InsertValue(value, "bool", colOffset, col: col, row: row);
         }
 
 
@@ -682,7 +705,7 @@ namespace Reusable.Reports
 
             return columnName;
         }
-        protected void freeze()
+        protected void Freeze()
         {
             ws.View.FreezePanes(rowIndex, 1);
         }
@@ -707,7 +730,7 @@ namespace Reusable.Reports
         }
         protected ExcelRange InsertFormula(string value, int colOffset = 0, Precision Decimals = Precision.ZERO, NumberTypes Type = NumberTypes.NUMBER, int? col = null, int? row = null)
         {
-            return insertValue(value, "formula", colOffset, Decimals: Decimals, Type: Type, col: col, row: row);
+            return InsertValue(value, "formula", colOffset, Decimals: Decimals, Type: Type, col: col, row: row);
         }
         protected ExcelRange InsertSUM(ExcelRange cellFrom)
         {
@@ -716,6 +739,15 @@ namespace Reusable.Reports
             {
                 return CurrentCell();
             }
+            InsertFormula("SUM(" + cellFrom.Address + ":" + cell.Offset(-1, 0).Address + ")");
+            cell.Style.Numberformat.Format = cellFrom.Style.Numberformat.Format;
+            cell.Style.HorizontalAlignment = cellFrom.Style.HorizontalAlignment;
+            return cell;
+        }
+        protected ExcelRange InsertSUM(int rowFrom)
+        {
+            ExcelRange cell = CurrentCell();
+            ExcelRange cellFrom = ws.Cells[rowFrom, colIndex];
             InsertFormula("SUM(" + cellFrom.Address + ":" + cell.Offset(-1, 0).Address + ")");
             cell.Style.Numberformat.Format = cellFrom.Style.Numberformat.Format;
             cell.Style.HorizontalAlignment = cellFrom.Style.HorizontalAlignment;
@@ -738,11 +770,11 @@ namespace Reusable.Reports
 
         public string DebugErrorHelper { get; set; }
 
-        public abstract string fileName { get; set; }
+        public abstract string FileName { get; }
 
-        protected abstract void define();
+        protected abstract void Define();
 
-        public byte[] generate()
+        public byte[] Generate()
         {
             try
             {
@@ -750,7 +782,7 @@ namespace Reusable.Reports
                 {
                     using (p = new ExcelPackage(template))
                     {
-                        define();
+                        Define();
                         return p.GetAsByteArray();
                     }
                 }
@@ -758,7 +790,7 @@ namespace Reusable.Reports
                 {
                     using (p = new ExcelPackage())
                     {
-                        define();
+                        Define();
                         return p.GetAsByteArray();
                     }
                 }

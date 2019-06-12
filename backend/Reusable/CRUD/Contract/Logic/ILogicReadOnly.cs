@@ -1,4 +1,5 @@
 using Reusable.Rest;
+using ServiceStack.OrmLite;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -10,8 +11,8 @@ namespace Reusable.CRUD.Contract
     {
         List<Entity> GetAll();
         Entity GetById(long Id);
-        CommonResponse GetPaged(int perPage, int page, string filterGeneral, Expression<Func<Entity, bool>>[] wheres, Expression<Func<Entity, object>> orderby, params Expression<Func<Entity, bool>>[] database_wheres);
-        Entity GetSingleWhere(string Property, object Value);
+        CommonResponse GetPaged(int perPage, int page, string filterGeneral, SqlExpression<Entity> query = null, string cacheKey = null);
+        Entity GetSingleWhere(string Property, object Value, SqlExpression<Entity> query = null, string cacheKey = null);
 
         Exception GetOriginalException(Exception ex);
 
@@ -27,7 +28,7 @@ namespace Reusable.CRUD.Contract
     {
         Task<List<Entity>> GetAllAsync();
         Task<Entity> GetByIdAsync(long id);
-        Task<CommonResponse> GetPagedAsync(int perPage, int page, string filterGeneral, Expression<Func<Entity, bool>>[] wheres, Expression<Func<Entity, object>> orderby, params Expression<Func<Entity, bool>>[] database_wheres);
-        Task<Entity> GetSingleWhereAsync(string Property, object Value);
+        Task<CommonResponse> GetPagedAsync(int perPage, int page, string filterGeneral, SqlExpression<Entity> query = null, string cacheKey = null);
+        Task<Entity> GetSingleWhereAsync(string Property, object Value, SqlExpression<Entity> query = null, string cacheKey = null);
     }
 }

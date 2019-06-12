@@ -78,14 +78,14 @@ export class CRUDFactory {
 
   async LoadEntities(params) {
     return await Request('GET', this.EndPoint + params + '&noCache=' + Number(new Date()))
-      .then(r => this.UseCommonResponse(r))
+      .then(r => this.UseNudeResponse(r))
       .catch(this.GeneralError);
   }
 
   async LoadEntity(id) {
     if (id) {
       return await Request('GET', this.EndPoint + '/' + id)
-        .then(r => this.UseCommonResponse(r))
+        .then(r => this.UseNudeResponse(r))
         .catch(this.GeneralError);
     } else {
       return Promise.reject('Id not found');
@@ -204,23 +204,16 @@ export class CRUDFactory {
     return response.Result;
   };
 
-  UseNudeSingle = (response, boolWantCommonResponse) => {
-    if (response.ErrorThrown) {
-      throw response;
-    }
-
+  UseNudeResponse = response => {
     //Call Adapter In Hook:
     if (Array.isArray(response.Result)) {
-      response.Result.forEach(entity => this.ADAPTER_IN(entity));
-    } else if (typeof response.Result === 'object') {
-      this.ADAPTER_IN(response.Result);
+      response.forEach(entity => this.ADAPTER_IN(entity));
+    } else if (typeof response === 'object') {
+      this.ADAPTER_IN(response);
     }
 
-    //Return complete CommonResponse:
-    if (boolWantCommonResponse) return response;
-
     //Return only data:
-    return response.Result;
+    return response;
   };
 
   GeneralError = response => {
