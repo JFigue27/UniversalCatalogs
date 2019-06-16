@@ -10,7 +10,8 @@ import '../../styles.scss';
 export default class extends React.Component {
   pages = [
     ///start:slot:pages<<<
-    { href: '/items', label: 'Items' }
+    { href: '/items', label: 'Items' },
+    { href: '/areas', label: 'Areas' }
     ///end:slot:pages<<<
   ];
 

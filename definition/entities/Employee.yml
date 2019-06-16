@@ -1,0 +1,6 @@
+name: Employee
+fields: {}
+relationships:
+  oneToParent: []
+  oneToMany: []
+  manyToOne: []

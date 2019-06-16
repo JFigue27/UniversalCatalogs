@@ -6,13 +6,14 @@ class FormContainer extends React.Component {
     config: {
       service: null
     },
-    isLoading: false,
+    isLoading: true,
     baseEntity: {}
   };
 
   constructor(props, config) {
     super(props);
     if (config) Object.assign(this.state.config, config);
+
     this.service = this.state.config.service;
 
     AuthService.ON_LOGIN = this.refresh;
@@ -20,44 +21,48 @@ class FormContainer extends React.Component {
 
   // Service Operations:==========================================================
 
-  load = async entityOrId => {
-    return await this.refreshForm(entityOrId);
+  load = async criteria => {
+    return await this.refreshForm(criteria);
   };
 
-  refreshForm = async entityOrId => {
-    const id = entityOrId;
-    const entity = entityOrId;
-
-    // this.setState({
-    //   isLoading: true
-    // });
-
-    if (entityOrId === null) {
+  refreshForm = async criteria => {
+    //Clear form:
+    if (criteria === null) {
       this.setState({
         baseEntity: {},
         isLoading: false
       });
     }
     //Open by ID
-    else if (!isNaN(id) && id > 0) {
+    else if (!isNaN(criteria) && criteria > 0) {
       //TODO: Catch non-existent record
-      return this.service.LoadEntity(id).then(entity => {
+      return this.service.LoadEntity(criteria).then(entity => {
         this.AFTER_LOAD(entity);
         this.setState({
-          isLoading: false
+          isLoading: false,
+          baseEntity: entity
         });
       });
     }
-    //Create
-    else if ((entity instanceof Object || typeof entity == 'object') && !entity.hasOwnProperty('Id')) {
-      return this.createInstance(entity);
+    //Open by query parameters
+    else if (typeof criteria == 'string') {
+      console.log('criteria');
+      console.log(criteria);
+      return this.service.GetSingleWhere(null, null, criteria).then(entity => {
+        console.log('GetSingleWhere..' + criteria);
+        console.log(entity);
+      });
+    }
+    //Create instance
+    else if ((criteria instanceof Object || typeof criteria == 'object') && !criteria.hasOwnProperty('Id')) {
+      return this.createInstance(criteria);
     }
     //Open direct object
-    else if (entity instanceof Object || typeof entity == 'object') {
-      this.service.ADAPTER_IN(entity);
-      this.AFTER_LOAD(entity);
+    else if (criteria instanceof Object || typeof criteria == 'object') {
+      this.service.ADAPTER_IN(criteria);
+      this.AFTER_LOAD(criteria);
       this.setState({
-        baseEntity: entity,
+        baseEntity: criteria,
         isLoading: false
       });
     }
@@ -241,8 +246,26 @@ class FormContainer extends React.Component {
     });
   };
 
-  // Events:======================================================================
+  makeQueryParameters = fromObject => {
+    let result = '?';
+    if (fromObject instanceof Object || typeof fromObject == 'object') {
+      Object.getOwnPropertyNames(fromObject).forEach(prop => {
+        result += `&${prop}=${fromObject[prop]}`;
+      });
+    }
 
+    return result;
+  };
+
+  //Formatters:===================================================================
+  formatDate = date => {
+    if (this.service) return this.service.formatDate(date);
+  };
+  formatTime = time => {
+    if (this.service) return this.service.formatTime(time);
+  };
+
+  // Events:======================================================================
   on_input_change = item => {
     item.editMode = true;
   };

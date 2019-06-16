@@ -156,6 +156,8 @@ namespace MyApp
             //This App:
             ///start:generated:di<<<
             container.RegisterAutoWiredAs<ItemLogic, IItemLogic>();
+            container.RegisterAutoWiredAs<EmployeeLogic, IEmployeeLogic>();
+            container.RegisterAutoWiredAs<AreaLogic, IAreaLogic>();
             ///end:generated:di<<<
             #endregion
         }
