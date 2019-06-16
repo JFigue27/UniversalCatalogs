@@ -1046,7 +1046,7 @@
     "@syncfusion/ej2-base" "~17.1.49"
     "@syncfusion/ej2-buttons" "~17.1.50"
 
-"@syncfusion/ej2-react-base@~17.1.50":
+"@syncfusion/ej2-react-base@~17.1.49", "@syncfusion/ej2-react-base@~17.1.50":
   version "17.1.50"
   resolved "https://registry.yarnpkg.com/@syncfusion/ej2-react-base/-/ej2-react-base-17.1.50.tgz#135fe860428b2679cbc67000476077b9875eea29"
   integrity sha512-/lremWBKQtx7cOsuUnHlZOWxCrltLAh7SGL69hjGak3vM5BA/3/52AigCM4Rb8/0A5uO3H+bHjbdPd6niNb8Eg==
@@ -1062,7 +1062,26 @@
     "@syncfusion/ej2-grids" "17.1.51"
     "@syncfusion/ej2-react-base" "~17.1.50"
 
-"@syncfusion/ej2-splitbuttons@~17.1.50", "@syncfusion/ej2-splitbuttons@~17.1.51":
+"@syncfusion/ej2-react-richtexteditor@^17.1.49":
+  version "17.1.49"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-react-richtexteditor/-/ej2-react-richtexteditor-17.1.49.tgz#0a45b737a19f192ef4c09770cde4bdfd474cd1eb"
+  integrity sha512-oN0faxpBIhE7lB/E8DIdge/FkUhvAAvYuiWwiJbNIxGq5iNmHYr32wiaEKkFVKE/Ok+Ag7kWVwyM3adQgKI8GA==
+  dependencies:
+    "@syncfusion/ej2-base" "~17.1.49"
+    "@syncfusion/ej2-react-base" "~17.1.49"
+    "@syncfusion/ej2-richtexteditor" "17.1.49"
+
+"@syncfusion/ej2-richtexteditor@17.1.49":
+  version "17.1.49"
+  resolved "https://registry.yarnpkg.com/@syncfusion/ej2-richtexteditor/-/ej2-richtexteditor-17.1.49.tgz#f63cc7239308c2d9210e2189ce0aaf645cd6c1df"
+  integrity sha512-D89Vhp+ghTc4yAN1k+d5CSi9mCmCKqL6BRDWZc2rFhmZDtnIgrzTWtkcEEIHzy4o/+hF8AbO9Gnp3obpoU2zEA==
+  dependencies:
+    "@syncfusion/ej2-base" "~17.1.49"
+    "@syncfusion/ej2-navigations" "~17.1.49"
+    "@syncfusion/ej2-popups" "~17.1.47"
+    "@syncfusion/ej2-splitbuttons" "~17.1.47"
+
+"@syncfusion/ej2-splitbuttons@~17.1.47", "@syncfusion/ej2-splitbuttons@~17.1.50", "@syncfusion/ej2-splitbuttons@~17.1.51":
   version "17.1.51"
   resolved "https://registry.yarnpkg.com/@syncfusion/ej2-splitbuttons/-/ej2-splitbuttons-17.1.51.tgz#82a582515aa086517320cf75d65dc94ace6b877a"
   integrity sha512-Ld0EcKg9ysChfK4dhNkEISJ/04p7dWe6KjbBKK4vMXxGlAiKuaOtDtpUlsXzfJfSKHqM0GLjEcgZPy1COt/cXA==

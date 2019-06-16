@@ -209,9 +209,21 @@ class FormContainer extends React.Component {
     this.setState({ baseEntity });
   };
 
+  handleCheckBoxChange = (event, field) => {
+    let baseEntity = this.state.baseEntity;
+    baseEntity[field] = event.target.checked;
+    this.setState({ baseEntity });
+  };
+
   handleDateChange = (date, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = date.toDate();
+    this.setState({ baseEntity });
+  };
+
+  handleRichText = (event, field) => {
+    let baseEntity = this.state.baseEntity;
+    baseEntity[field] = event.value;
     this.setState({ baseEntity });
   };
 
