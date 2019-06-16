@@ -1,17 +1,18 @@
 import React from 'react';
 import FormContainer from './FormContainer';
 import AuthService from './AuthService';
+import jQuery from 'jquery';
 
 function debounce(func, wait, immediate) {
-  var timeout;
+  let timeout;
   return function() {
-    var context = this,
+    let context = this,
       args = arguments;
-    var later = function() {
+    let later = function() {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
-    var callNow = immediate && !timeout;
+    let callNow = immediate && !timeout;
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
@@ -29,15 +30,14 @@ class ListContainer extends FormContainer {
       sortName: 'mySort'
     },
     baseList: [],
-    isLoading: false,
+    isLoading: true,
     filterStorageKey: 'myFilter',
     sortStorageKey: 'mySort',
     filterOptions: {
       page: 1,
       limit: 10
     },
-    sortOptions: {},
-    staticQueryParams: ''
+    sortOptions: {}
   };
 
   constructor(props, config) {
@@ -107,7 +107,7 @@ class ListContainer extends FormContainer {
 
   // Service Operations:==========================================================
   load = async staticQueryParams => {
-    this.state.staticQueryParams = staticQueryParams;
+    this.staticQueryParams = staticQueryParams;
     // alertify.closeAll();
     this.setFilterOptions();
     this.setSortOptions();
@@ -128,10 +128,16 @@ class ListContainer extends FormContainer {
 
     let page = this.state.filterOptions.page;
     let limit = this.state.filterOptions.limit;
-    let queryParameters = this.makeQueryParameters();
+    let query = this.makeQueryParameters();
 
-    return await this.service
-      .GetPaged(limit, page, queryParameters)
+    let loadData;
+    if (this.customLoad) {
+      loadData = this.customLoad(limit, page, query);
+    } else {
+      loadData = this.service.GetPaged(limit, page, query);
+    }
+
+    return await loadData
       .then(response => {
         this.setState({
           baseList: response.Result,
@@ -169,7 +175,16 @@ class ListContainer extends FormContainer {
     Object.getOwnPropertyNames(this.state.sortOptions).forEach(prop => {
       result += 'sort-' + prop + '=' + this.state.sortOptions[prop] + '&';
     });
-    result += this.state.staticQueryParams || '';
+
+    if (this.staticQueryParams)
+      if (this.staticQueryParams instanceof Object || typeof this.staticQueryParams == 'object') {
+        Object.getOwnPropertyNames(this.staticQueryParams).forEach(prop => {
+          result += `&${prop}=${this.staticQueryParams[prop]}`;
+        });
+      } else {
+        result += this.staticQueryParams || '';
+      }
+
     return result;
   };
 
@@ -254,7 +269,7 @@ class ListContainer extends FormContainer {
 
   // Events:======================================================================
   openItem = (event, item) => {
-    // var theArguments = Array.prototype.slice.call(arguments);
+    // let theArguments = Array.prototype.slice.call(arguments);
     // this.ON_OPEN_ITEM.apply(this, theArguments);
     this.ON_OPEN_ITEM(item);
   };
@@ -267,17 +282,116 @@ class ListContainer extends FormContainer {
     //   }
     // });
     if (limit > 0) {
-      this.setState({
-        filterOptions: {
-          limit: limit
-        }
-      });
+      this.state.filterOptions.limit = limit;
+      // this.setState({
+      //   filterOptions: {
+      //     limit: limit
+      //   }
+      // });
     }
     this.updateList();
   };
 
-  on_input_change = oItem => {
-    oItem.editMode = true;
+  onInputChange = (event, field, currentIndex, arrRows = this.state.baseList) => {
+    arrRows[currentIndex][field] = event.target.value;
+    arrRows[currentIndex].edited = true;
+
+    if (arrRows.length > 0) {
+      let atLeastOneFilled = false;
+      let lastRow = arrRows[arrRows.length - 1];
+      for (let prop in lastRow) {
+        if (lastRow.hasOwnProperty(prop)) {
+          if (prop == 'Id') {
+            continue;
+          }
+          if (lastRow[prop] && (lastRow[prop] > 0 || lastRow[prop].length > 0)) {
+            atLeastOneFilled = true;
+            break;
+          }
+        }
+      }
+      if (atLeastOneFilled) arrRows.push({});
+    }
+
+    this.setState({
+      baseList: arrRows
+    });
+  };
+
+  // Utils:=======================================================================
+  enableCellNavigation = table => {
+    (function($) {
+      $.fn.enableCellNavigation = function() {
+        let arrow = {
+          left: 37,
+          up: 38,
+          right: 39,
+          down: 40,
+          enter: 13
+        };
+
+        // select all on focus
+        // works for input elements, and will put focus into
+        // adjacent input or textarea. once in a textarea,
+        // however, it will not attempt to break out because
+        // that just seems too messy imho.
+        this.find('input').keydown(function(e) {
+          // shortcut for key other than arrow keys
+          if ($.inArray(e.which, [arrow.left, arrow.up, arrow.right, arrow.down, arrow.enter]) < 0) {
+            return;
+          }
+
+          e.preventDefault();
+
+          let input = e.target;
+          let td = $(e.target).closest('td');
+          let moveTo = null;
+
+          switch (e.which) {
+            case arrow.left: {
+              // if (input.selectionStart == 0) {
+              moveTo = td.prev('td:has(input,textarea)');
+              // }
+              break;
+            }
+            case arrow.right: {
+              // if (input.selectionEnd == input.value.length) {
+              moveTo = td.next('td:has(input,textarea)');
+              // }
+              break;
+            }
+
+            case arrow.up:
+            case arrow.enter:
+            case arrow.down: {
+              let tr = td.closest('tr');
+              let pos = td[0].cellIndex;
+
+              let moveToRow = null;
+              if (e.which == arrow.down || e.which == arrow.enter) {
+                moveToRow = tr.next('tr');
+              } else if (e.which == arrow.up) {
+                moveToRow = tr.prev('tr');
+              }
+
+              if (moveToRow.length) {
+                moveTo = $(moveToRow[0].cells[pos]);
+              }
+              break;
+            }
+          }
+
+          if (moveTo && moveTo.length) {
+            moveTo.find('input,textarea').each(function(i, input) {
+              input.focus();
+              input.select();
+            });
+          }
+        });
+      };
+    })(jQuery);
+
+    jQuery(table).enableCellNavigation();
   };
 
   // Hooks:=======================================================================

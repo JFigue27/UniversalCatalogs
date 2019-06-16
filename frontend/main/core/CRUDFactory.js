@@ -1,4 +1,5 @@
 import 'isomorphic-fetch';
+import moment from 'moment';
 import AppConfig from './AppConfig';
 import AuthService from '../core/AuthService';
 
@@ -66,26 +67,30 @@ export class CRUDFactory {
       .catch(this.GeneralError);
   }
 
-  async GetSingleWhere(property, value) {
+  async GetSingleWhere(property, value, params = '?') {
     if (property && value) {
-      return await Request('GET', this.EndPoint + '/GetSingleWhere/' + property + '/' + value + '?noCache=' + Number(new Date()))
-        .then(r => this.UseCommonResponse(r))
+      return await Request('GET', this.EndPoint + '/GetSingleWhere/' + property + '/' + value + params + '&noCache=' + Number(new Date()))
+        .then(r => this.UseNudeResponse(r))
+        .catch(this.GeneralError);
+    } else if (params.length > 1) {
+      return await Request('GET', this.EndPoint + '/GetSingleWhere' + params + '&noCache=' + Number(new Date()))
+        .then(r => this.UseNudeResponse(r))
         .catch(this.GeneralError);
     } else {
-      return Promise.reject('Both Property and Value is required to run GetSingleWhere.');
+      return Promise.reject('Invalid params for GetSingleWhere.');
     }
   }
 
   async LoadEntities(params) {
     return await Request('GET', this.EndPoint + params + '&noCache=' + Number(new Date()))
-      .then(r => this.UseCommonResponse(r))
+      .then(r => this.UseNudeResponse(r))
       .catch(this.GeneralError);
   }
 
   async LoadEntity(id) {
     if (id) {
       return await Request('GET', this.EndPoint + '/' + id)
-        .then(r => this.UseCommonResponse(r))
+        .then(r => this.UseNudeResponse(r))
         .catch(this.GeneralError);
     } else {
       return Promise.reject('Id not found');
@@ -204,23 +209,16 @@ export class CRUDFactory {
     return response.Result;
   };
 
-  UseNudeSingle = (response, boolWantCommonResponse) => {
-    if (response.ErrorThrown) {
-      throw response;
-    }
-
+  UseNudeResponse = response => {
     //Call Adapter In Hook:
     if (Array.isArray(response.Result)) {
-      response.Result.forEach(entity => this.ADAPTER_IN(entity));
-    } else if (typeof response.Result === 'object') {
-      this.ADAPTER_IN(response.Result);
+      response.forEach(entity => this.ADAPTER_IN(entity));
+    } else if (typeof response === 'object') {
+      this.ADAPTER_IN(response);
     }
 
-    //Return complete CommonResponse:
-    if (boolWantCommonResponse) return response;
-
     //Return only data:
-    return response.Result;
+    return response;
   };
 
   GeneralError = response => {
@@ -254,6 +252,16 @@ export class CRUDFactory {
     return Promise.reject(response.statusText);
   };
 
+  //Formatters:===================================================================
+  formatDate = date => {
+    if (date) return moment(date).format('M/D/YYYY');
+  };
+
+  formatTime = time => {
+    if (time) return moment(time).format('H:mm a');
+  };
+
+  //Hooks:===================================================================
   ADAPTER_IN(entity) {}
 
   ADAPTER_OUT(entity) {}

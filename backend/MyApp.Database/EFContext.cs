@@ -18,6 +18,8 @@ namespace MyApp.Database
 
         #region App
         ///start:generated:dbsets<<<
+        public virtual DbSet<Area> Areas { get; set; }
+        public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<Item> Items { get; set; }
         ///end:generated:dbsets<<<
         #endregion

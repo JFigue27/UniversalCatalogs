@@ -1,0 +1,8 @@
+name: Area
+fields:
+  Value as Area: string
+relationships:
+  oneToParent: []
+  oneToMany:
+    - Employee as Supervisor
+  manyToOne: []

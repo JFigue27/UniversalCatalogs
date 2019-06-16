@@ -1,0 +1,23 @@
+name: areas
+type: list
+entity: Area
+layout:
+  - container-fluid:
+      - h4: Areas
+      - pagination
+      - table:
+          columns:
+            - row:
+                - button: openItem
+            - Value
+  - dialog:
+      id: area
+      title: Area
+      ok: Save
+      width: sm
+      content:
+        - component: area
+  - nav:
+      - search
+      - space
+      - button: create

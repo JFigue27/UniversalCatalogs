@@ -113,28 +113,30 @@ namespace MyApp
 
             Plugins.Add(new RegistrationFeature());
 
-            //authRepo.CreateUserAuth(new UserAuth
-            //{
-            //    UserName = "admin",
-            //    Roles = new List<string> { RoleNames.Admin }
-            //}, "admin");
-            #endregion
+			var admin = authRepo.GetUserAuthByUserName("admin");
+			if (admin == null)
+				authRepo.CreateUserAuth(new UserAuth
+				{
+					UserName = "admin",
+					Roles = new List<string> { RoleNames.Admin }
+				}, "admin");
+			#endregion
 
-            //TODO:
-            //Done. Global Response Filter: CommonResponse.
-            //Done. Cache.
-            //Done. Transactions.
-            //Logging.
-            //Batched requests.
-            //attachments
-            //Profiler.
-            //Versioning.
-            //Compression.
-            //Autoquery.
-            //stripe.com
+			//TODO:
+			//Done. Global Response Filter: CommonResponse.
+			//Done. Cache.
+			//Done. Transactions.
+			//Logging.
+			//Batched requests.
+			//attachments
+			//Profiler.
+			//Versioning.
+			//Compression.
+			//Autoquery.
+			//stripe.com
 
-            #region Cache
-            container.Register<ICacheClient>(new MemoryCacheClient());
+			#region Cache
+			container.Register<ICacheClient>(new MemoryCacheClient());
             #endregion
 
             #region App
@@ -155,6 +157,8 @@ namespace MyApp
             //This App:
             ///start:generated:di<<<
             container.RegisterAutoWiredAs<ItemLogic, IItemLogic>();
+            container.RegisterAutoWiredAs<EmployeeLogic, IEmployeeLogic>();
+            container.RegisterAutoWiredAs<AreaLogic, IAreaLogic>();
             ///end:generated:di<<<
             #endregion
         }
