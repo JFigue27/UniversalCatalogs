@@ -55,7 +55,7 @@ class ListContainer extends FormContainer {
   };
 
   componentWillUnmount() {
-    if (this.debouncedRefresh.cancel) this.debouncedRefresh.cancel();
+    if (this.debouncedRefresh && this.debouncedRefresh.cancel) this.debouncedRefresh.cancel();
   }
 
   // Filtering / Sorting and Local Storage:=======================================

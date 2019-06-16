@@ -20,9 +20,7 @@ namespace Reusable.CRUD.Entities
         [Reference]
         public List<FilterData> Filtering { get; set; }
 
-        [Reference]
-        public User User { get; set; }
-        public long? UserId { get; set; }
+        public string UserName { get; set; }
     }
 
     public class SortData : BaseEntity

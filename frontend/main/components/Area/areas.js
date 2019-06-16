@@ -1,8 +1,10 @@
 import { Grid, Typography, AppBar, Toolbar } from '@material-ui/core';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { Button, InputBase, Icon } from '@material-ui/core';
+import { Button, Icon } from '@material-ui/core';
 import SearchBox from '../../widgets/Searchbox';
 import Pagination from 'react-js-pagination';
+
+import { InputBase } from '@material-ui/core';
 import Dialog from '../../widgets/Dialog';
 import Area from './area.js';
 
@@ -21,6 +23,7 @@ class Areas extends AreasListContainer {
 
   componentDidMount() {
     console.log('List did mount');
+
     ///start:slot:didMount<<<
     this.load();
     ///end:slot:didMount<<<
@@ -60,7 +63,7 @@ class Areas extends AreasListContainer {
                   <TableRow key={item.Id}>
                     <TableCell>
                       <Grid container direction='row' className='row' justify='center' alignItems='center' spacing={2}>
-                        <Grid item>
+                        <Grid item xs>
                           <Button
                             variant='contained'
                             color='default'
@@ -84,7 +87,7 @@ class Areas extends AreasListContainer {
                         readOnly={true}
                         onChange={event => this.handleInputChange(event, 'Value')}
                         value={item.Value || ''}
-                        fullWidth={true}
+                        fullWidth
                       />
                     </TableCell>
                   </TableRow>
@@ -92,9 +95,9 @@ class Areas extends AreasListContainer {
             </TableBody>
           </Table>
         </Grid>
-        <Dialog open={!!this.state.areaDialog} onClose={this.closeDialog} draggable title='Area'>
+        <Dialog open={!!this.state.area} onClose={this.closeDialog} draggable title='Area'>
           {dialog => {
-            return !this.state.isLoading && <Area dialog={dialog} data={this.state.areaDialog} />;
+            return !this.state.isLoading && <Area dialog={dialog} data={this.state.area} />;
           }}
         </Dialog>
         <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>

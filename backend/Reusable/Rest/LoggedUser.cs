@@ -19,9 +19,9 @@ namespace Reusable.Rest
 
         public LoggedUser()
         {
-            Role = "Anonymous";
+            Role = null;
             UserID = null;
-            UserName = "Anonymous";
+            UserName = null;
             Email = null;
 
             FillValue();
@@ -59,9 +59,9 @@ namespace Reusable.Rest
 
         public LoggedUser(ClaimsIdentity identity)
         {
-            Role = "Anonymous";
+            Role = null;
             UserID = null;
-            UserName = "Anonymous";
+            UserName = null;
             Email = null;
             Value = null;
 

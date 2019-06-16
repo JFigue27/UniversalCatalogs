@@ -21,7 +21,7 @@ namespace Reusable.CRUD.Implementations.SS.Logic
             return query
                 .LeftJoin<SortData>()
                 .LeftJoin<FilterData>()
-                .Where(e => e.UserId == LoggedUser.UserID);
+                .Where(e => e.UserName == Auth.UserName);
         }
         protected override IEnumerable<AdvancedSort> AdapterOut(params AdvancedSort[] entities)
         {
@@ -35,7 +35,7 @@ namespace Reusable.CRUD.Implementations.SS.Logic
         }
         protected override void OnBeforeSaving(AdvancedSort entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
-            entity.UserId = LoggedUser.UserID;
+            entity.UserName = Auth.UserName;
 
             foreach (var item in entity.Sorting)
             {

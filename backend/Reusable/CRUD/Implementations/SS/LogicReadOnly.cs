@@ -3,6 +3,7 @@ using Reusable.Rest;
 using ServiceStack;
 using ServiceStack.Caching;
 using ServiceStack.OrmLite;
+using ServiceStack.Text;
 using ServiceStack.Web;
 using System;
 using System.Collections.Generic;
@@ -470,9 +471,17 @@ namespace Reusable.CRUD.Implementations.SS
                     ? Expression.Convert(value, childProperty.Type)
                     : (Expression)value;
 
-                Expression comparison = Expression.Equal(childProperty, converted);
-
-                Expression<Func<Entity, bool>> lambda = Expression.Lambda<Func<Entity, bool>>(comparison, entityParameter);
+                Expression<Func<Entity, bool>> lambda;
+                if (tProp == typeof(String))
+                {
+                    MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                    lambda = Expression.Lambda<Func<Entity, bool>>(Expression.Call(converted, method, childProperty), entityParameter);
+                }
+                else
+                {
+                    Expression comparison = Expression.Equal(childProperty, converted);
+                    lambda = Expression.Lambda<Func<Entity, bool>>(comparison, entityParameter);
+                }
 
                 query.And(lambda);
             }
@@ -530,7 +539,7 @@ namespace Reusable.CRUD.Implementations.SS
             query = OnGetSingle(query);
 
             var entity = Db.Single(query);
-            AdapterOut(entity);
+            if (entity != null) AdapterOut(entity);
 
             var response = entity;
             cacheContainer[cacheKey] = response;
@@ -566,21 +575,16 @@ namespace Reusable.CRUD.Implementations.SS
                     tProp = new NullableConverter(oProp.PropertyType).UnderlyingType;
                 }
 
-                ParameterExpression entityParameter = Expression.Parameter(typeof(Entity), "entityParameter");
-                Expression childProperty = Expression.PropertyOrField(entityParameter, sPropertyName);
-
-
                 var value = Expression.Constant(Convert.ChangeType(Value, tProp));
 
-                // let's perform the conversion only if we really need it
-                var converted = value.Type != childProperty.Type
-                    ? Expression.Convert(value, childProperty.Type)
-                    : (Expression)value;
-
-                Expression comparison = Expression.Equal(childProperty, converted);
-
-                Expression<Func<Entity, bool>> lambda = Expression.Lambda<Func<Entity, bool>>(comparison, entityParameter);
-                query.And(lambda);
+                if (tProp == typeof(string))
+                {
+                    query.Where($"{query.SqlColumn(Property)} like '%{value.Value}%'");
+                }
+                else
+                {
+                    query.Where($"{query.SqlColumn(Property)} = {value.Value}");
+                }
             }
 
             query = OnGetSingle(query);
@@ -636,7 +640,8 @@ namespace Reusable.CRUD.Implementations.SS
             }
 
             var entity = await Db.SingleAsync(query);
-            AdapterOut(entity);
+
+            if (entity != null) AdapterOut(entity);
 
             var response = entity;
             cacheContainer[cacheKey] = response;

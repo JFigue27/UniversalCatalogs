@@ -6,6 +6,8 @@ import Dialog from '../../widgets/Dialog';
 import AuthService from '../../core/AuthService';
 import Login from '../../widgets/Login';
 import '../../styles.scss';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 
 export default class extends React.Component {
   pages = [
@@ -115,6 +117,9 @@ export default class extends React.Component {
           <meta charSet='utf-8' />
           <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no' />
           <link rel='stylesheet' href='/static/styles/bootstrap.css' />
+          {/* <link rel='stylesheet' href='/static/styles/syncfusion-icons.css' />
+          <link rel='stylesheet' href='/static/styles/syncfusion-grids.css' /> */}
+          <link rel='stylesheet' href='/static/styles/handsontable.full.min.css' />
           <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,500' />
           <link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons' />
           <link rel='icon' type='image/x-icon' href='/static/favicon.ico' />
@@ -126,7 +131,7 @@ export default class extends React.Component {
               `}
           </style>
         </Head>
-        <Dialog open={this.state.loginOpen} onClose={this.closeLoginDialog} fullScreen={true} actionsOff>
+        <Dialog open={this.state.loginOpen} onClose={this.closeLoginDialog} fullScreen actionsOff>
           {() => <Login onCloseLogin={this.closeLoginDialog} />}
         </Dialog>
         <AppBar position='fixed'>
@@ -172,11 +177,11 @@ export default class extends React.Component {
             <div style={{ width: 200 }}>Content</div>
           </div>
         </Drawer>
-        <Grid container>
+        <MuiPickersUtilsProvider utils={MomentUtils}>
           <Grid container direction='column' item xs={12} style={{ padding: 20 }}>
             {this.props.children}
           </Grid>
-        </Grid>
+        </MuiPickersUtilsProvider>
       </div>
     );
   }

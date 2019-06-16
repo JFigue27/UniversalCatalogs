@@ -27,6 +27,7 @@ class AreasListContainer extends ListContainer {
 
   AFTER_CREATE = instance => {
     console.log('AFTER_CREATE', instance);
+
     ///start:slot:afterCreate<<<
     this.openDialog(instance);
     ///end:slot:afterCreate<<<
@@ -44,6 +45,7 @@ class AreasListContainer extends ListContainer {
 
   ON_OPEN_ITEM = item => {
     console.log('ON_OPEN_ITEM', item);
+
     ///start:slot:onOpenItem<<<
     this.openDialog(item);
     ///end:slot:onOpenItem<<<
@@ -51,7 +53,7 @@ class AreasListContainer extends ListContainer {
 
   openDialog = item => {
     this.setState({
-      areaDialog: item
+      area: item
     });
   };
 
@@ -60,10 +62,9 @@ class AreasListContainer extends ListContainer {
       this.refresh();
     }
     this.setState({
-      areaDialog: false
+      area: false
     });
   };
-
   ///start:slot:js<<<///end:slot:js<<<
 
   render() {

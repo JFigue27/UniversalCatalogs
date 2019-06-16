@@ -7,7 +7,7 @@ namespace Reusable.Barcode
 {
     public static class Barcoder
     {
-        public static string generate_Code128(string value)
+        public static string Generate_Code128(string value)
         {
             BarCodeGenerator generator = new BarCodeGenerator(new BarcodeSettings()
             {

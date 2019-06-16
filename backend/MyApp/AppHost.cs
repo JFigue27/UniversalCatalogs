@@ -97,7 +97,6 @@ namespace MyApp
             var authProviders = new List<IAuthProvider>
             {
                 new JwtAuthProvider(AppSettings) {
-                    AuthKey = AesUtils.CreateKey(),
                     RequireSecureConnection = false
                 },
                 new CredentialsAuthProvider()
@@ -146,10 +145,8 @@ namespace MyApp
             container.RegisterAutoWiredType(typeof(IDocumentLogic<>), ReuseScope.Request);
 
             container.RegisterAutoWiredAs<AdvancedSortLogic, IAdvancedSortLogic>();
-            container.RegisterAutoWiredAs<ApprovalLogic, IApprovalLogic>();
             container.RegisterAutoWiredAs<DepartmentLogic, IDepartmentLogic>();
             container.RegisterAutoWiredAs<RevisionLogic, IRevisionLogic>();
-            container.RegisterAutoWiredAs<TaskLogic, ITaskLogic>();
             container.RegisterAutoWiredAs<TokenLogic, ITokenLogic>();
             container.RegisterAutoWiredAs<TrackLogic, ITrackLogic>();
             container.RegisterAutoWiredAs<UserLogic, IUserLogic>();
