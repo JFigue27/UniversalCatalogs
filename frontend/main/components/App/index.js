@@ -109,6 +109,8 @@ export default class extends React.Component {
           <meta charSet='utf-8' />
           <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no' />
           <link rel='stylesheet' href='/static/styles/bootstrap.css' />
+          {/* <link rel='stylesheet' href='/static/styles/syncfusion-icons.css' />
+          <link rel='stylesheet' href='/static/styles/syncfusion-grids.css' /> */}
           <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,500' />
           <link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons' />
           <link rel='icon' type='image/x-icon' href='/static/favicon.ico' />
@@ -120,7 +122,7 @@ export default class extends React.Component {
               `}
           </style>
         </Head>
-        <Dialog open={this.state.loginOpen} onClose={this.closeLoginDialog} fullScreen={true} actionsOff>
+        <Dialog open={this.state.loginOpen} onClose={this.closeLoginDialog} fullScreen actionsOff>
           {() => <Login onCloseLogin={this.closeLoginDialog} />}
         </Dialog>
         <AppBar position='fixed'>
