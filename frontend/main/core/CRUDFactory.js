@@ -253,12 +253,12 @@ export class CRUDFactory {
   };
 
   //Formatters:===================================================================
-  formatDate = date => {
-    if (date) return moment(date).format('M/D/YYYY');
+  formatDate = (date, format = 'M/D/YYYY') => {
+    if (date) return moment(date).format(format);
   };
 
-  formatTime = time => {
-    if (time) return moment(time).format('H:mm a');
+  formatTime = (time, format = 'H:mm a') => {
+    if (time) return moment(time).format(format);
   };
 
   //Hooks:===================================================================

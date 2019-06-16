@@ -112,13 +112,13 @@ namespace MyApp
 
             Plugins.Add(new RegistrationFeature());
 
-            //var admin = authRepo.GetUserAuthByUserName("admin");
-            //if (admin == null)
-            //    authRepo.CreateUserAuth(new UserAuth
-            //    {
-            //        UserName = "admin",
-            //        Roles = new List<string> { RoleNames.Admin }
-            //    }, "admin");
+            var admin = authRepo.GetUserAuthByUserName("admin");
+            if (admin == null)
+                authRepo.CreateUserAuth(new UserAuth
+                {
+                    UserName = "admin",
+                    Roles = new List<string> { RoleNames.Admin }
+                }, "admin");
             #endregion
 
             //TODO:
@@ -145,19 +145,17 @@ namespace MyApp
             container.RegisterAutoWiredType(typeof(IDocumentLogic<>), ReuseScope.Request);
 
             container.RegisterAutoWiredAs<AdvancedSortLogic, IAdvancedSortLogic>();
-            container.RegisterAutoWiredAs<ApprovalLogic, IApprovalLogic>();
             container.RegisterAutoWiredAs<DepartmentLogic, IDepartmentLogic>();
             container.RegisterAutoWiredAs<RevisionLogic, IRevisionLogic>();
-            container.RegisterAutoWiredAs<TaskLogic, ITaskLogic>();
             container.RegisterAutoWiredAs<TokenLogic, ITokenLogic>();
             container.RegisterAutoWiredAs<TrackLogic, ITrackLogic>();
             container.RegisterAutoWiredAs<UserLogic, IUserLogic>();
 
             //This App:
             ///start:generated:di<<<
-            container.RegisterAutoWiredAs<ItemLogic, IItemLogic>();
-            container.RegisterAutoWiredAs<EmployeeLogic, IEmployeeLogic>();
             container.RegisterAutoWiredAs<AreaLogic, IAreaLogic>();
+            container.RegisterAutoWiredAs<EmployeeLogic, IEmployeeLogic>();
+            container.RegisterAutoWiredAs<ItemLogic, IItemLogic>();
             ///end:generated:di<<<
             #endregion
         }

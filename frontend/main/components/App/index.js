@@ -6,6 +6,8 @@ import Dialog from '../../widgets/Dialog';
 import AuthService from '../../core/AuthService';
 import Login from '../../widgets/Login';
 import '../../styles.scss';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 
 export default class extends React.Component {
   pages = [
@@ -112,6 +114,7 @@ export default class extends React.Component {
           <link rel='stylesheet' href='/static/styles/bootstrap.css' />
           {/* <link rel='stylesheet' href='/static/styles/syncfusion-icons.css' />
           <link rel='stylesheet' href='/static/styles/syncfusion-grids.css' /> */}
+          <link rel='stylesheet' href='/static/styles/handsontable.full.min.css' />
           <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,500' />
           <link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons' />
           <link rel='icon' type='image/x-icon' href='/static/favicon.ico' />
@@ -169,11 +172,11 @@ export default class extends React.Component {
             <div style={{ width: 200 }}>Content</div>
           </div>
         </Drawer>
-        <Grid container>
+        <MuiPickersUtilsProvider utils={MomentUtils}>
           <Grid container direction='column' item xs={12} style={{ padding: 20 }}>
             {this.props.children}
           </Grid>
-        </Grid>
+        </MuiPickersUtilsProvider>
       </div>
     );
   }

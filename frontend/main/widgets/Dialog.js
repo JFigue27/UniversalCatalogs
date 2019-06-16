@@ -21,7 +21,7 @@ class DialogWidget extends React.Component {
   close = () => {}; //Overwritten from props.
 
   render() {
-    const { draggable, okLabel, title, onClose, open, maxWidth, fullScreen, actionsOff, children } = this.props;
+    const { draggable, okLabel, title, onClose, open, maxWidth, fullScreen, actionsOff, children, actions } = this.props;
     this.close = onClose;
 
     return (
@@ -35,7 +35,8 @@ class DialogWidget extends React.Component {
       >
         {title && <DialogTitle>{title}</DialogTitle>}
         <DialogContent dividers={true}>{children(this)}</DialogContent>
-        {!actionsOff && (
+
+        {(!actionsOff && actions) || (
           <DialogActions>
             <Button onClick={onClose} color='primary'>
               Close

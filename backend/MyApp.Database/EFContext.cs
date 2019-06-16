@@ -26,14 +26,11 @@ namespace MyApp.Database
 
         #region Reusable
         public virtual DbSet<AdvancedSort> AdvancedSorts { get; set; }
-        public virtual DbSet<Approval> Approvals { get; set; }
-        public virtual DbSet<ApprovalApprover> ApprovalApprovers { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Email> Emails { get; set; }
         public virtual DbSet<FilterData> FilterDatas { get; set; }
         public virtual DbSet<Revision> Revisions { get; set; }
         public virtual DbSet<SortData> SortDatas { get; set; }
-        public virtual DbSet<Task> Tasks { get; set; }
         public virtual DbSet<Token> Tokens { get; set; }
         public virtual DbSet<Track> Tracks { get; set; }
         public virtual DbSet<User> Users { get; set; }

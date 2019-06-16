@@ -1,6 +1,9 @@
 using Reusable.CRUD.Contract;
 using Reusable.CRUD.Entities;
 using ServiceStack;
+using ServiceStack.OrmLite;
+using ServiceStack.Text;
+using System;
 using System.Threading.Tasks;
 
 namespace Reusable.Rest.Implementations.SS
@@ -47,24 +50,29 @@ namespace Reusable.Rest.Implementations.SS
         {
             Logic.SetDb(Db);
             var entity = request.ConvertTo<Department>();
-            return new CommonResponse(Logic.CreateInstance(entity));
+            return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
+            {
+                ResultScope = () => JsConfig.With(new Config { IncludeNullValues = true })
+            };
         }
 
         public object Post(InsertDepartment request)
         {
             var entity = request.ConvertTo<Department>();
-            return new CommonResponse(Logic.Add(ref entity));
+            InTransaction(() => Logic.Add(ref entity));
+            return new CommonResponse(Logic.GetById(entity.Id));
         }
 
         public object Put(UpdateDepartment request)
         {
             var entity = request.ConvertTo<Department>();
-            return new CommonResponse(Logic.Update(entity));
+            InTransaction(() => Logic.Update(entity));
+            return new CommonResponse(Logic.GetById(entity.Id));
         }
         public object Delete(DeleteDepartment request)
         {
             var entity = request.ConvertTo<Department>();
-            Logic.Remove(entity);
+            InTransaction(() => Logic.Remove(entity));
             return new CommonResponse();
         }
         #endregion
@@ -72,6 +80,28 @@ namespace Reusable.Rest.Implementations.SS
         #region Endpoints - Specific
         #endregion
 
+        private void InTransaction(params Action[] Operations)
+        {
+            Logic.SetDb(Db);
+            Logic.SetAuth(GetSession());
+            using (var transaction = Db.OpenTransaction())
+            {
+                try
+                {
+                    foreach (var operation in Operations)
+                    {
+                        operation();
+                    }
+
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
     }
 
     #region Specific

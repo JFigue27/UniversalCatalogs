@@ -15,6 +15,7 @@ namespace Reusable.CRUD.Implementations.SS
         public IRequest Request { get; set; }
         public IDbConnection Db { get; set; }
         public ICacheClient Cache { get; set; }
+        public IAuthSession Auth { get; set; }
 
         public virtual void SetDb(IDbConnection Db)
         {
@@ -23,6 +24,7 @@ namespace Reusable.CRUD.Implementations.SS
 
         public virtual void SetAuth(IAuthSession Auth)
         {
+            this.Auth = Auth;
             LoggedUser = new LoggedUser(); //Anonymous by default.
 
             var localUser = Db.Single(Db.From<User>()

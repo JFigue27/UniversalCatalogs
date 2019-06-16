@@ -35,8 +35,6 @@ namespace Reusable.CRUD.Entities
         public Department Department { get; set; }
         public long? DepartmentId { get; set; }
 
-        [Reference]
-        public List<ApprovalApprover> Approvals { get; set; }
 
         [Ignore]
         [NotMapped]

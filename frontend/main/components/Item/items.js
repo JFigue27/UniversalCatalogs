@@ -1,21 +1,33 @@
-import { Grid, Typography, AppBar, Toolbar, TableFooter } from '@material-ui/core';
-import { Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@material-ui/core';
+import { Grid, Typography, AppBar, Toolbar } from '@material-ui/core';
+import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import { Button, Icon } from '@material-ui/core';
 import SearchBox from '../../widgets/Searchbox';
 import Pagination from 'react-js-pagination';
-import ItemsListContainer from './item.list.container';
+
+import { InputBase } from '@material-ui/core';
 import Dialog from '../../widgets/Dialog';
 import ItemForm from './item.form.js';
+
+import ItemsListContainer from './item.list.container';
+///start:slot:dependencies<<<
+import { TableFooter, TablePagination } from '@material-ui/core';
 // import { PagerComponent } from '@syncfusion/ej2-react-grids';
-///start:slot:dependencies<<<///end:slot:dependencies<<<
+///end:slot:dependencies<<<
 
 const config = {
   limit: 20
+  ///start:slot:config<<<///end:slot:config<<<
 };
 
 class Items extends ItemsListContainer {
   constructor(props) {
     super(props, config);
+  }
+
+  componentDidMount() {
+    console.log('List did mount');
+    this.load();
+    ///start:slot:didMount<<<///end:slot:didMount<<<
   }
 
   ///start:slot:js<<<///end:slot:js<<<
@@ -24,7 +36,7 @@ class Items extends ItemsListContainer {
     return (
       <>
         <Grid className='container-fluid' container direction='column' item xs={12} style={{ padding: 20 }}>
-          <Typography variant='h2' className='' gutterBottom>
+          <Typography variant='h4' className='' gutterBottom>
             Items
           </Typography>
           <Grid container direction='row'>
@@ -142,11 +154,11 @@ class Items extends ItemsListContainer {
             /> */}
           </Grid>
         </Grid>
-
-        <Dialog open={!!this.state.itemDialog} onClose={this.closeDialog} draggable title='Item'>
-          {dialog => <ItemForm dialog={dialog} data={this.state.itemDialog} />}
+        <Dialog open={!!this.state.item} onClose={this.closeDialog} draggable title='Item'>
+          {dialog => {
+            return !this.state.isLoading && <ItemForm dialog={dialog} data={this.state.item} />;
+          }}
         </Dialog>
-
         <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
           <Toolbar variant='dense'>
             <SearchBox bindFilterInput={this.bindFilterInput} />

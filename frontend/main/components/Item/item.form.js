@@ -1,11 +1,13 @@
-// import moment from 'moment';
-// import DialogActions from '@material-ui/core/DialogActions';
+import { withRouter } from 'next/router';
 import { Grid, Button, Typography, TextField } from '@material-ui/core';
-import ItemFormContainer from './item.form.container';
+import { InputBase } from '@material-ui/core';
 
+import ItemFormContainer from './item.form.container';
 ///start:slot:dependencies<<<///end:slot:dependencies<<<
 
-const config = {};
+const config = {
+  ///start:slot:config<<<///end:slot:config<<<
+};
 
 class Item extends ItemFormContainer {
   constructor(props) {
@@ -15,6 +17,8 @@ class Item extends ItemFormContainer {
   componentDidMount() {
     console.log('Form did mount');
     this.load(this.props.data);
+
+    ///start:slot:didMount<<<///end:slot:didMount<<<
   }
 
   AFTER_SAVE = () => {
@@ -32,20 +36,24 @@ class Item extends ItemFormContainer {
       <>
         <Grid className='' container direction='column' item xs={12}>
           <TextField
+            type='text'
             label='Item Number'
             value={this.state.baseEntity.ItemNumber || ''}
             onChange={event => this.handleInputChange(event, 'ItemNumber')}
             style={{ textAlign: 'left' }}
             margin='normal'
             disabled={this.isDisabled}
+            fullWidth
           />
           <TextField
+            type='text'
             label='Item Description'
             value={this.state.baseEntity.ItemDescription || ''}
             onChange={event => this.handleInputChange(event, 'ItemDescription')}
             style={{ textAlign: 'left' }}
             margin='normal'
             disabled={this.isDisabled}
+            fullWidth
           />
         </Grid>
       </>
@@ -53,4 +61,4 @@ class Item extends ItemFormContainer {
   }
 }
 
-export default Item;
+export default withRouter(Item);

@@ -1,19 +1,21 @@
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing;
 using OfficeOpenXml.Style;
+using Reusable.CRUD.Contract;
+using Reusable.CRUD.Implementations.SS;
 using System;
 using System.Drawing;
 using System.IO;
 
 namespace Reusable.Reports
 {
-    public interface IReport
+    public interface IReport: ILogic
     {
-        byte[] generate();
-        string fileName { get; }
+        byte[] Generate();
+        string FileName { get; }
     }
 
-    public abstract class Report : IReport
+    public abstract class Report : BaseLogic, IReport
     {
         private string owner = "";
         protected FileInfo template = null;

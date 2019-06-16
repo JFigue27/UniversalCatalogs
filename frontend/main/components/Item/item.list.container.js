@@ -1,7 +1,7 @@
 import React from 'react';
 import ListContainer from '../../core/ListContainer';
-import ItemService from './item.service';
 
+import ItemService from './item.service';
 ///start:slot:dependencies<<<///end:slot:dependencies<<<
 
 const service = new ItemService();
@@ -25,15 +25,9 @@ class ItemsListContainer extends ListContainer {
     ///start:slot:afterLoad<<<///end:slot:afterLoad<<<
   };
 
-  ON_OPEN_ITEM = item => {
-    console.log('ON_OPEN_ITEM', item);
-    ///start:slot:onOpenItem<<<
-    this.openDialog(item);
-    ///end:slot:onOpenItem<<<
-  };
-
   AFTER_CREATE = instance => {
     console.log('AFTER_CREATE', instance);
+
     ///start:slot:afterCreate<<<
     this.openDialog(instance);
     ///end:slot:afterCreate<<<
@@ -49,9 +43,17 @@ class ItemsListContainer extends ListContainer {
     ///start:slot:afterRemove<<<///end:slot:afterRemove<<<
   };
 
+  ON_OPEN_ITEM = item => {
+    console.log('ON_OPEN_ITEM', item);
+
+    ///start:slot:onOpenItem<<<
+    this.openDialog(item);
+    ///end:slot:onOpenItem<<<
+  };
+
   openDialog = item => {
     this.setState({
-      itemDialog: item
+      item: item
     });
   };
 
@@ -60,10 +62,9 @@ class ItemsListContainer extends ListContainer {
       this.refresh();
     }
     this.setState({
-      itemDialog: false
+      item: false
     });
   };
-
   ///start:slot:js<<<
   ///end:slot:js<<<
 
