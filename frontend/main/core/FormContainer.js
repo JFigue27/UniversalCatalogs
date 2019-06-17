@@ -28,6 +28,7 @@ class FormContainer extends React.Component {
   refreshForm = async criteria => {
     //Clear form:
     if (criteria === null) {
+      console.log('Form Reset.', criteria);
       this.setState({
         baseEntity: {},
         isLoading: false
@@ -35,6 +36,7 @@ class FormContainer extends React.Component {
     }
     //Open by ID
     else if (!isNaN(criteria) && criteria > 0) {
+      console.log('Form opened by ID.', criteria);
       //TODO: Catch non-existent record
       return this.service.LoadEntity(criteria).then(entity => {
         this.AFTER_LOAD(entity);
@@ -46,6 +48,7 @@ class FormContainer extends React.Component {
     }
     //Open by query parameters
     else if (typeof criteria == 'string') {
+      console.log('Form opened by Query Parameters.', criteria);
       console.log('criteria');
       console.log(criteria);
       return this.service.GetSingleWhere(null, null, criteria).then(entity => {
@@ -55,10 +58,12 @@ class FormContainer extends React.Component {
     }
     //Create instance
     else if ((criteria instanceof Object || typeof criteria == 'object') && !criteria.hasOwnProperty('Id')) {
+      console.log('Form opened by Create Instance.', criteria);
       return this.createInstance(criteria);
     }
     //Open direct object
     else if (criteria instanceof Object || typeof criteria == 'object') {
+      console.log('Form opened by Object.', criteria);
       this.service.ADAPTER_IN(criteria);
       this.AFTER_LOAD(criteria);
       this.setState({
@@ -224,6 +229,12 @@ class FormContainer extends React.Component {
   handleRichText = (event, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = event.value;
+    this.setState({ baseEntity });
+  };
+
+  handleChipsChange = (value, field) => {
+    let baseEntity = this.state.baseEntity;
+    baseEntity[field] = value;
     this.setState({ baseEntity });
   };
 

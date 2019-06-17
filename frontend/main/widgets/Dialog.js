@@ -10,7 +10,7 @@ import Draggable from 'react-draggable';
 
 function DraggableDialog(props) {
   return (
-    <Draggable cancel={'[class*="MuiDialogContent-root"]'}>
+    <Draggable cancel={'.MuiFormControl-root,button,.Person-Chip'}>
       <Paper {...props} />
     </Draggable>
   );
@@ -34,23 +34,29 @@ class DialogWidget extends React.Component {
         PaperComponent={draggable && !fullScreen ? DraggableDialog : Paper}
       >
         {title && <DialogTitle>{title}</DialogTitle>}
-        <DialogContent dividers={true}>{children(this)}</DialogContent>
+        <DialogContent dividers={true} style={{ padding: 20 }}>
+          {children(this)}
+        </DialogContent>
 
-        {(!actionsOff && actions) || (
-          <DialogActions>
-            <Button onClick={onClose} color='primary'>
-              Close
-            </Button>
-            <Button
-              onClick={() => {
-                this.onOk();
-              }}
-              color='primary'
-            >
-              {okLabel || 'OK'}
-            </Button>
-          </DialogActions>
-        )}
+        {!actionsOff &&
+          (actions || (
+            <DialogActions>
+              <Button onClick={onClose} color='primary'>
+                Close
+              </Button>
+
+              {okLabel && (
+                <Button
+                  onClick={() => {
+                    this.onOk();
+                  }}
+                  color='primary'
+                >
+                  {okLabel == true ? 'OK' : okLabel}
+                </Button>
+              )}
+            </DialogActions>
+          ))}
       </Dialog>
     );
   }

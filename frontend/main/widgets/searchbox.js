@@ -1,5 +1,5 @@
 import { withStyles } from '@material-ui/core/styles';
-import { InputBase, Icon } from '@material-ui/core';
+import { InputBase, Icon, NoSsr } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 
@@ -51,22 +51,24 @@ const searchBox = props => {
   let { classes } = props;
 
   return (
-    <div className={classes.search}>
-      <div className={classes.searchIcon}>
-        <SearchIcon />
+    <NoSsr>
+      <div className={classes.search}>
+        <div className={classes.searchIcon}>
+          <SearchIcon />
+        </div>
+        <InputBase
+          placeholder='Search...'
+          name='filterGeneral'
+          onChange={event => {
+            props.bindFilterInput(event);
+          }}
+          classes={{
+            root: classes.inputRoot,
+            input: classes.inputInput
+          }}
+        />
       </div>
-      <InputBase
-        placeholder='Search...'
-        name='filterGeneral'
-        onChange={event => {
-          props.bindFilterInput(event);
-        }}
-        classes={{
-          root: classes.inputRoot,
-          input: classes.inputInput
-        }}
-      />
-    </div>
+    </NoSsr>
   );
 };
 

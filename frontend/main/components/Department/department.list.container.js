@@ -27,6 +27,7 @@ class DepartmentsListContainer extends ListContainer {
 
   AFTER_CREATE = instance => {
     console.log('AFTER_CREATE', instance);
+
     ///start:slot:afterCreate<<<
     this.openDialog(instance);
     ///end:slot:afterCreate<<<
@@ -44,6 +45,7 @@ class DepartmentsListContainer extends ListContainer {
 
   ON_OPEN_ITEM = item => {
     console.log('ON_OPEN_ITEM', item);
+
     ///start:slot:onOpenItem<<<
     this.openDialog(item);
     ///end:slot:onOpenItem<<<
@@ -51,7 +53,7 @@ class DepartmentsListContainer extends ListContainer {
 
   openDialog = item => {
     this.setState({
-      departmentDialog: item
+      department: item
     });
   };
 
@@ -60,10 +62,9 @@ class DepartmentsListContainer extends ListContainer {
       this.refresh();
     }
     this.setState({
-      departmentDialog: false
+      department: false
     });
   };
-
   ///start:slot:js<<<///end:slot:js<<<
 
   render() {

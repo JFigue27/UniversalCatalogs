@@ -23,6 +23,7 @@ class CustomerFormContainer extends FormContainer {
 
   AFTER_CREATE = instance => {
     console.log('AFTER_CREATE', instance);
+
     ///start:slot:afterCreate<<<///end:slot:afterCreate<<<
   };
 

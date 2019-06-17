@@ -1,6 +1,6 @@
-name: Area
+name: Department
 fields:
-  Value as Area: string
+  Value as Department: string
 relationships:
   oneToParent: []
   oneToMany: []

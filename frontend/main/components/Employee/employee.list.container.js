@@ -27,6 +27,7 @@ class EmployeesListContainer extends ListContainer {
 
   AFTER_CREATE = instance => {
     console.log('AFTER_CREATE', instance);
+
     ///start:slot:afterCreate<<<
     this.openDialog(instance);
     ///end:slot:afterCreate<<<
@@ -44,6 +45,7 @@ class EmployeesListContainer extends ListContainer {
 
   ON_OPEN_ITEM = item => {
     console.log('ON_OPEN_ITEM', item);
+
     ///start:slot:onOpenItem<<<
     this.openDialog(item);
     ///end:slot:onOpenItem<<<
@@ -51,7 +53,7 @@ class EmployeesListContainer extends ListContainer {
 
   openDialog = item => {
     this.setState({
-      employeeDialog: item
+      employee: item
     });
   };
 
@@ -60,10 +62,9 @@ class EmployeesListContainer extends ListContainer {
       this.refresh();
     }
     this.setState({
-      employeeDialog: false
+      employee: false
     });
   };
-
   ///start:slot:js<<<///end:slot:js<<<
 
   render() {

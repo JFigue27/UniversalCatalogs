@@ -1,12 +1,13 @@
-import { Grid, Typography, AppBar, Toolbar } from '@material-ui/core';
+import { NoSsr, Grid, Typography } from '@material-ui/core';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { Button, Icon } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import SearchBox from '../../widgets/Searchbox';
 import Pagination from 'react-js-pagination';
-
+import { Icon } from '@material-ui/core';
 import { InputBase } from '@material-ui/core';
 import Dialog from '../../widgets/Dialog';
 import ItemForm from './item.form.js';
+import { AppBar, Toolbar } from '@material-ui/core';
 
 import ItemsListContainer from './item.list.container';
 ///start:slot:dependencies<<<
@@ -26,33 +27,24 @@ class Items extends ItemsListContainer {
 
   componentDidMount() {
     console.log('List did mount');
+
+    ///start:slot:didMount<<<
     this.load();
-    ///start:slot:didMount<<<///end:slot:didMount<<<
+    ///end:slot:didMount<<<
   }
 
   ///start:slot:js<<<///end:slot:js<<<
 
   render() {
     return (
-      <>
+      <NoSsr>
         <Grid className='container-fluid' container direction='column' item xs={12} style={{ padding: 20 }}>
           <Typography variant='h4' className='' gutterBottom>
             Items
           </Typography>
           <Grid container direction='row'>
             <Grid item xs />
-            {/* <PagerComponent
-              currentPage={this.state.filterOptions.page}
-              pageSize={this.state.filterOptions.limit}
-              totalRecordsCount={this.state.filterOptions.totalItems}
-              pageCount={5}
-              pageSizes={true}
-              enableExternalMessage={false}
-              click={pageEvent => {
-                this.pageChanged(pageEvent.currentPage);
-              }}
-            /> */}
-            {/* <Pagination
+            <Pagination
               activePage={this.state.filterOptions.page}
               itemsCountPerPage={this.state.filterOptions.limit}
               totalItemsCount={this.state.filterOptions.totalItems}
@@ -60,26 +52,12 @@ class Items extends ItemsListContainer {
               onChange={newPage => {
                 this.pageChanged(newPage);
               }}
-            /> */}
+            />
           </Grid>
           <Table className='' size='small'>
             <TableHead>
-              {/* <TableRow>
-                <TablePagination
-                  count={this.state.filterOptions.totalItems || 0}
-                  page={this.state.filterOptions.page - 1}
-                  rowsPerPage={this.state.filterOptions.limit}
-                  onChangeRowsPerPage={event => {
-                    this.pageChanged(this.state.filterOptions.page + 1, event.target.value);
-                  }}
-                  onChangePage={(event, page) => {
-                    console.log(event, page);
-                    this.pageChanged(page + 1);
-                  }}
-                />
-              </TableRow> */}
               <TableRow>
-                <TableCell style={{ width: 150 }} />
+                <TableCell />
                 <TableCell>Item Number</TableCell>
                 <TableCell>Item Description</TableCell>
               </TableRow>
@@ -89,9 +67,8 @@ class Items extends ItemsListContainer {
                 this.state.baseList.map(item => (
                   <TableRow key={item.Id}>
                     <TableCell>
-                      <Grid container direction='row' className='row' justify='center' alignItems='center' spacing={8}>
-                        {item.itemIndex}
-                        <Grid item>
+                      <Grid container direction='row' className='row' justify='center' alignItems='center' spacing={2}>
+                        <Grid item xs>
                           <Button
                             variant='contained'
                             color='default'
@@ -106,55 +83,36 @@ class Items extends ItemsListContainer {
                         </Grid>
                       </Grid>
                     </TableCell>
-                    <TableCell>{item.ItemNumber}</TableCell>
-                    <TableCell>{item.ItemDescription}</TableCell>
+                    <TableCell>
+                      <InputBase
+                        type='text'
+                        className=''
+                        autoComplete='off'
+                        disabled={this.isDisabled}
+                        readOnly={true}
+                        onChange={event => this.handleInputChange(event, 'ItemNumber')}
+                        value={item.ItemNumber || ''}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <InputBase
+                        type='text'
+                        className=''
+                        autoComplete='off'
+                        disabled={this.isDisabled}
+                        readOnly={true}
+                        onChange={event => this.handleInputChange(event, 'ItemDescription')}
+                        value={item.ItemDescription || ''}
+                        fullWidth
+                      />
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  count={this.state.filterOptions.totalItems || 0}
-                  page={this.state.filterOptions.page - 1}
-                  rowsPerPage={this.state.filterOptions.limit}
-                  onChangeRowsPerPage={event => {
-                    this.pageChanged(1, event.target.value);
-                  }}
-                  onChangePage={(event, page) => {
-                    console.log(event, page);
-                    this.pageChanged(page + 1);
-                  }}
-                />
-              </TableRow>
-            </TableFooter>
           </Table>
-          <Grid container direction='row'>
-            <Grid item xs />
-
-            {/* <PagerComponent
-              currentPage={this.state.filterOptions.page}
-              pageSize={this.state.filterOptions.limit}
-              totalRecordsCount={this.state.filterOptions.totalItems}
-              pageCount={5}
-              pageSizes={true}
-              enableExternalMessage={false}
-              click={pageEvent => {
-                this.pageChanged(pageEvent.currentPage);
-              }}
-            /> */}
-
-            {/* <Pagination
-              activePage={this.state.filterOptions.page}
-              itemsCountPerPage={this.state.filterOptions.limit}
-              totalItemsCount={this.state.filterOptions.totalItems}
-              pageRangeDisplayed={5}
-              onChange={newPage => {
-                this.pageChanged(newPage);
-              }}
-            /> */}
-          </Grid>
         </Grid>
-        <Dialog open={!!this.state.item} onClose={this.closeDialog} draggable title='Item'>
+        <Dialog open={!!this.state.item} onClose={this.closeDialog} draggable title='Item' okLabel='Save'>
           {dialog => {
             return !this.state.isLoading && <ItemForm dialog={dialog} data={this.state.item} />;
           }}
@@ -175,7 +133,7 @@ class Items extends ItemsListContainer {
             </Button>
           </Toolbar>
         </AppBar>
-      </>
+      </NoSsr>
     );
   }
 }

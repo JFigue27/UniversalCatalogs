@@ -18,25 +18,14 @@ namespace Reusable.CRUD.Entities
 
         public DateTimeOffset? UsedAt { get; set; }
 
-        [Reference]
-        public virtual User CreatedBy { get; set; }
-        public long? CreatedById { get; set; }
+        public string CreatedBy { get; set; }
 
-        [Reference]
-        public virtual User UpdatedBy { get; set; }
-        public long? UpdatedById { get; set; }
+        public string UpdatedBy { get; set; }
 
-        [Reference]
-        public virtual User RemovedBy { get; set; }
-        public long? RemovedById { get; set; }
+        public string RemovedBy { get; set; }
 
-        [Reference]
-        public virtual User AssignedTo { get; set; }
-        public long? AssignedToId { get; set; }
+        public string AssignedTo { get; set; }
 
-        [Reference]
-        public virtual User AssignedBy { get; set; }
-        public long? AssignedById { get; set; }
-
+        public string AssignedBy { get; set; }
     }
 }

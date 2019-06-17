@@ -1,14 +1,15 @@
-using Reusable.CRUD.Contract;
-using Reusable.CRUD.Entities;
+using MyApp.Logic.Entities;
+using MyApp.Logic;
+using Reusable.Rest;
 using ServiceStack;
 using ServiceStack.OrmLite;
-using ServiceStack.Text;
 using System;
 using System.Threading.Tasks;
+using ServiceStack.Text;
 
-namespace Reusable.Rest.Implementations.SS
+namespace MyApp.API
 {
-    [Restrict(LocalhostOnly = true)]
+    [Authenticate]
     public class DepartmentService : Service
     {
         public IDepartmentLogic Logic { get; set; }
@@ -78,6 +79,7 @@ namespace Reusable.Rest.Implementations.SS
         #endregion
 
         #region Endpoints - Specific
+        ///start:slot:endpoints<<<///end:slot:endpoints<<<
         #endregion
 
         private void InTransaction(params Action[] Operations)
@@ -105,9 +107,8 @@ namespace Reusable.Rest.Implementations.SS
     }
 
     #region Specific
+    ///start:slot:endpointsRoutes<<<///end:slot:endpointsRoutes<<<
     #endregion
-
-
 
     #region Generic Read Only
     [Route("/Department", "GET")]
@@ -123,7 +124,6 @@ namespace Reusable.Rest.Implementations.SS
     public class GetPagedDepartments : GetPaged<Department> { }
     #endregion
 
-
     #region Generic Write
     [Route("/Department/CreateInstance", "POST")]
     public class CreateDepartmentInstance : Department { }
@@ -137,5 +137,4 @@ namespace Reusable.Rest.Implementations.SS
     [Route("/Department/{Id}", "DELETE")]
     public class DeleteDepartment : Department { }
     #endregion
-
 }

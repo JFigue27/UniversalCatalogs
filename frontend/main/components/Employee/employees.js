@@ -1,10 +1,13 @@
-import { Grid, Typography, AppBar, Toolbar } from '@material-ui/core';
+import { NoSsr, Grid, Typography } from '@material-ui/core';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { Button, InputBase, Icon } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import SearchBox from '../../widgets/Searchbox';
 import Pagination from 'react-js-pagination';
+import { Icon } from '@material-ui/core';
+import { InputBase } from '@material-ui/core';
 import Dialog from '../../widgets/Dialog';
 import Employee from './employee.js';
+import { AppBar, Toolbar } from '@material-ui/core';
 
 import EmployeesListContainer from './employee.list.container';
 ///start:slot:dependencies<<<///end:slot:dependencies<<<
@@ -21,6 +24,7 @@ class Employees extends EmployeesListContainer {
 
   componentDidMount() {
     console.log('List did mount');
+
     ///start:slot:didMount<<<
     this.load();
     ///end:slot:didMount<<<
@@ -30,7 +34,7 @@ class Employees extends EmployeesListContainer {
 
   render() {
     return (
-      <>
+      <NoSsr>
         <Grid className='container-fluid' container direction='column' item xs={12} style={{ padding: 20 }}>
           <Typography variant='h4' className='h4' gutterBottom>
             Employees
@@ -60,7 +64,7 @@ class Employees extends EmployeesListContainer {
                   <TableRow key={item.Id}>
                     <TableCell>
                       <Grid container direction='row' className='row' justify='center' alignItems='center' spacing={2}>
-                        <Grid item>
+                        <Grid item xs>
                           <Button
                             variant='contained'
                             color='default'
@@ -84,7 +88,7 @@ class Employees extends EmployeesListContainer {
                         readOnly={true}
                         onChange={event => this.handleInputChange(event, 'Value')}
                         value={item.Value || ''}
-                        fullWidth={true}
+                        fullWidth
                       />
                     </TableCell>
                   </TableRow>
@@ -92,9 +96,9 @@ class Employees extends EmployeesListContainer {
             </TableBody>
           </Table>
         </Grid>
-        <Dialog open={!!this.state.employeeDialog} onClose={this.closeDialog} draggable title='Employee'>
+        <Dialog open={!!this.state.employee} onClose={this.closeDialog} draggable title='Employee' okLabel='Save'>
           {dialog => {
-            return !this.state.isLoading && <Employee dialog={dialog} data={this.state.employeeDialog} />;
+            return !this.state.isLoading && <Employee dialog={dialog} data={this.state.employee} />;
           }}
         </Dialog>
         <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
@@ -113,7 +117,7 @@ class Employees extends EmployeesListContainer {
             </Button>
           </Toolbar>
         </AppBar>
-      </>
+      </NoSsr>
     );
   }
 }

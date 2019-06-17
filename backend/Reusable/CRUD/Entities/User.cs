@@ -31,9 +31,6 @@ namespace Reusable.CRUD.Entities
 
         public string EmailPort { get; set; }
 
-        [Reference]
-        public Department Department { get; set; }
-        public long? DepartmentId { get; set; }
 
 
         [Ignore]

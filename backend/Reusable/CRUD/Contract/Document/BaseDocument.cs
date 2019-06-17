@@ -11,9 +11,7 @@ namespace Reusable.CRUD.Contract
 
         virtual public string DocumentStatus { get; set; }
 
-        [Reference]
-        public User CheckedoutBy { get; set; }
-        public long? CheckedoutById { get; set; }
+        public string CheckedoutBy { get; set; }
 
         [Ignore]
         [NotMapped]

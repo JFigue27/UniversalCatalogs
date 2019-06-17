@@ -16,7 +16,6 @@ namespace Reusable.CRUD.Implementations.SS.Logic
         {
             var query = Db.From<Revision>()
                 .LeftJoin<Track>()
-                .LeftJoin<Track, User>((t, u) => t.CreatedById == u.Id)
                 .Where(e => e.ForeignKey == ForeignKey && e.ForeignType == ForeignType)
                 .OrderByDescending(e => e.CreatedAt);
 

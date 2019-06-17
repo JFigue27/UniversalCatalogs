@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" 
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -113,7 +114,6 @@
     <Compile Include="CRUD\Contract\Entity\IRecursiveEntity.cs" />
     <Compile Include="CRUD\Contract\Entity\IRepository.cs" />
     <Compile Include="CRUD\Contract\Entity\IRepositoryReadOnly.cs" />
-    <Compile Include="CRUD\Contract\IDepartmentLogic.cs" />
     <Compile Include="CRUD\Contract\ITokenLogic.cs" />
     <Compile Include="CRUD\Contract\IRevisionLogic.cs" />
     <Compile Include="CRUD\Contract\IAdvancedSortLogic.cs" />
@@ -122,7 +122,6 @@
     <Compile Include="CRUD\Contract\Track\Trackable.cs" />
     <Compile Include="CRUD\Contract\IUserLogic.cs" />
     <Compile Include="CRUD\Entities\AdvancedSort.cs" />
-    <Compile Include="CRUD\Entities\Department.cs" />
     <Compile Include="CRUD\Entities\Email.cs" />
     <Compile Include="CRUD\Entities\JsonEntities\Catalog.cs" />
     <Compile Include="CRUD\Entities\JsonEntities\Contact.cs" />
@@ -143,12 +142,10 @@
     <Compile Include="CRUD\Implementations\SS\Logic\TrackLogic.cs" />
     <Compile Include="CRUD\Implementations\SS\Logic\TokenLogic.cs" />
     <Compile Include="CRUD\Implementations\SS\Logic\RevisionLogic.cs" />
-    <Compile Include="CRUD\Implementations\SS\Logic\DepartmentLogic.cs" />
     <Compile Include="Rest\Implementations\SS\CacheService.cs" />
     <Compile Include="Rest\Implementations\SS\TrackService.cs" />
     <Compile Include="Rest\Implementations\SS\TokenService.cs" />
     <Compile Include="Rest\Implementations\SS\RevisionService.cs" />
-    <Compile Include="Rest\Implementations\SS\DepartmentService.cs" />
     <Compile Include="Rest\Implementations\SS\AttachmentService.cs" />
     <Compile Include="Rest\Implementations\SS\PingService.cs" />
     <Compile Include="CRUD\Implementations\SS\Logic\AdvancedSortLogic.cs" />

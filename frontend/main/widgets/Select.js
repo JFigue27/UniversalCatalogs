@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import Select from 'react-select';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { emphasize, makeStyles, useTheme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import NoSsr from '@material-ui/core/NoSsr';
 import TextField from '@material-ui/core/TextField';
@@ -9,15 +9,13 @@ import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import CancelIcon from '@material-ui/icons/Cancel';
-import { emphasize } from '@material-ui/core/styles/colorManipulator';
+// import Avatar from '@material-ui/core';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     background: 'white'
-    // background: '#e0e0e0'
-    // height: 250
   },
   input: {
     display: 'flex',
@@ -187,6 +185,7 @@ function MultiValue(props) {
       })}
       onDelete={props.removeProps.onClick}
       deleteIcon={<CancelIcon {...props.removeProps} />}
+      // avatar={<Avatar>{'AS'}</Avatar>}
     />
   );
 }
@@ -223,11 +222,12 @@ const components = {
   ValueContainer
 };
 
-function IntegrationReactSelect(props) {
+export default function IntegrationReactSelect(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [single, setSingle] = React.useState(null);
   const [multi, setMulti] = React.useState(null);
+  const { options, keyProp, labelProp } = props;
 
   function handleChangeSingle(value) {
     setSingle(value);
@@ -248,10 +248,8 @@ function IntegrationReactSelect(props) {
   };
 
   return (
-    <div className={classes.root} style={props.style}>
-      <NoSsr>
-        <pre>single {JSON.stringify(single, null, 3)}</pre>
-        <pre>props {JSON.stringify(props)}</pre>
+    <NoSsr>
+      <div className={classes.root} style={props.style}>
         <Select
           classes={classes}
           styles={selectStyles}
@@ -267,11 +265,38 @@ function IntegrationReactSelect(props) {
           options={props.options}
           components={components}
           value={single}
-          onChange={handleChangeSingle}
+          onChange={props.onChange}
+          menuPlacement={props.placement}
         />
-      </NoSsr>
-    </div>
+        {/* <Select
+          classes={classes}
+          styles={selectStyles}
+          inputId="react-select-multiple"
+          TextFieldProps={{
+            // label: 'Countries',
+            InputLabelProps: {
+              htmlFor: 'react-select-multiple',
+              shrink: true,
+            },
+            placeholder: 'Select multiple countries',
+          }}
+          components={components}
+          value={multi}
+          onChange={handleChangeMulti}
+          isMulti
+          options={(options || [])
+            .map(opt => {
+              return {
+                value: opt[keyProp],
+                label: opt[labelProp],
+                avatar: (opt[labelProp] || '')
+                  .split(' ')
+                  .map(word => word.substring(0, 1).toUpperCase())
+                  .join('')
+              };
+            })}
+        /> */}
+      </div>
+    </NoSsr>
   );
 }
-
-export default IntegrationReactSelect;

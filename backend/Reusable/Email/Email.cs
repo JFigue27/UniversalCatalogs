@@ -1,14 +1,15 @@
 using Reusable.Attachments;
 using ServiceStack.Configuration;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Net.Mail;
 
 namespace Reusable.EmailServices
 {
-    public class EmailService
+    public class EmailService : IEmailService
     {
-        public static IAppSettings AppSettings { get; set; }
+        public IAppSettings AppSettings { get; set; }
 
         private SmtpClient smtp;
 
@@ -29,11 +30,14 @@ namespace Reusable.EmailServices
             To = new List<string>();
             Cc = new List<string>();
             Bcc = new List<string>();
-        }
 
-        public EmailService(string EmailServer, int EmailPort) : this()
-        {
-            smtp = new SmtpClient(EmailServer, EmailPort);
+            From = ConfigurationManager.AppSettings["smtp.from"];
+            FromPassword = ConfigurationManager.AppSettings["smtp.password"];
+
+            var smtpServer = ConfigurationManager.AppSettings["smtp.server"];
+            var smtpPort = ConfigurationManager.AppSettings["smtp.port"];
+
+            smtp = new SmtpClient(smtpServer, int.Parse(smtpPort));
         }
 
         public void SendMail()
@@ -66,7 +70,7 @@ namespace Reusable.EmailServices
 
                 message.Body = Body;
 
-                string baseAttachmentsPath = AppSettings.Get<string>("EmailAttachments");
+                string baseAttachmentsPath = ConfigurationManager.AppSettings["EmailAttachments"];
                 var attachments = AttachmentsIO.getAttachmentsFromFolder(AttachmentsFolder, "EmailAttachments");
                 foreach (var attachment in attachments)
                 {

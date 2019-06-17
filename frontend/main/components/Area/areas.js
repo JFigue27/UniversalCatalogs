@@ -1,12 +1,13 @@
-import { Grid, Typography, AppBar, Toolbar } from '@material-ui/core';
+import { NoSsr, Grid, Typography } from '@material-ui/core';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { Button, Icon } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import SearchBox from '../../widgets/Searchbox';
 import Pagination from 'react-js-pagination';
-
+import { Icon } from '@material-ui/core';
 import { InputBase } from '@material-ui/core';
 import Dialog from '../../widgets/Dialog';
 import Area from './area.js';
+import { AppBar, Toolbar } from '@material-ui/core';
 
 import AreasListContainer from './area.list.container';
 ///start:slot:dependencies<<<///end:slot:dependencies<<<
@@ -33,7 +34,7 @@ class Areas extends AreasListContainer {
 
   render() {
     return (
-      <>
+      <NoSsr>
         <Grid className='container-fluid' container direction='column' item xs={12} style={{ padding: 20 }}>
           <Typography variant='h4' className='h4' gutterBottom>
             Areas
@@ -95,7 +96,7 @@ class Areas extends AreasListContainer {
             </TableBody>
           </Table>
         </Grid>
-        <Dialog open={!!this.state.area} onClose={this.closeDialog} draggable title='Area'>
+        <Dialog open={!!this.state.area} onClose={this.closeDialog} draggable title='Area' okLabel='Save'>
           {dialog => {
             return !this.state.isLoading && <Area dialog={dialog} data={this.state.area} />;
           }}
@@ -116,7 +117,7 @@ class Areas extends AreasListContainer {
             </Button>
           </Toolbar>
         </AppBar>
-      </>
+      </NoSsr>
     );
   }
 }

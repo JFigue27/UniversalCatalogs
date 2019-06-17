@@ -20,6 +20,7 @@ namespace MyApp.Database
         ///start:generated:dbsets<<<
         public virtual DbSet<Area> Areas { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<Item> Items { get; set; }
         public virtual DbSet<Material> Materials { get; set; }
@@ -29,7 +30,6 @@ namespace MyApp.Database
 
         #region Reusable
         public virtual DbSet<AdvancedSort> AdvancedSorts { get; set; }
-        public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Email> Emails { get; set; }
         public virtual DbSet<FilterData> FilterDatas { get; set; }
         public virtual DbSet<Revision> Revisions { get; set; }

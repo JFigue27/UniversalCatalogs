@@ -16,9 +16,6 @@ namespace MyApp.Logic.Entities
         }
 
         public string Value { get; set; }
-        
-        [Reference]
-        public List<Employee> Supervisors { get; set; }
 
         ///start:slot:properties<<<///end:slot:properties<<<
     }

@@ -7,5 +7,5 @@ pages:
   workstations: workstations
   employees: employees
   customers: customers
-  deparments: departments
+  departments: departments
 components: []

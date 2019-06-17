@@ -1,10 +1,13 @@
-import { Grid, Typography, AppBar, Toolbar } from '@material-ui/core';
+import { NoSsr, Grid, Typography } from '@material-ui/core';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { Button, InputBase, Icon } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import SearchBox from '../../widgets/Searchbox';
 import Pagination from 'react-js-pagination';
+import { Icon } from '@material-ui/core';
+import { InputBase } from '@material-ui/core';
 import Dialog from '../../widgets/Dialog';
 import Material from './material.js';
+import { AppBar, Toolbar } from '@material-ui/core';
 
 import MaterialsListContainer from './material.list.container';
 ///start:slot:dependencies<<<///end:slot:dependencies<<<
@@ -21,6 +24,7 @@ class Materials extends MaterialsListContainer {
 
   componentDidMount() {
     console.log('List did mount');
+
     ///start:slot:didMount<<<
     this.load();
     ///end:slot:didMount<<<
@@ -30,7 +34,7 @@ class Materials extends MaterialsListContainer {
 
   render() {
     return (
-      <>
+      <NoSsr>
         <Grid className='container-fluid' container direction='column' item xs={12} style={{ padding: 20 }}>
           <Typography variant='h4' className='h4' gutterBottom>
             Materials
@@ -60,7 +64,7 @@ class Materials extends MaterialsListContainer {
                   <TableRow key={item.Id}>
                     <TableCell>
                       <Grid container direction='row' className='row' justify='center' alignItems='center' spacing={2}>
-                        <Grid item>
+                        <Grid item xs>
                           <Button
                             variant='contained'
                             color='default'
@@ -84,7 +88,7 @@ class Materials extends MaterialsListContainer {
                         readOnly={true}
                         onChange={event => this.handleInputChange(event, 'Value')}
                         value={item.Value || ''}
-                        fullWidth={true}
+                        fullWidth
                       />
                     </TableCell>
                   </TableRow>
@@ -92,9 +96,9 @@ class Materials extends MaterialsListContainer {
             </TableBody>
           </Table>
         </Grid>
-        <Dialog open={!!this.state.materialDialog} onClose={this.closeDialog} draggable title='Material'>
+        <Dialog open={!!this.state.material} onClose={this.closeDialog} draggable title='Material' okLabel='Save'>
           {dialog => {
-            return !this.state.isLoading && <Material dialog={dialog} data={this.state.materialDialog} />;
+            return !this.state.isLoading && <Material dialog={dialog} data={this.state.material} />;
           }}
         </Dialog>
         <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
@@ -113,7 +117,7 @@ class Materials extends MaterialsListContainer {
             </Button>
           </Toolbar>
         </AppBar>
-      </>
+      </NoSsr>
     );
   }
 }

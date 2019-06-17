@@ -40,7 +40,7 @@ namespace Reusable.CRUD.Implementations.SS
                 return cache;
 
             var query = OnGetList(Db.From<Entity>());
-            var entities = AdapterOut(Db.Select(query).ToArray());
+            var entities = AdapterOut(Db.LoadSelect(query).ToArray());
 
             var response = entities.ToList();
             Cache.Set(CacheGetAllKey, response);
@@ -54,7 +54,7 @@ namespace Reusable.CRUD.Implementations.SS
                 return cache;
 
             var query = OnGetList(Db.From<Entity>());
-            var entities = AdapterOut((await Db.SelectAsync(query)).ToArray());
+            var entities = AdapterOut((await Db.LoadSelectAsync(query)).ToArray());
 
             var response = entities.ToList();
             Cache.Set(CacheGetAllKey, response);
@@ -184,7 +184,7 @@ namespace Reusable.CRUD.Implementations.SS
 
             #endregion
 
-            var entities = Db.Select(query).ToArray();
+            var entities = Db.LoadSelect(query).ToArray();
             filterResponse.total_items = entities.Count();
 
             #region Apply General Search Filter
@@ -351,7 +351,8 @@ namespace Reusable.CRUD.Implementations.SS
 
             #endregion
 
-            var entities = (await Db.SelectAsync(query)).ToArray();
+            var entities = (await Db.LoadSelectAsync(query)).ToArray();
+
             filterResponse.total_items = entities.Count();
 
             #region Apply General Search Filter

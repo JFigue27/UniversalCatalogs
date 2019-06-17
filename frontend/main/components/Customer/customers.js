@@ -1,11 +1,13 @@
-import { Grid, Typography, AppBar, Toolbar } from '@material-ui/core';
+import { NoSsr, Grid, Typography } from '@material-ui/core';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { Button, InputBase, Icon } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import SearchBox from '../../widgets/Searchbox';
 import Pagination from 'react-js-pagination';
+import { Icon } from '@material-ui/core';
+import { InputBase } from '@material-ui/core';
 import Dialog from '../../widgets/Dialog';
 import Customer from './customer.js';
-
+import { AppBar, Toolbar } from '@material-ui/core';
 import CustomersListContainer from './customer.list.container';
 ///start:slot:dependencies<<<///end:slot:dependencies<<<
 
@@ -21,6 +23,7 @@ class Customers extends CustomersListContainer {
 
   componentDidMount() {
     console.log('List did mount');
+
     ///start:slot:didMount<<<
     this.load();
     ///end:slot:didMount<<<
@@ -30,7 +33,7 @@ class Customers extends CustomersListContainer {
 
   render() {
     return (
-      <>
+      <NoSsr>
         <Grid className='container-fluid' container direction='column' item xs={12} style={{ padding: 20 }}>
           <Typography variant='h4' className='h4' gutterBottom>
             Customers
@@ -60,7 +63,7 @@ class Customers extends CustomersListContainer {
                   <TableRow key={item.Id}>
                     <TableCell>
                       <Grid container direction='row' className='row' justify='center' alignItems='center' spacing={2}>
-                        <Grid item>
+                        <Grid item xs>
                           <Button
                             variant='contained'
                             color='default'
@@ -84,7 +87,7 @@ class Customers extends CustomersListContainer {
                         readOnly={true}
                         onChange={event => this.handleInputChange(event, 'Value')}
                         value={item.Value || ''}
-                        fullWidth={true}
+                        fullWidth
                       />
                     </TableCell>
                   </TableRow>
@@ -92,9 +95,9 @@ class Customers extends CustomersListContainer {
             </TableBody>
           </Table>
         </Grid>
-        <Dialog open={!!this.state.customerDialog} onClose={this.closeDialog} draggable title='Customer'>
+        <Dialog open={!!this.state.customer} onClose={this.closeDialog} draggable title='Customer' okLabel='Save'>
           {dialog => {
-            return !this.state.isLoading && <Customer dialog={dialog} data={this.state.customerDialog} />;
+            return !this.state.isLoading && <Customer dialog={dialog} data={this.state.customer} />;
           }}
         </Dialog>
         <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
@@ -113,7 +116,7 @@ class Customers extends CustomersListContainer {
             </Button>
           </Toolbar>
         </AppBar>
-      </>
+      </NoSsr>
     );
   }
 }

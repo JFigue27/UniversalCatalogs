@@ -1,10 +1,13 @@
-import { Grid, Typography, AppBar, Toolbar } from '@material-ui/core';
+import { NoSsr, Grid, Typography } from '@material-ui/core';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { Button, InputBase, Icon } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import SearchBox from '../../widgets/Searchbox';
 import Pagination from 'react-js-pagination';
+import { Icon } from '@material-ui/core';
+import { InputBase } from '@material-ui/core';
 import Dialog from '../../widgets/Dialog';
 import Workstation from './workstation.js';
+import { AppBar, Toolbar } from '@material-ui/core';
 
 import WorkstationsListContainer from './workstation.list.container';
 ///start:slot:dependencies<<<///end:slot:dependencies<<<
@@ -21,6 +24,7 @@ class Workstations extends WorkstationsListContainer {
 
   componentDidMount() {
     console.log('List did mount');
+
     ///start:slot:didMount<<<
     this.load();
     ///end:slot:didMount<<<
@@ -30,7 +34,7 @@ class Workstations extends WorkstationsListContainer {
 
   render() {
     return (
-      <>
+      <NoSsr>
         <Grid className='container-fluid' container direction='column' item xs={12} style={{ padding: 20 }}>
           <Typography variant='h4' className='h4' gutterBottom>
             Workstations
@@ -60,7 +64,7 @@ class Workstations extends WorkstationsListContainer {
                   <TableRow key={item.Id}>
                     <TableCell>
                       <Grid container direction='row' className='row' justify='center' alignItems='center' spacing={2}>
-                        <Grid item>
+                        <Grid item xs>
                           <Button
                             variant='contained'
                             color='default'
@@ -84,7 +88,7 @@ class Workstations extends WorkstationsListContainer {
                         readOnly={true}
                         onChange={event => this.handleInputChange(event, 'Value')}
                         value={item.Value || ''}
-                        fullWidth={true}
+                        fullWidth
                       />
                     </TableCell>
                   </TableRow>
@@ -92,9 +96,9 @@ class Workstations extends WorkstationsListContainer {
             </TableBody>
           </Table>
         </Grid>
-        <Dialog open={!!this.state.workstationDialog} onClose={this.closeDialog} draggable title='Workstation'>
+        <Dialog open={!!this.state.workstation} onClose={this.closeDialog} draggable title='Workstation' okLabel='Save'>
           {dialog => {
-            return !this.state.isLoading && <Workstation dialog={dialog} data={this.state.workstationDialog} />;
+            return !this.state.isLoading && <Workstation dialog={dialog} data={this.state.workstation} />;
           }}
         </Dialog>
         <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
@@ -113,7 +117,7 @@ class Workstations extends WorkstationsListContainer {
             </Button>
           </Toolbar>
         </AppBar>
-      </>
+      </NoSsr>
     );
   }
 }

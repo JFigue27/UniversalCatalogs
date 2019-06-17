@@ -1,12 +1,13 @@
 import React from 'react';
 import FormContainer from '../../core/FormContainer';
-import ItemService from './item.service';
 
+import ItemService from './item.service';
 ///start:slot:dependencies<<<///end:slot:dependencies<<<
 
 const service = new ItemService();
 const defaultConfig = {
   service
+  ///start:slot:config<<<///end:slot:config<<<
 };
 
 class ItemFormContainer extends FormContainer {
@@ -22,6 +23,7 @@ class ItemFormContainer extends FormContainer {
 
   AFTER_CREATE = instance => {
     console.log('AFTER_CREATE', instance);
+
     ///start:slot:afterCreate<<<///end:slot:afterCreate<<<
   };
 
