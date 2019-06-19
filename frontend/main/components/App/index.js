@@ -18,7 +18,8 @@ export default class extends React.Component {
     { href: '/workstations', label: 'Workstations' },
     { href: '/employees', label: 'Employees' },
     { href: '/customers', label: 'Customers' },
-    { href: '/departments', label: 'Departments' }
+    { href: '/departments', label: 'Departments' },
+    { href: '/shifts', label: 'Shifts' }
     ///end:slot:pages<<<
   ];
 

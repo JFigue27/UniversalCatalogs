@@ -3,7 +3,7 @@ import moment from 'moment';
 import AppConfig from './AppConfig';
 import AuthService from '../core/AuthService';
 
-const Request = async (method, url, data) => {
+const Request = async (method, url, data, BaseURL) => {
   if (AuthService.auth == null) AuthService.fillAuthData();
 
   const config = {
@@ -18,7 +18,7 @@ const Request = async (method, url, data) => {
   if (['POST', 'PUT', 'DELETE'].includes(method)) config.body = JSON.stringify(data);
   let response;
   try {
-    response = await fetch(AppConfig.BaseURL + url, config);
+    response = await fetch((BaseURL || AppConfig.BaseURL) + url, config);
   } catch (e) {
     console.log(e);
     alert('Failed to fetch. Probably server is down.');
@@ -261,8 +261,26 @@ export class CRUDFactory {
     if (time) return moment(time).format(format);
   };
 
-  //Hooks:===================================================================
+  //Hooks:=======================================================================
   ADAPTER_IN(entity) {}
 
   ADAPTER_OUT(entity) {}
+
+  //Universal Catalogs:==========================================================
+  async GetUniversalCatalog(catalog, params = '?') {
+    return await Request('GET', catalog + params + '&noCache=' + Number(new Date()), null, AppConfig.UniversalCatalogsURL).catch(
+      this.GeneralError
+    );
+  }
+
+  async GetUniversalCatalogPaged(catalog, limit, page, params = '?') {
+    return await Request(
+      'GET',
+      catalog + '/getPaged/' + limit + '/' + page + params + '&noCache=' + Number(new Date()),
+      null,
+      AppConfig.UniversalCatalogsURL
+    )
+      .then(r => this.UseCommonResponse(r, true))
+      .catch(this.GeneralError);
+  }
 }

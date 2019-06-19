@@ -94,7 +94,7 @@ function Control(props) {
       fullWidth
       InputProps={{
         inputComponent,
-        disableUnderline: true,
+        disableUnderline: props.disableUnderline,
         inputProps: {
           className: classes.input,
           ref: innerRef,
@@ -225,9 +225,9 @@ const components = {
 export default function IntegrationReactSelect(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [single, setSingle] = React.useState(null);
-  const [multi, setMulti] = React.useState(null);
-  const { options, keyProp, labelProp } = props;
+  // const [single, setSingle] = React.useState(null);
+  // const [multi, setMulti] = React.useState(null);
+  // const { options, keyProp, labelProp } = props;
 
   function handleChangeSingle(value) {
     setSingle(value);
@@ -247,6 +247,22 @@ export default function IntegrationReactSelect(props) {
     })
   };
 
+  const adapterIn = value => {
+    let options = value || [];
+    if (options.length) {
+      const { keyProp = 'Id', labelProp = 'Value', emailProp = 'Email' } = props;
+      return options.map(person => {
+        return {
+          value: person[keyProp],
+          label: person[labelProp],
+          email: person[emailProp]
+        };
+      });
+    } else {
+      return [];
+    }
+  };
+
   return (
     <NoSsr>
       <div className={classes.root} style={props.style}>
@@ -262,9 +278,9 @@ export default function IntegrationReactSelect(props) {
             },
             placeholder: props.placeholder
           }}
-          options={props.options}
+          options={adapterIn(props.options)}
           components={components}
-          value={single}
+          value={props.flat ? { label: props.value } : props.value}
           onChange={props.onChange}
           menuPlacement={props.placement}
         />

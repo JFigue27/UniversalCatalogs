@@ -158,6 +158,7 @@ namespace MyApp
             container.RegisterAutoWiredAs<EmployeeLogic, IEmployeeLogic>();
             container.RegisterAutoWiredAs<ItemLogic, IItemLogic>();
             container.RegisterAutoWiredAs<MaterialLogic, IMaterialLogic>();
+            container.RegisterAutoWiredAs<ShiftLogic, IShiftLogic>();
             container.RegisterAutoWiredAs<WorkstationLogic, IWorkstationLogic>();
             ///end:generated:di<<<
             #endregion

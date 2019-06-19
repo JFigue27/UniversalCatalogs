@@ -8,4 +8,5 @@ pages:
   employees: employees
   customers: customers
   departments: departments
+  shifts: shifts
 components: []

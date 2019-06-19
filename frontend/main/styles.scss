@@ -22,3 +22,12 @@ input[type='number']::-webkit-outer-spin-button {
   margin-left: 8px;
   margin-top: 8px;
 }
+.Sheet {
+  max-width: 1200px;
+  margin: auto;
+  padding: 15px;
+}
+
+.MuiPaper-root {
+  z-index: 120 !important;
+}

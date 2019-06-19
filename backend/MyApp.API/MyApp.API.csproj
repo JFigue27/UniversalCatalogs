@@ -96,6 +96,7 @@
     <Compile Include="EmployeeService.cs" />
     <Compile Include="ItemService.cs" />
     <Compile Include="MaterialService.cs" />
+    <Compile Include="ShiftService.cs" />
     <Compile Include="WorkstationService.cs" />
     <!-- end:generated:services -->
     <Compile Include="MyServices.cs" />

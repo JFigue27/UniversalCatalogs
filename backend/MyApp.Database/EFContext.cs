@@ -24,6 +24,7 @@ namespace MyApp.Database
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<Item> Items { get; set; }
         public virtual DbSet<Material> Materials { get; set; }
+        public virtual DbSet<Shift> Shifts { get; set; }
         public virtual DbSet<Workstation> Workstations { get; set; }
         ///end:generated:dbsets<<<
         #endregion

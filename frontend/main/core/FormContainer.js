@@ -238,6 +238,12 @@ class FormContainer extends React.Component {
     this.setState({ baseEntity });
   };
 
+  handleAutocompleteChange = (value, field) => {
+    let baseEntity = this.state.baseEntity;
+    baseEntity[field] = value.label;
+    this.setState({ baseEntity });
+  };
+
   getCurrentUser = () => {
     return AuthService.auth.user;
   };
