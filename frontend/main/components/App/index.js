@@ -8,6 +8,7 @@ import Login from '../../widgets/Login';
 import '../../styles.scss';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
+import { SnackbarProvider } from 'notistack';
 
 export default class extends React.Component {
   pages = [
@@ -55,7 +56,8 @@ export default class extends React.Component {
       AuthService.OpenLogin();
     }
     this.setState({
-      loading: false
+      loading: false,
+      auth: AuthService.auth
     });
     //  else {
     //   AuthService.auth.user = await userService.GetByUserName(AuthService.auth.user.UserName);
@@ -66,11 +68,13 @@ export default class extends React.Component {
     this.setState({ loginOpen: true });
   };
   closeLoginDialog = () => {
-    this.setState({ loginOpen: false });
+    this.setState({ loginOpen: false, auth: AuthService.auth });
   };
 
   logout = () => {
-    AuthService.logout();
+    AuthService.logout().then(() => {
+      this.setState({ auth: AuthService.auth });
+    });
     this.openLoginDialog();
   };
 
@@ -118,9 +122,6 @@ export default class extends React.Component {
           <meta charSet='utf-8' />
           <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no' />
           <link rel='stylesheet' href='/static/styles/bootstrap.css' />
-          {/* <link rel='stylesheet' href='/static/styles/syncfusion-icons.css' />
-          <link rel='stylesheet' href='/static/styles/syncfusion-grids.css' /> */}
-          <link rel='stylesheet' href='/static/styles/handsontable.full.min.css' />
           <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,500' />
           <link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons' />
           <link rel='icon' type='image/x-icon' href='/static/favicon.ico' />
@@ -135,11 +136,11 @@ export default class extends React.Component {
         <Dialog open={this.state.loginOpen} onClose={this.closeLoginDialog} fullScreen actionsOff>
           {() => <Login onCloseLogin={this.closeLoginDialog} />}
         </Dialog>
-        <AppBar position='fixed'>
+        <AppBar position='fixed' className='MainAppBar'>
           <Toolbar>
-            <IconButton color='inherit' onClick={this.toggleDrawer('right', true)}>
+            {/* <IconButton color='inherit' onClick={this.toggleDrawer('right', true)}>
               <Icon>menu</Icon>
-            </IconButton>
+            </IconButton> */}
             <Typography variant='h6' color='inherit'>
               Universal Catalogs
             </Typography>
@@ -150,10 +151,10 @@ export default class extends React.Component {
                 return <LinkTab key={page.label} label={page.label} href={page.href} />;
               })}
             </Tabs>
-
-            <IconButton aria-owns={open ? 'menu-appbar' : undefined} aria-haspopup='true' onClick={this.handleMenu} color='inherit'>
-              <Icon>account_circle</Icon>
-            </IconButton>
+            <Button color='inherit' className={classes.button} onClick={this.handleMenu}>
+              <Icon style={{ marginRight: 5 }}>account_circle</Icon>
+              {auth && auth.user && (auth.user.DisplayName || auth.user.UserName)}
+            </Button>
             <Menu
               id='menu-appbar'
               anchorEl={anchorEl}
@@ -178,11 +179,13 @@ export default class extends React.Component {
             <div style={{ width: 200 }}>Content</div>
           </div>
         </Drawer>
-        <MuiPickersUtilsProvider utils={MomentUtils}>
-          <Grid container direction='column' item xs={12} style={{ padding: 20 }}>
-            {this.props.children}
-          </Grid>
-        </MuiPickersUtilsProvider>
+        <SnackbarProvider autoHideDuration={1500}>
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <Grid container direction='column' item xs={12} style={{ padding: 40 }}>
+              {this.props.children}
+            </Grid>
+          </MuiPickersUtilsProvider>
+        </SnackbarProvider>
       </div>
     );
   }

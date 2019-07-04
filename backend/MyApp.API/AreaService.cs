@@ -9,7 +9,7 @@ using ServiceStack.Text;
 
 namespace MyApp.API
 {
-    [Authenticate]
+    // [Authenticate]
     public class AreaService : Service
     {
         public IAreaLogic Logic { get; set; }
@@ -30,6 +30,7 @@ namespace MyApp.API
         public async Task<object> Get(GetAreaWhere request)
         {
             Logic.SetDb(Db);
+            Logic.Request = Request;
             return await Logic.GetSingleWhereAsync(request.Property, request.Value);
         }
 
@@ -117,6 +118,7 @@ namespace MyApp.API
     [Route("/Area/{Id}", "GET")]
     public class GetAreaById : GetSingleById<Area> { }
 
+    [Route("/Area/GetSingleWhere", "GET")]
     [Route("/Area/GetSingleWhere/{Property}/{Value}", "GET")]
     public class GetAreaWhere : GetSingleWhere<Area> { }
 
@@ -134,6 +136,7 @@ namespace MyApp.API
     [Route("/Area", "PUT")]
     public class UpdateArea : Area { }
 
+    [Route("/Area", "DELETE")]
     [Route("/Area/{Id}", "DELETE")]
     public class DeleteArea : Area { }
     #endregion

@@ -19,13 +19,12 @@ namespace Reusable.CRUD.Contract
 
         [Ignore]
         [NotMapped]
-        public EF_EntityState EF_State { get; set; }
+        public EntryState Entry_State { get; set; }
 
-        public enum EF_EntityState
+        public enum EntryState
         {
             Unchanged,
-            Added,
-            Modified,
+            Upserted,
             Deleted
         }
 

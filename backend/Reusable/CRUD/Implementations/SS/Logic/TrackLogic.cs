@@ -15,7 +15,7 @@ namespace Reusable.CRUD.Implementations.SS.Logic
             Db.Update<Track>(new
             {
                 User_AssignedToKey = userId,
-                User_AssignedByKey = LoggedUser.UserID
+                //User_AssignedByKey = LoggedUser.UserID
             }, where => where.Id == trackId);
         }
         #endregion

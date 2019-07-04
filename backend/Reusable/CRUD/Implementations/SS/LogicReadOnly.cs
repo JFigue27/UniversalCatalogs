@@ -72,7 +72,7 @@ namespace Reusable.CRUD.Implementations.SS
             var query = OnGetSingle(Db.From<Entity>())
                     .Where(e => e.Id == id);
 
-            var entity = Db.Single(query);
+            var entity = Db.LoadSelect(query).FirstOrDefault();
 
             AdapterOut(entity);
 
@@ -92,7 +92,7 @@ namespace Reusable.CRUD.Implementations.SS
             var query = OnGetSingle(Db.From<Entity>())
                     .Where(e => e.Id == id);
 
-            var entity = await Db.SingleAsync(query);
+            var entity = (await Db.LoadSelectAsync(query)).FirstOrDefault();
 
             var response = entity;
             Cache.Set(cacheKey, response);
@@ -539,7 +539,7 @@ namespace Reusable.CRUD.Implementations.SS
 
             query = OnGetSingle(query);
 
-            var entity = Db.Single(query);
+            var entity = Db.LoadSelect(query).FirstOrDefault();
             if (entity != null) AdapterOut(entity);
 
             var response = entity;
@@ -640,7 +640,7 @@ namespace Reusable.CRUD.Implementations.SS
                 }
             }
 
-            var entity = await Db.SingleAsync(query);
+            var entity = (await Db.LoadSelectAsync(query)).FirstOrDefault();
 
             if (entity != null) AdapterOut(entity);
 
@@ -648,50 +648,6 @@ namespace Reusable.CRUD.Implementations.SS
             cacheContainer[cacheKey] = response;
             Cache.Replace(CacheContainerGetSingleWhereKey, cacheContainer);
             return response;
-        }
-
-        protected class FilterResponse
-        {
-            public List<List<BaseEntity>> Dropdowns { get; set; }
-            public int total_items { get; set; }
-            public int total_filtered_items { get; set; }
-        }
-
-        protected bool IsValidJSValue(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value) || value == "null" || value == "undefined")
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public Exception GetOriginalException(Exception ex)
-        {
-            if (ex.InnerException == null) return ex;
-
-            return GetOriginalException(ex.InnerException);
-        }
-
-        protected bool IsValidParam(string param)
-        {
-            //reserved and invalid params:
-            if (new string[] {
-                "limit",
-                "perPage",
-                "page",
-                "filterGeneral",
-                "itemsCount",
-                "noCache",
-                "totalItems",
-                "parentKey",
-                "parentField",
-                "filterUser"
-            }.Contains(param))
-                return false;
-
-            return true;
         }
     }
 }

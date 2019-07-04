@@ -1,6 +1,7 @@
 name: employees
 type: list
 entity: Employee
+load: this.load();
 layout:
   - container-fluid:
       - h4: Employees

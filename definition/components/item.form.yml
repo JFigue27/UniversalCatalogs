@@ -1,6 +1,7 @@
 name: item.form
 type: form
 entity: Item
+load: this.load(this.props.data.Id);
 layout:
   - content:
       - field: Item Number

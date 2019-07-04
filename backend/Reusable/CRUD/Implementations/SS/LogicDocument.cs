@@ -2,6 +2,7 @@ using Reusable.CRUD.Contract;
 using Reusable.CRUD.Entities;
 using Reusable.Rest;
 using ServiceStack;
+using ServiceStack.Auth;
 using ServiceStack.OrmLite;
 using System;
 using System.Data;
@@ -19,6 +20,13 @@ namespace Reusable.CRUD.Implementations.SS
             base.SetDb(Db);
             RevisionLogic.SetDb(Db);
             TrackLogic.SetDb(Db);
+        }
+
+        public override void SetAuth(IAuthSession Auth)
+        {
+            base.SetAuth(Auth);
+            RevisionLogic.SetAuth(Auth);
+            TrackLogic.SetAuth(Auth);
         }
 
         #region HOOKS
@@ -43,7 +51,8 @@ namespace Reusable.CRUD.Implementations.SS
             var track = new Track
             {
                 CreatedAt = entity.CreatedAt,
-                Discriminator = entity.EntityName
+                Discriminator = entity.EntityName,
+                CreatedBy = Auth.UserName
             };
             TrackLogic.Add(ref track);
             entity.TrackId = track.Id;
@@ -51,10 +60,20 @@ namespace Reusable.CRUD.Implementations.SS
             return base.Add(ref entity);
         }
 
-        public override Task<Entity> AddAsync(Entity entity)
+        public override async Task<Entity> AddAsync(Entity entity)
         {
             entity.CreatedAt = DateTimeOffset.Now;
-            return base.AddAsync(entity);
+
+            var track = new Track
+            {
+                CreatedAt = entity.CreatedAt,
+                Discriminator = entity.EntityName,
+                CreatedBy = Auth.UserName
+            };
+            await TrackLogic.AddAsync(track);
+            entity.TrackId = track.Id;
+
+            return await base.AddAsync(entity);
         }
 
         virtual public void Finalize(Entity entity)
@@ -63,7 +82,7 @@ namespace Reusable.CRUD.Implementations.SS
 
             #region Validation
             if (originalEntity == null)
-                throw new KnownError("Document: [{0}] does not exist in database.".Fmt(entity.EntityName));
+                throw new KnownError($"Document: [{entity.EntityName}] does not exist in database.");
 
             if (originalEntity.DocumentStatus == "FINALIZED")
                 throw new KnownError("Document was already Finalized.");
@@ -271,7 +290,7 @@ namespace Reusable.CRUD.Implementations.SS
         {
             var document = GetById(id) as BaseDocument;
 
-            if (LoggedUser?.UserID == null)
+            if (!Auth.IsAuthenticated)
                 throw new KnownError("User not signed in or User not registered.");
 
             if (document.CheckedoutBy == null)
@@ -319,7 +338,7 @@ namespace Reusable.CRUD.Implementations.SS
 
             if (!string.IsNullOrWhiteSpace(document.CheckedoutBy)
                 && Auth.UserName != document.CheckedoutBy
-                && LoggedUser.Role != "Administrator")
+                && !Auth.Roles.Contains("Admin"))
                 throw new KnownError("Only User who Checked Out can \"Cancel Checked Out\": {0}".Fmt(document.CheckedoutBy));
 
             document.CheckedoutBy = null;
@@ -335,7 +354,7 @@ namespace Reusable.CRUD.Implementations.SS
             var document = await GetByIdAsync(id);
 
             if (!string.IsNullOrWhiteSpace(document.CheckedoutBy) && Auth.UserName != document.CheckedoutBy
-                && LoggedUser.Role != "Administrator")
+                && !Auth.Roles.Contains("Admin"))
                 throw new KnownError("Only User who Checked Out can \"Cancel Checked Out\": {0}".Fmt(document.CheckedoutBy));
 
             document.CheckedoutBy = null;

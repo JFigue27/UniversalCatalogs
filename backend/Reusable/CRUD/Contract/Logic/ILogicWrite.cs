@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace Reusable.CRUD.Contract
 {
-    public interface ILogicWrite<Entity> : ILogicReadOnly<Entity> where Entity : BaseEntity
+    public interface ILogicWrite<Entity> : ILogicReadOnly<Entity> where Entity : class
     {
         //CommonResponse AddTransaction(Entity entity);
         Entity CreateInstance(Entity entity = null);
@@ -18,7 +18,7 @@ namespace Reusable.CRUD.Contract
         //CommonResponse GetAvailableFor<ForEntity>(long id) where ForEntity : BaseEntity;
     }
 
-    public interface ILogicWriteAsync<Entity> : ILogicReadOnlyAsync<Entity> where Entity : BaseEntity
+    public interface ILogicWriteAsync<Entity> : ILogicReadOnlyAsync<Entity> where Entity : class
     {
         Task<Entity> AddAsync(Entity entity);
         Task<Entity> UpdateAsync(Entity entity);

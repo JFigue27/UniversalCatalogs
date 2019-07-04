@@ -1,6 +1,7 @@
 name: workstations
 type: list
 entity: Workstation
+load: this.load();
 layout:
   - container-fluid:
       - h4: Workstations

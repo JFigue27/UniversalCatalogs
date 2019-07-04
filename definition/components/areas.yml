@@ -1,6 +1,7 @@
 name: areas
 type: list
 entity: Area
+load: this.load();
 layout:
   - container-fluid:
       - h4: Areas

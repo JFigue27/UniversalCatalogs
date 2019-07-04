@@ -1,6 +1,7 @@
 name: items
 type: list
 entity: Item
+load: this.load();
 layout:
   - container-fluid:
       - display: Items

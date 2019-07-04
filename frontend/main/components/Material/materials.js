@@ -24,7 +24,7 @@ class Materials extends MaterialsListContainer {
 
   componentDidMount() {
     console.log('List did mount');
-
+    this.load();
     ///start:slot:didMount<<<
     this.load();
     ///end:slot:didMount<<<
@@ -42,9 +42,9 @@ class Materials extends MaterialsListContainer {
           <Grid container direction='row'>
             <Grid item xs />
             <Pagination
-              activePage={this.state.filterOptions.page}
-              itemsCountPerPage={this.state.filterOptions.limit}
-              totalItemsCount={this.state.filterOptions.totalItems}
+              activePage={this.filterOptions.page}
+              itemsCountPerPage={this.filterOptions.limit}
+              totalItemsCount={this.filterOptions.totalItems}
               pageRangeDisplayed={5}
               onChange={newPage => {
                 this.pageChanged(newPage);

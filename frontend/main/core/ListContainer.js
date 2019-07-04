@@ -27,17 +27,13 @@ class ListContainer extends FormContainer {
       limit: 10,
       filters: '',
       filterName: 'myFilter',
-      sortName: 'mySort'
+      sortName: 'mySort',
+      autoAdd: false
     },
     baseList: [],
     isLoading: true,
     filterStorageKey: 'myFilter',
-    sortStorageKey: 'mySort',
-    filterOptions: {
-      page: 1,
-      limit: 10
-    },
-    sortOptions: {}
+    sortStorageKey: 'mySort'
   };
 
   constructor(props, config) {
@@ -47,10 +43,16 @@ class ListContainer extends FormContainer {
 
     this.debouncedRefresh = debounce(this.refresh, 300);
     AuthService.ON_LOGIN = this.refresh;
+
+    this.filterOptions = {
+      page: 1,
+      limit: config.limit
+    };
+    this.sortOptions = {};
   }
 
   bindFilterInput = event => {
-    this.state.filterOptions[event.target.name] = event.target.value;
+    this.filterOptions[event.target.name] = event.target.value;
     this.debouncedRefresh();
   };
 
@@ -60,48 +62,45 @@ class ListContainer extends FormContainer {
 
   // Filtering / Sorting and Local Storage:=======================================
   clearFilters = () => {
-    this.setState({
-      filterOptions: {
-        limit: this.state.config.limit,
-        page: 1,
-        itemsCount: 0
-      }
-    });
-    this.persistFilter();
+    let filterOptions = this.filterOptions || {};
+    filterOptions.limit = this.state.config.limit;
+    filterOptions.page = 1;
+    filterOptions.itemsCount = 0;
+
+    this.persistFilter(filterOptions);
   };
 
   clearSorts = () => {
-    this.setState({ sortOptions: {} });
-    this.persistSort();
+    let sortOptions = {};
+    this.setState({ sortOptions });
+    this.persistSort(sortOptions);
   };
 
-  persistFilter = () => {
-    localStorage.setItem(this.state.filterStorageKey, JSON.stringify(this.state.filterOptions));
+  persistFilter = (filters = this.filterOptions) => {
+    localStorage.setItem(this.state.filterStorageKey, JSON.stringify(filters));
   };
 
-  persistSort = () => {
-    localStorage.setItem(this.state.sortStorageKey, JSON.stringify(this.state.sortOptions));
+  persistSort = (sorts = this.sortOptions) => {
+    localStorage.setItem(this.state.sortStorageKey, JSON.stringify(sorts));
   };
 
-  setFilterOptions = () => {
+  initFilterOptions = () => {
     let filterOptions = localStorage.getItem(this.state.filterStorageKey);
 
     if (!filterOptions) {
       this.clearFilters();
     } else {
-      filterOptions = this.state.filterOptions;
-      this.setState({ filterOptions });
+      this.filterOptions = JSON.parse(filterOptions);
     }
   };
 
-  setSortOptions = () => {
+  initSortOptions = () => {
     let sortOptions = localStorage.getItem(this.state.sortStorageKey);
 
     if (!sortOptions) {
       this.clearSorts();
     } else {
-      sortOptions = this.state.sortOptions;
-      this.setState({ sortOptions });
+      this.sortOptions = JSON.parse(sortOptions);
     }
   };
 
@@ -109,26 +108,24 @@ class ListContainer extends FormContainer {
   load = async staticQueryParams => {
     this.staticQueryParams = staticQueryParams;
     // alertify.closeAll();
-    this.setFilterOptions();
-    this.setSortOptions();
+    this.initFilterOptions();
+    this.initSortOptions();
     return await this.updateList();
   };
 
   updateList = async () => {
     this.setState({ isLoading: true });
 
+    let filterOptions = { ...this.filterOptions };
+
     if (!this.state.config.paginate) {
-      this.setState({
-        filterOptions: {
-          limit: 0,
-          page: 1
-        }
-      });
+      filterOptions.limit = 0;
+      filterOptions.page = 1;
     }
 
-    let page = this.state.filterOptions.page;
-    let limit = this.state.filterOptions.limit;
-    let query = this.makeQueryParameters();
+    let page = filterOptions.page;
+    let limit = filterOptions.limit;
+    let query = this.makeQueryParameters(filterOptions);
 
     let loadData;
     if (this.customLoad) {
@@ -139,27 +136,29 @@ class ListContainer extends FormContainer {
 
     return await loadData
       .then(response => {
-        this.setState({
-          baseList: response.Result,
-          filterOptions: {
-            itemsCount: response.AdditionalData.total_filtered_items,
-            totalItems: response.AdditionalData.total_items,
-            page,
-            limit
-          }
-        });
+        let baseList = response.Result;
 
-        this.persistFilter();
+        if (this.state.config.autoAdd) baseList.push({});
+
+        filterOptions.itemsCount = response.AdditionalData.total_filtered_items;
+        filterOptions.totalItems = response.AdditionalData.total_items;
+
+        this.persistFilter(filterOptions);
         this.persistSort();
 
         //Index List:
-        for (let i = 0; i < this.state.baseList.length; i++) {
-          let element = this.state.baseList[i];
-          element.itemIndex = (this.state.filterOptions.page - 1) * this.state.filterOptions.limit + i + 1;
+        for (let i = 0; i < baseList.length; i++) {
+          let element = baseList[i];
+          element.itemIndex = (filterOptions.page - 1) * filterOptions.limit + i + 1;
         }
 
-        this.AFTER_LOAD();
-        this.setState({ isLoading: false });
+        this.AFTER_LOAD(baseList);
+
+        this.setState({
+          baseList,
+          filterOptions,
+          isLoading: false
+        });
       })
       .catch(e => {
         console.log(e);
@@ -167,13 +166,13 @@ class ListContainer extends FormContainer {
       });
   };
 
-  makeQueryParameters = () => {
+  makeQueryParameters = (filterOptions = this.filterOptions, sortOptions = this.sortOptions) => {
     let result = '?';
-    Object.getOwnPropertyNames(this.state.filterOptions).forEach(prop => {
-      result += prop + '=' + this.state.filterOptions[prop] + '&';
+    Object.getOwnPropertyNames(filterOptions).forEach(prop => {
+      result += prop + '=' + filterOptions[prop] + '&';
     });
-    Object.getOwnPropertyNames(this.state.sortOptions).forEach(prop => {
-      result += 'sort-' + prop + '=' + this.state.sortOptions[prop] + '&';
+    Object.getOwnPropertyNames(sortOptions).forEach(prop => {
+      result += 'sort-' + prop + '=' + sortOptions[prop] + '&';
     });
 
     if (this.staticQueryParams)
@@ -189,7 +188,7 @@ class ListContainer extends FormContainer {
   };
 
   refresh = () => {
-    if (!this.state.filterOptions || this.state.filterOptions.limit == undefined) {
+    if (!this.filterOptions || this.filterOptions.limit == undefined) {
       this.clearFilters();
     } else {
       this.updateList();
@@ -275,14 +274,14 @@ class ListContainer extends FormContainer {
   };
 
   pageChanged = (newPage, limit) => {
-    this.state.filterOptions.page = newPage;
+    this.filterOptions.page = newPage;
     // this.setState({
     //   filterOptions: {
     //     page: newPage
     //   }
     // });
     if (limit > 0) {
-      this.state.filterOptions.limit = limit;
+      this.filterOptions.limit = limit;
       // this.setState({
       //   filterOptions: {
       //     limit: limit
@@ -292,26 +291,45 @@ class ListContainer extends FormContainer {
     this.updateList();
   };
 
-  onInputChange = (event, field, currentIndex, arrRows = this.state.baseList) => {
-    arrRows[currentIndex][field] = event.target.value;
-    arrRows[currentIndex].edited = true;
+  handleDateChange = (date, field, currentIndex, arrRows = this.state.baseList) => {
+    arrRows[currentIndex][field] = date ? date.toDate() : null;
+    arrRows[currentIndex].Entry_State = 1;
+    this.onInputChange();
+  };
 
-    if (arrRows.length > 0) {
-      let atLeastOneFilled = false;
-      let lastRow = arrRows[arrRows.length - 1];
-      for (let prop in lastRow) {
-        if (lastRow.hasOwnProperty(prop)) {
-          if (prop == 'Id') {
-            continue;
-          }
-          if (lastRow[prop] && (lastRow[prop] > 0 || lastRow[prop].length > 0)) {
-            atLeastOneFilled = true;
-            break;
+  handleInputChange = (event, field, currentIndex, arrRows = this.state.baseList) => {
+    arrRows[currentIndex][field] = event.target.value;
+    arrRows[currentIndex].Entry_State = 1;
+    this.onInputChange();
+  };
+
+  handleAutocompleteChange = (value, field, currentIndex, arrRows = this.state.baseList) => {
+    arrRows[currentIndex][field] = value.label;
+    arrRows[currentIndex].Entry_State = 1;
+    this.onInputChange();
+  };
+
+  onInputChange = (arrRows = this.state.baseList) => {
+    let atLeastOneFilled = false;
+    if (this.state.config.autoAdd) {
+      if (arrRows.length > 0) {
+        let lastRow = arrRows[arrRows.length - 1];
+        for (let prop in lastRow) {
+          if (lastRow.hasOwnProperty(prop)) {
+            if (prop == 'Id') {
+              continue;
+            }
+            if (lastRow[prop] && (lastRow[prop] > 0 || lastRow[prop].length > 0)) {
+              atLeastOneFilled = true;
+              break;
+            }
           }
         }
       }
-      if (atLeastOneFilled) arrRows.push({});
     }
+
+    this.ON_CHANGE(arrRows);
+    if (atLeastOneFilled) arrRows.push({});
 
     this.setState({
       baseList: arrRows

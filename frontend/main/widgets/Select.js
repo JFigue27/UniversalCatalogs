@@ -267,6 +267,7 @@ export default function IntegrationReactSelect(props) {
     <NoSsr>
       <div className={classes.root} style={props.style}>
         <Select
+          isClearable
           classes={classes}
           styles={selectStyles}
           inputId='react-select-single'

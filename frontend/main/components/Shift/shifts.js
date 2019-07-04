@@ -40,9 +40,9 @@ class Shifts extends ShiftsListContainer {
           <Grid container direction='row'>
             <Grid item xs />
             <Pagination
-              activePage={this.state.filterOptions.page}
-              itemsCountPerPage={this.state.filterOptions.limit}
-              totalItemsCount={this.state.filterOptions.totalItems}
+              activePage={this.filterOptions.page}
+              itemsCountPerPage={this.filterOptions.limit}
+              totalItemsCount={this.filterOptions.totalItems}
               pageRangeDisplayed={5}
               onChange={newPage => {
                 this.pageChanged(newPage);
@@ -61,7 +61,7 @@ class Shifts extends ShiftsListContainer {
                 this.state.baseList.map(item => (
                   <TableRow key={item.Id}>
                     <TableCell>
-                      <Grid container direction='row' className='row' justify='center' alignItems='flex-start' spacing={2}>
+                      <Grid container direction='row' className='row' justify='center' alignItems='center' spacing={2}>
                         <Grid item xs>
                           <Button
                             variant='contained'

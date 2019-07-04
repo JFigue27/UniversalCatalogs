@@ -1,6 +1,7 @@
 name: departments
 type: list
 entity: Department
+load: this.load();
 layout:
   - container-fluid:
       - h4: Departments

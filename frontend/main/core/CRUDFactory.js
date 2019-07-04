@@ -24,6 +24,7 @@ const Request = async (method, url, data, BaseURL) => {
     alert('Failed to fetch. Probably server is down.');
   }
   if (response.status == 401) throw response;
+  if (response.status == 403) alert('Invalid Role.');
   return await response.json();
 };
 
@@ -103,7 +104,7 @@ export class CRUDFactory {
       .catch(this.GeneralError);
   }
 
-  async RemoveEntity(id) {
+  async RemoveById(id) {
     return await Request('DELETE', this.EndPoint + '/' + id)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
@@ -254,6 +255,14 @@ export class CRUDFactory {
 
   //Formatters:===================================================================
   formatDate = (date, format = 'M/D/YYYY') => {
+    if (date) return moment(date).format(format);
+  };
+
+  formatDateMD = (date, format = 'MMMM Do, YYYY') => {
+    if (date) return moment(date).format(format);
+  };
+
+  formatDateLG = (date, format = 'dddd, MMMM Do, YYYY') => {
     if (date) return moment(date).format(format);
   };
 

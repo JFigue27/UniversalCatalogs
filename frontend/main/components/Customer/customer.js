@@ -16,9 +16,8 @@ class Customer extends CustomerFormContainer {
 
   componentDidMount() {
     console.log('Form did mount');
-
-    ///start:slot:didMount<<<
     this.load(this.props.data.Id);
+    ///start:slot:didMount<<<
     ///end:slot:didMount<<<
   }
 

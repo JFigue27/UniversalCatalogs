@@ -1,6 +1,7 @@
 import { withRouter } from 'next/router';
 import { NoSsr, Grid, Button, Typography, TextField } from '@material-ui/core';
 import { InputBase } from '@material-ui/core';
+
 import MaterialFormContainer from './material.form.container';
 ///start:slot:dependencies<<<///end:slot:dependencies<<<
 
@@ -15,9 +16,9 @@ class Material extends MaterialFormContainer {
 
   componentDidMount() {
     console.log('Form did mount');
-
-    ///start:slot:didMount<<<
     this.load(this.props.data.Id);
+    ///start:slot:didMount<<<
+
     ///end:slot:didMount<<<
   }
 

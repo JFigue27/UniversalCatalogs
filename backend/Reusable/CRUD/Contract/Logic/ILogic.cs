@@ -7,7 +7,7 @@ namespace Reusable.CRUD.Contract
 {
     public interface ILogic
     {
-        LoggedUser LoggedUser { get; set; }
+        //LoggedUser LoggedUser { get; set; }
         IRequest Request { get; set; }
         IDbConnection Db { get; set; }
         void SetDb(IDbConnection Db);

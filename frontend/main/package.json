@@ -22,6 +22,7 @@
     "@material-ui/core": "^4.0.1",
     "@material-ui/icons": "^4.0.1",
     "@material-ui/pickers": "^3.1.0",
+    "@syncfusion/ej2-react-calendars": "^17.1.51",
     "@syncfusion/ej2-react-grids": "^17.1.51",
     "@syncfusion/ej2-react-richtexteditor": "^17.1.49",
     "@zeit/next-bundle-analyzer": "^0.1.2",
@@ -34,11 +35,13 @@
     "moment": "^2.24.0",
     "next": "^8.0.4",
     "node-sass": "^4.11.0",
+    "notistack": "^0.8.7",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-draggable": "^3.3.0",
     "react-js-pagination": "^3.0.2",
     "react-select": "^3.0.4",
+    "react-swipeable-views": "^0.13.3",
     "typeface-roboto": "^0.0.54"
   }
 }

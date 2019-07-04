@@ -8,6 +8,7 @@ import { InputBase } from '@material-ui/core';
 import Dialog from '../../widgets/Dialog';
 import Customer from './customer.js';
 import { AppBar, Toolbar } from '@material-ui/core';
+
 import CustomersListContainer from './customer.list.container';
 ///start:slot:dependencies<<<///end:slot:dependencies<<<
 
@@ -23,7 +24,7 @@ class Customers extends CustomersListContainer {
 
   componentDidMount() {
     console.log('List did mount');
-
+    this.load();
     ///start:slot:didMount<<<
     this.load();
     ///end:slot:didMount<<<
@@ -41,9 +42,9 @@ class Customers extends CustomersListContainer {
           <Grid container direction='row'>
             <Grid item xs />
             <Pagination
-              activePage={this.state.filterOptions.page}
-              itemsCountPerPage={this.state.filterOptions.limit}
-              totalItemsCount={this.state.filterOptions.totalItems}
+              activePage={this.filterOptions.page}
+              itemsCountPerPage={this.filterOptions.limit}
+              totalItemsCount={this.filterOptions.totalItems}
               pageRangeDisplayed={5}
               onChange={newPage => {
                 this.pageChanged(newPage);

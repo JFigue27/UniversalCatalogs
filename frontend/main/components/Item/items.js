@@ -45,9 +45,9 @@ class Items extends ItemsListContainer {
           <Grid container direction='row'>
             <Grid item xs />
             <Pagination
-              activePage={this.state.filterOptions.page}
-              itemsCountPerPage={this.state.filterOptions.limit}
-              totalItemsCount={this.state.filterOptions.totalItems}
+              activePage={this.filterOptions.page}
+              itemsCountPerPage={this.filterOptions.limit}
+              totalItemsCount={this.filterOptions.totalItems}
               pageRangeDisplayed={5}
               onChange={newPage => {
                 this.pageChanged(newPage);

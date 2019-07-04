@@ -2,10 +2,12 @@ using MyApp.Logic.Entities;
 using Reusable.CRUD.Contract;
 using Reusable.CRUD.Entities;
 using Reusable.CRUD.Implementations.SS;
+using ServiceStack.Auth;
 using ServiceStack.OrmLite;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace MyApp.Logic
 {

@@ -3,6 +3,7 @@ using Reusable.CRUD.Entities;
 using ServiceStack.DataAnnotations;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyApp.Logic.Entities

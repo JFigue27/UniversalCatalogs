@@ -2,7 +2,7 @@ import 'isomorphic-fetch';
 import AppConfig from './AppConfig';
 
 const request = async (method, endpoint, data) => {
-  return await fetch(AppConfig.BaseURL + endpoint, {
+  return await fetch(AppConfig.AuthURL + endpoint, {
     method: method,
     mode: 'cors',
     cache: 'no-cache',

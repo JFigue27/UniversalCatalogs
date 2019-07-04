@@ -9,7 +9,7 @@ using ServiceStack.Text;
 
 namespace MyApp.API
 {
-    [Authenticate]
+    // [Authenticate]
     public class MaterialService : Service
     {
         public IMaterialLogic Logic { get; set; }
@@ -30,6 +30,7 @@ namespace MyApp.API
         public async Task<object> Get(GetMaterialWhere request)
         {
             Logic.SetDb(Db);
+            Logic.Request = Request;
             return await Logic.GetSingleWhereAsync(request.Property, request.Value);
         }
 
@@ -117,6 +118,7 @@ namespace MyApp.API
     [Route("/Material/{Id}", "GET")]
     public class GetMaterialById : GetSingleById<Material> { }
 
+    [Route("/Material/GetSingleWhere", "GET")]
     [Route("/Material/GetSingleWhere/{Property}/{Value}", "GET")]
     public class GetMaterialWhere : GetSingleWhere<Material> { }
 
@@ -134,6 +136,7 @@ namespace MyApp.API
     [Route("/Material", "PUT")]
     public class UpdateMaterial : Material { }
 
+    [Route("/Material", "DELETE")]
     [Route("/Material/{Id}", "DELETE")]
     public class DeleteMaterial : Material { }
     #endregion

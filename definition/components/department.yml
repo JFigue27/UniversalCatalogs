@@ -1,6 +1,7 @@
 name: department
 type: form
 entity: Department
+load: this.load(this.props.data.Id);
 layout:
   - content:
       - field: Value

@@ -33,6 +33,7 @@ class FormContainer extends React.Component {
         baseEntity: {},
         isLoading: false
       });
+      this.ON_CHANGE({});
     }
     //Open by ID
     else if (!isNaN(criteria) && criteria > 0) {
@@ -44,6 +45,7 @@ class FormContainer extends React.Component {
           isLoading: false,
           baseEntity: entity
         });
+        this.ON_CHANGE(entity);
       });
     }
     //Open by query parameters
@@ -54,6 +56,7 @@ class FormContainer extends React.Component {
       return this.service.GetSingleWhere(null, null, criteria).then(entity => {
         console.log('GetSingleWhere..' + criteria);
         console.log(entity);
+        this.ON_CHANGE(entity);
       });
     }
     //Create instance
@@ -70,6 +73,7 @@ class FormContainer extends React.Component {
         baseEntity: criteria,
         isLoading: false
       });
+      this.ON_CHANGE(criteria);
     }
   };
 
@@ -78,12 +82,13 @@ class FormContainer extends React.Component {
     return await this.service.CreateInstance(predefined).then(instance => {
       // theArguments.unshift(instance);
       // this.AFTER_CREATE.apply(this, theArguments);
-      instance.editMode = true;
+      instance.Entry_State = 1;
       instance.isDisabled = false;
       this.AFTER_CREATE(instance);
       this.setState({
         baseEntity: instance
       });
+      this.ON_CHANGE(baseEntity);
     });
   };
 
@@ -102,6 +107,7 @@ class FormContainer extends React.Component {
     return await this.service.Save(this.state.baseEntity).then(entity => {
       this.AFTER_SAVE(entity);
       this.setState({ baseEntity: entity });
+      this.ON_CHANGE(entity);
     });
   };
 
@@ -117,6 +123,7 @@ class FormContainer extends React.Component {
     this.setState({
       baseEntity: revision
     });
+    this.ON_CHANGE(revision);
   };
 
   take = async (entity, toUser) => {
@@ -126,11 +133,11 @@ class FormContainer extends React.Component {
     });
   };
 
-  remove = async (event, entity) => {
+  remove = async (event, entity = this.state.baseEntity) => {
     if (event) event.stopPropagation();
     if (confirm(`Are you sure you want to remove it?`)) {
       return await this.service.Remove(entity).then(() => {
-        console.log('removed');
+        this.AFTER_REMOVE(entity);
       });
     }
   };
@@ -149,7 +156,7 @@ class FormContainer extends React.Component {
         console.log('checked out');
       })
       .catch(() => {
-        this.load(this.baseEntity.Id);
+        this.load(this.state.baseEntity.Id);
       });
   };
 
@@ -165,13 +172,13 @@ class FormContainer extends React.Component {
 
     let message = prompt(`Optional message to reference this update.`);
     if (message !== null) {
-      this.baseEntity.editMode = true;
-      this.baseEntity.RevisionMessage = message;
+      this.state.baseEntity.Entry_State = 1;
+      this.state.baseEntity.RevisionMessage = message;
       return this.BEFORE_CHECKIN().then(() => {
         return this.service.Checkin(this.state.baseEntity).then(response => {
           this.load(response).then(() => {
             this.formMode = null;
-            this.baseEntity.isDisabled = true;
+            this.state.baseEntity.isDisabled = true;
             console.log('revision created.');
           });
         });
@@ -212,36 +219,42 @@ class FormContainer extends React.Component {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = event.target.value;
     this.setState({ baseEntity });
+    this.ON_CHANGE(baseEntity);
   };
 
   handleCheckBoxChange = (event, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = event.target.checked;
     this.setState({ baseEntity });
+    this.ON_CHANGE(baseEntity);
   };
 
   handleDateChange = (date, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = date.toDate();
     this.setState({ baseEntity });
+    this.ON_CHANGE(baseEntity);
   };
 
   handleRichText = (event, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = event.value;
     this.setState({ baseEntity });
+    this.ON_CHANGE(baseEntity);
   };
 
   handleChipsChange = (value, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = value;
     this.setState({ baseEntity });
+    this.ON_CHANGE(baseEntity);
   };
 
   handleAutocompleteChange = (value, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = value.label;
     this.setState({ baseEntity });
+    this.ON_CHANGE(baseEntity);
   };
 
   getCurrentUser = () => {
@@ -279,6 +292,7 @@ class FormContainer extends React.Component {
     this.setState({
       baseEntity: {}
     });
+    this.ON_CHANGE({});
   };
 
   makeQueryParameters = fromObject => {
@@ -296,13 +310,19 @@ class FormContainer extends React.Component {
   formatDate = (date, format) => {
     if (this.service) return this.service.formatDate(date, format);
   };
+  formatDateMD = (date, format) => {
+    if (this.service) return this.service.formatDateMD(date, format);
+  };
+  formatDateLG = (date, format) => {
+    if (this.service) return this.service.formatDateLG(date, format);
+  };
   formatTime = (time, format) => {
     if (this.service) return this.service.formatTime(time, format);
   };
 
   // Events:======================================================================
   on_input_change = item => {
-    item.editMode = true;
+    item.Entry_State = 1;
   };
 
   // Hooks:=======================================================================
@@ -314,7 +334,11 @@ class FormContainer extends React.Component {
 
   AFTER_SAVE = entity => {};
 
+  AFTER_REMOVE = entity => {};
+
   BEFORE_CHECKIN = () => {};
+
+  ON_CHANGE = entity => {};
 
   render() {
     return <></>;

@@ -9,7 +9,7 @@ using ServiceStack.Text;
 
 namespace MyApp.API
 {
-    [Authenticate]
+    // [Authenticate]
     public class ShiftService : Service
     {
         public IShiftLogic Logic { get; set; }
@@ -30,6 +30,7 @@ namespace MyApp.API
         public async Task<object> Get(GetShiftWhere request)
         {
             Logic.SetDb(Db);
+            Logic.Request = Request;
             return await Logic.GetSingleWhereAsync(request.Property, request.Value);
         }
 
@@ -117,6 +118,7 @@ namespace MyApp.API
     [Route("/Shift/{Id}", "GET")]
     public class GetShiftById : GetSingleById<Shift> { }
 
+    [Route("/Shift/GetSingleWhere", "GET")]
     [Route("/Shift/GetSingleWhere/{Property}/{Value}", "GET")]
     public class GetShiftWhere : GetSingleWhere<Shift> { }
 
@@ -134,6 +136,7 @@ namespace MyApp.API
     [Route("/Shift", "PUT")]
     public class UpdateShift : Shift { }
 
+    [Route("/Shift", "DELETE")]
     [Route("/Shift/{Id}", "DELETE")]
     public class DeleteShift : Shift { }
     #endregion
