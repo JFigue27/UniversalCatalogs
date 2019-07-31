@@ -1,12 +1,12 @@
 name: main
 displayName: Universal Catalogs
 pages:
-  items | menu: items
+  items: items
   areas | menu: areas
   materials | menu: materials
   workstations | menu: workstations
   employees | menu: employees
-  customers | menu: customers
+  customers: customers
   departments | menu: departments
   shifts | menu: shifts
 components: []

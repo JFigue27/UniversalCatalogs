@@ -1,7 +1,7 @@
 import { NoSsr, Grid, Typography } from '@material-ui/core';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import { Button } from '@material-ui/core';
-import SearchBox from '../../widgets/Searchbox';
+import SearchBox from '../../widgets/searchbox';
 import Pagination from 'react-js-pagination';
 import { Icon } from '@material-ui/core';
 import { InputBase } from '@material-ui/core';
