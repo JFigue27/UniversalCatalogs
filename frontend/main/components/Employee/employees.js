@@ -303,7 +303,7 @@ class EmployeesList extends ListContainer {
             return !isLoading && <Employee dialog={dialog} data={this.state.employee} />;
           }}
         </Dialog>
-        <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
+        <AppBar position='fixed' style={{ top: 'auto', bottom: 0, background: '#333333' }}>
           <Toolbar variant='dense'>
             <SearchBox bindFilterInput={this.bindFilterInput} value={filterOptions.filterGeneral} />
             <Grid item xs />
