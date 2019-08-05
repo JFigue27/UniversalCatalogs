@@ -16,7 +16,7 @@ namespace MyApp.Logic.Entities
         public Email()
         {
             
-            ///start:slot:ctor<<<///end:slot:ctor<<<
+            
         }
 
         public List<Contact> To { get; set; }
@@ -32,6 +32,6 @@ namespace MyApp.Logic.Entities
         [Ignore]
         public bool IsResent { get; set; }
 
-        ///start:slot:properties<<<///end:slot:properties<<<
+        
     }
 }

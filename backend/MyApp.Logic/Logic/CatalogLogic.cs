@@ -16,20 +16,20 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-///start:slot:imports<<<///end:slot:imports<<<
+
 
 namespace MyApp.Logic
 {
     public class CatalogLogic : LogicWrite<Catalog>, ILogicWriteAsync<Catalog>
     {
-        ///start:slot:init<<<///end:slot:init<<<
+        
 
-        ///start:slot:ctor<<<///end:slot:ctor<<<
+        
 
         protected override Catalog OnCreateInstance(Catalog entity)
         {
             
-            ///start:slot:createInstance<<<///end:slot:createInstance<<<
+            
 
             return entity;
         }
@@ -40,7 +40,7 @@ namespace MyApp.Logic
         if (IsValidJSValue(name))
             query.Where(e => e.CatalogType == name);
 
-            ///start:slot:listQuery<<<///end:slot:listQuery<<<
+            
 
             return query;
         }
@@ -48,7 +48,7 @@ namespace MyApp.Logic
         protected override SqlExpression<Catalog> OnGetSingle(SqlExpression<Catalog> query)
         {
             
-            ///start:slot:singleQuery<<<///end:slot:singleQuery<<<
+            
 
             return query;
         }
@@ -58,24 +58,24 @@ namespace MyApp.Logic
             if (string.IsNullOrWhiteSpace(entity.CatalogType))
             throw new KnownError("Error. Catalog Type is a required field.");
 
-            ///start:slot:beforeSave<<<///end:slot:beforeSave<<<
+            
         }
 
         protected override void OnAfterSaving(Catalog entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            ///start:slot:afterSave<<<///end:slot:afterSave<<<
+            
         }
 
         protected override void OnBeforeRemoving(Catalog entity)
         {
             
-            ///start:slot:beforeRemove<<<///end:slot:beforeRemove<<<
+            
         }
 
         protected override IEnumerable<Catalog> AdapterOut(params Catalog[] entities)
         {
-            ///start:slot:adapterOut<<<///end:slot:adapterOut<<<
+            
 
             foreach (var item in entities)
             {
@@ -86,6 +86,6 @@ namespace MyApp.Logic
         }
 
         
-        ///start:slot:logic<<<///end:slot:logic<<<
+        
     }
 }

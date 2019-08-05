@@ -49,7 +49,7 @@ namespace MyApp.Database
             modelBuilder.Ignore<AdditionalField>();
             modelBuilder.Ignore<Contact>();
 
-            ///start:slot:model<<<///end:slot:model<<<
+            
         }
     }
 }

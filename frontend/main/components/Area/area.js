@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter } from 'next/router';
 import { NoSsr, Typography, Grid } from '@material-ui/core';
 import FormContainer from '../../core/FormContainer';
+import { withSnackbar } from 'notistack';
 import { InputBase } from '@material-ui/core';
 
 import AreaService from './area.service';
@@ -17,14 +18,14 @@ class AreaForm extends FormContainer {
   constructor(props, config) {
     Object.assign(defaultConfig, config);
     super(props, defaultConfig);
+    ///start:slot:ctor<<<///end:slot:ctor<<<
   }
 
   componentDidMount() {
     console.log('Form did mount');
     this.load(this.props.data.Id);
 
-    ///start:slot:didMount<<<
-    ///end:slot:didMount<<<
+    ///start:slot:didMount<<<///end:slot:didMount<<<
   }
 
   AFTER_LOAD = entity => {
@@ -82,4 +83,4 @@ class AreaForm extends FormContainer {
   }
 }
 
-export default withRouter(AreaForm);
+export default withSnackbar(withRouter(AreaForm));

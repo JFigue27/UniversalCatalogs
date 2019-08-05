@@ -16,20 +16,20 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-///start:slot:imports<<<///end:slot:imports<<<
+
 
 namespace MyApp.Logic
 {
     public class CatalogTypeLogic : LogicWrite<CatalogType>, ILogicWriteAsync<CatalogType>
     {
-        ///start:slot:init<<<///end:slot:init<<<
+        
 
-        ///start:slot:ctor<<<///end:slot:ctor<<<
+        
 
         protected override CatalogType OnCreateInstance(CatalogType entity)
         {
             
-            ///start:slot:createInstance<<<///end:slot:createInstance<<<
+            
 
             return entity;
         }
@@ -37,7 +37,7 @@ namespace MyApp.Logic
         protected override SqlExpression<CatalogType> OnGetList(SqlExpression<CatalogType> query)
         {
             
-            ///start:slot:listQuery<<<///end:slot:listQuery<<<
+            
 
             return query;
         }
@@ -45,7 +45,7 @@ namespace MyApp.Logic
         protected override SqlExpression<CatalogType> OnGetSingle(SqlExpression<CatalogType> query)
         {
             
-            ///start:slot:singleQuery<<<///end:slot:singleQuery<<<
+            
 
             return query;
         }
@@ -67,24 +67,24 @@ namespace MyApp.Logic
             }
         }
 
-            ///start:slot:beforeSave<<<///end:slot:beforeSave<<<
+            
         }
 
         protected override void OnAfterSaving(CatalogType entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             Cache.FlushAll();
-            ///start:slot:afterSave<<<///end:slot:afterSave<<<
+            
         }
 
         protected override void OnBeforeRemoving(CatalogType entity)
         {
             
-            ///start:slot:beforeRemove<<<///end:slot:beforeRemove<<<
+            
         }
 
         protected override IEnumerable<CatalogType> AdapterOut(params CatalogType[] entities)
         {
-            ///start:slot:adapterOut<<<///end:slot:adapterOut<<<
+            
 
             foreach (var item in entities)
             {
@@ -95,6 +95,6 @@ namespace MyApp.Logic
         }
 
         
-        ///start:slot:logic<<<///end:slot:logic<<<
+        
     }
 }

@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import { withRouter } from 'next/router';
 import { Drawer, AppBar, Toolbar, IconButton, Typography, Menu, MenuItem, Grid, Tabs, Tab } from '@material-ui/core';
 import { Button, Icon, Fab } from '@material-ui/core';
 import Dialog from '../../widgets/Dialog';
@@ -9,8 +10,9 @@ import '../../styles.scss';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import { SnackbarProvider } from 'notistack';
+import { GlobalContext } from './globals-context';
 
-export default class extends React.Component {
+class App extends React.Component {
   pages = [
     ///start:slot:pages<<<
     { href: '/areas', label: 'Areas' },
@@ -31,7 +33,8 @@ export default class extends React.Component {
     anchorEl: null,
     currentTab: 0,
     loginOpen: false,
-    loading: true
+    loading: true,
+    globals: {}
   };
 
   classes = {
@@ -53,25 +56,27 @@ export default class extends React.Component {
     if (!AuthService.auth) {
       AuthService.OpenLogin();
     }
+
+    let currentPath = window.location.pathname;
+    let findRoute = this.pages.findIndex(e => e.href.toLowerCase() == currentPath.toLowerCase());
+
     this.setState({
       loading: false,
-      auth: AuthService.auth
+      auth: AuthService.auth,
+      currentTab: findRoute,
+      globals: { auth: AuthService.auth }
     });
-    //  else {
-    //   AuthService.auth.user = await userService.GetByUserName(AuthService.auth.user.UserName);
-    //   localStorage.setItem('authData', JSON.stringify(AuthService.auth));
-    // }
   }
   openLoginDialog = () => {
     this.setState({ loginOpen: true });
   };
   closeLoginDialog = () => {
-    this.setState({ loginOpen: false, auth: AuthService.auth });
+    this.setState({ loginOpen: false, auth: AuthService.auth, globals: { auth: AuthService.auth } });
   };
 
   logout = () => {
     AuthService.logout().then(() => {
-      this.setState({ auth: AuthService.auth });
+      this.setState({ auth: AuthService.auth, globals: { auth: AuthService.auth } });
     });
     this.openLoginDialog();
   };
@@ -96,6 +101,7 @@ export default class extends React.Component {
     let classes = this.classes;
     const { auth, anchorEl } = this.state;
     const open = Boolean(anchorEl);
+    const fullscreen = !!this.props.router.query.hasOwnProperty('fullscreen');
 
     function LinkTab(props) {
       let { href } = props;
@@ -112,6 +118,7 @@ export default class extends React.Component {
           {`
             body {
               margin: 0;
+              padding-top: ${fullscreen ? 0 : '50px 0'};
             }
           `}
         </style>
@@ -134,44 +141,46 @@ export default class extends React.Component {
         <Dialog open={this.state.loginOpen} onClose={this.closeLoginDialog} fullScreen actionsOff>
           {() => <Login onCloseLogin={this.closeLoginDialog} />}
         </Dialog>
-        <AppBar position='fixed' className='MainAppBar'>
-          <Toolbar>
-            {/* <IconButton color='inherit' onClick={this.toggleDrawer('right', true)}>
+        {!fullscreen && (
+          <AppBar position='fixed' className='MainAppBar app-nav'>
+            <Toolbar>
+              {/* <IconButton color='inherit' onClick={this.toggleDrawer('right', true)}>
               <Icon>menu</Icon>
             </IconButton> */}
-            <Typography variant='h6' color='inherit'>
-              Universal Catalogs
-            </Typography>
-            <Grid item xs />
+              <Typography variant='h6' color='inherit'>
+                Universal Catalogs
+              </Typography>
+              <Grid item xs />
 
-            <Tabs variant='standard' value={this.state.currentTab} onChange={this.handleTabsChange}>
-              {this.pages.map(page => {
-                return <LinkTab key={page.label} label={page.label} href={page.href} />;
-              })}
-            </Tabs>
-            <Button color='inherit' className={classes.button} onClick={this.handleMenu}>
-              <Icon style={{ marginRight: 5 }}>account_circle</Icon>
-              {auth && auth.user && (auth.user.DisplayName || auth.user.UserName)}
-            </Button>
-            <Menu
-              id='menu-appbar'
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right'
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right'
-              }}
-              open={open}
-              onClose={this.handleClose}
-            >
-              <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-              <MenuItem onClick={this.logout}>Logout</MenuItem>
-            </Menu>
-          </Toolbar>
-        </AppBar>
+              <Tabs variant='standard' value={this.state.currentTab} onChange={this.handleTabsChange}>
+                {this.pages.map(page => {
+                  return <LinkTab key={page.label} label={page.label} href={page.href} />;
+                })}
+              </Tabs>
+              <Button color='inherit' className={classes.button} onClick={this.handleMenu}>
+                <Icon style={{ marginRight: 5 }}>account_circle</Icon>
+                {auth && auth.user && (auth.user.DisplayName || auth.user.UserName)}
+              </Button>
+              <Menu
+                id='menu-appbar'
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                open={open}
+                onClose={this.handleClose}
+              >
+                {/* <MenuItem onClick={this.handleClose}>Profile</MenuItem> */}
+                <MenuItem onClick={this.logout}>Logout</MenuItem>
+              </Menu>
+            </Toolbar>
+          </AppBar>
+        )}
         <Drawer anchor='left' open={this.state.right} onClose={this.toggleDrawer('right', false)}>
           <div tabIndex={0} role='button' onClick={this.toggleDrawer('right', false)} onKeyDown={this.toggleDrawer('right', false)}>
             <div style={{ width: 200 }}>Content</div>
@@ -179,12 +188,16 @@ export default class extends React.Component {
         </Drawer>
         <SnackbarProvider autoHideDuration={1500}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
-            <Grid container direction='column' item xs={12} style={{ padding: 40 }}>
-              {this.props.children}
-            </Grid>
+            <GlobalContext.Provider value={this.state.globals}>
+              <Grid container direction='column' item xs={12} style={{ padding: 10 }}>
+                {this.props.children}
+              </Grid>
+            </GlobalContext.Provider>
           </MuiPickersUtilsProvider>
         </SnackbarProvider>
       </div>
     );
   }
 }
+
+export default withRouter(App);

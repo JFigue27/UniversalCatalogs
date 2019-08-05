@@ -16,12 +16,12 @@ namespace MyApp.Logic.Entities
         public Item()
         {
             
-            ///start:slot:ctor<<<///end:slot:ctor<<<
+            
         }
 
         public string ItemNumber { get; set; }
         public string ItemDescription { get; set; }
 
-        ///start:slot:properties<<<///end:slot:properties<<<
+        
     }
 }

@@ -18,21 +18,21 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
 
-///start:slot:imports<<<///end:slot:imports<<<
+
 
 
 namespace MyApp.Logic
 {
     public class UserLogic : DocumentLogic<User>, IDocumentLogicAsync<User>
     {
-        ///start:slot:init<<<///end:slot:init<<<
+        
 
-        ///start:slot:ctor<<<///end:slot:ctor<<<
+        
 
         protected override User OnCreateInstance(User entity)
         {
             entity.Role = "User";
-            ///start:slot:createInstance<<<///end:slot:createInstance<<<
+            
 
             return entity;
         }
@@ -40,7 +40,7 @@ namespace MyApp.Logic
         protected override SqlExpression<User> OnGetList(SqlExpression<User> query)
         {
             query.Where(e => e.Role != "Admin").OrderBy(e => e.Role).ThenBy(e => e.Value);
-            ///start:slot:listQuery<<<///end:slot:listQuery<<<
+            
 
             return base.OnGetList(query);
         }
@@ -48,7 +48,7 @@ namespace MyApp.Logic
         protected override SqlExpression<User> OnGetSingle(SqlExpression<User> query)
         {
             
-            ///start:slot:singleQuery<<<///end:slot:singleQuery<<<
+            
 
             return base.OnGetSingle(query);
         }
@@ -113,24 +113,24 @@ entity.EmailPassword = entity.EmailPassword;
 //    throw new KnownError("Ha ocurrido un error al intentar crear el usuario");
 //}
 
-            ///start:slot:beforeSave<<<///end:slot:beforeSave<<<
+            
         }
 
         protected override void OnAfterSaving(User entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            ///start:slot:afterSave<<<///end:slot:afterSave<<<
+            
         }
 
         protected override void OnBeforeRemoving(User entity)
         {
             
-            ///start:slot:beforeRemove<<<///end:slot:beforeRemove<<<
+            
         }
 
         protected override IEnumerable<User> AdapterOut(params User[] entities)
         {
-            ///start:slot:adapterOut<<<///end:slot:adapterOut<<<
+            
 
             foreach (var item in entities)
             {
@@ -142,12 +142,12 @@ entity.EmailPassword = entity.EmailPassword;
 
         protected override void OnFinalize(User entity)
         {
-            ///start:slot:finalize<<<///end:slot:finalize<<<
+            
         }
 
         protected override void OnUnfinalize(User entity)
         {
-            ///start:slot:unfinalize<<<///end:slot:unfinalize<<<
+            
         }
 
         public User GetByUserName(string UserName)
@@ -211,6 +211,6 @@ private byte[] ConvertBitMapToByteArray(Bitmap bitmap)
     return result;
 }
 
-        ///start:slot:logic<<<///end:slot:logic<<<
+        
     }
 }

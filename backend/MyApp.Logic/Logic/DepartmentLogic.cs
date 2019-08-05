@@ -16,20 +16,20 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-///start:slot:imports<<<///end:slot:imports<<<
+
 
 namespace MyApp.Logic
 {
     public class DepartmentLogic : LogicWrite<Department>, ILogicWriteAsync<Department>
     {
-        ///start:slot:init<<<///end:slot:init<<<
+        
 
-        ///start:slot:ctor<<<///end:slot:ctor<<<
+        
 
         protected override Department OnCreateInstance(Department entity)
         {
             
-            ///start:slot:createInstance<<<///end:slot:createInstance<<<
+            
 
             return entity;
         }
@@ -37,7 +37,7 @@ namespace MyApp.Logic
         protected override SqlExpression<Department> OnGetList(SqlExpression<Department> query)
         {
             
-            ///start:slot:listQuery<<<///end:slot:listQuery<<<
+            
 
             return query;
         }
@@ -45,7 +45,7 @@ namespace MyApp.Logic
         protected override SqlExpression<Department> OnGetSingle(SqlExpression<Department> query)
         {
             
-            ///start:slot:singleQuery<<<///end:slot:singleQuery<<<
+            
 
             return query;
         }
@@ -53,24 +53,24 @@ namespace MyApp.Logic
         protected override void OnBeforeSaving(Department entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            ///start:slot:beforeSave<<<///end:slot:beforeSave<<<
+            
         }
 
         protected override void OnAfterSaving(Department entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            ///start:slot:afterSave<<<///end:slot:afterSave<<<
+            
         }
 
         protected override void OnBeforeRemoving(Department entity)
         {
             
-            ///start:slot:beforeRemove<<<///end:slot:beforeRemove<<<
+            
         }
 
         protected override IEnumerable<Department> AdapterOut(params Department[] entities)
         {
-            ///start:slot:adapterOut<<<///end:slot:adapterOut<<<
+            
 
             foreach (var item in entities)
             {
@@ -81,6 +81,6 @@ namespace MyApp.Logic
         }
 
         
-        ///start:slot:logic<<<///end:slot:logic<<<
+        
     }
 }

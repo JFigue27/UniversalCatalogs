@@ -16,13 +16,13 @@ namespace MyApp.Logic.Entities
         public AdditionalField()
         {
             
-            ///start:slot:ctor<<<///end:slot:ctor<<<
+            
         }
 
         public string FieldName { get; set; }
         public string FieldType { get; set; }
         public object Value { get; set; }
 
-        ///start:slot:properties<<<///end:slot:properties<<<
+        
     }
 }

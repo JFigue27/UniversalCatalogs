@@ -16,20 +16,20 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-///start:slot:imports<<<///end:slot:imports<<<
+
 
 namespace MyApp.Logic
 {
     public class FilterDataLogic : LogicWrite<FilterData>, ILogicWriteAsync<FilterData>
     {
-        ///start:slot:init<<<///end:slot:init<<<
+        
 
-        ///start:slot:ctor<<<///end:slot:ctor<<<
+        
 
         protected override FilterData OnCreateInstance(FilterData entity)
         {
             
-            ///start:slot:createInstance<<<///end:slot:createInstance<<<
+            
 
             return entity;
         }
@@ -37,7 +37,7 @@ namespace MyApp.Logic
         protected override SqlExpression<FilterData> OnGetList(SqlExpression<FilterData> query)
         {
             
-            ///start:slot:listQuery<<<///end:slot:listQuery<<<
+            
 
             return query;
         }
@@ -45,7 +45,7 @@ namespace MyApp.Logic
         protected override SqlExpression<FilterData> OnGetSingle(SqlExpression<FilterData> query)
         {
             
-            ///start:slot:singleQuery<<<///end:slot:singleQuery<<<
+            
 
             return query;
         }
@@ -53,24 +53,24 @@ namespace MyApp.Logic
         protected override void OnBeforeSaving(FilterData entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            ///start:slot:beforeSave<<<///end:slot:beforeSave<<<
+            
         }
 
         protected override void OnAfterSaving(FilterData entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            ///start:slot:afterSave<<<///end:slot:afterSave<<<
+            
         }
 
         protected override void OnBeforeRemoving(FilterData entity)
         {
             
-            ///start:slot:beforeRemove<<<///end:slot:beforeRemove<<<
+            
         }
 
         protected override IEnumerable<FilterData> AdapterOut(params FilterData[] entities)
         {
-            ///start:slot:adapterOut<<<///end:slot:adapterOut<<<
+            
 
             foreach (var item in entities)
             {
@@ -81,6 +81,6 @@ namespace MyApp.Logic
         }
 
         
-        ///start:slot:logic<<<///end:slot:logic<<<
+        
     }
 }

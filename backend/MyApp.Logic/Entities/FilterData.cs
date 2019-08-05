@@ -16,13 +16,13 @@ namespace MyApp.Logic.Entities
         public FilterData()
         {
             
-            ///start:slot:ctor<<<///end:slot:ctor<<<
+            
         }
 
         public string Key { get; set; }
         public int Value { get; set; }
         public long AdvancedSortId { get; set; }
 
-        ///start:slot:properties<<<///end:slot:properties<<<
+        
     }
 }

@@ -16,20 +16,20 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-///start:slot:imports<<<///end:slot:imports<<<
+
 
 namespace MyApp.Logic
 {
     public class AdditionalFieldLogic : LogicWrite<AdditionalField>, ILogicWriteAsync<AdditionalField>
     {
-        ///start:slot:init<<<///end:slot:init<<<
+        
 
-        ///start:slot:ctor<<<///end:slot:ctor<<<
+        
 
         protected override AdditionalField OnCreateInstance(AdditionalField entity)
         {
             
-            ///start:slot:createInstance<<<///end:slot:createInstance<<<
+            
 
             return entity;
         }
@@ -37,7 +37,7 @@ namespace MyApp.Logic
         protected override SqlExpression<AdditionalField> OnGetList(SqlExpression<AdditionalField> query)
         {
             
-            ///start:slot:listQuery<<<///end:slot:listQuery<<<
+            
 
             return query;
         }
@@ -45,7 +45,7 @@ namespace MyApp.Logic
         protected override SqlExpression<AdditionalField> OnGetSingle(SqlExpression<AdditionalField> query)
         {
             
-            ///start:slot:singleQuery<<<///end:slot:singleQuery<<<
+            
 
             return query;
         }
@@ -53,24 +53,24 @@ namespace MyApp.Logic
         protected override void OnBeforeSaving(AdditionalField entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            ///start:slot:beforeSave<<<///end:slot:beforeSave<<<
+            
         }
 
         protected override void OnAfterSaving(AdditionalField entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            ///start:slot:afterSave<<<///end:slot:afterSave<<<
+            
         }
 
         protected override void OnBeforeRemoving(AdditionalField entity)
         {
             
-            ///start:slot:beforeRemove<<<///end:slot:beforeRemove<<<
+            
         }
 
         protected override IEnumerable<AdditionalField> AdapterOut(params AdditionalField[] entities)
         {
-            ///start:slot:adapterOut<<<///end:slot:adapterOut<<<
+            
 
             foreach (var item in entities)
             {
@@ -81,6 +81,6 @@ namespace MyApp.Logic
         }
 
         
-        ///start:slot:logic<<<///end:slot:logic<<<
+        
     }
 }

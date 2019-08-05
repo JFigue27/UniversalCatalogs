@@ -16,7 +16,7 @@ namespace MyApp.Logic.Entities
         public SortData()
         {
             
-            ///start:slot:ctor<<<///end:slot:ctor<<<
+            
         }
 
         public string Value { get; set; }
@@ -24,6 +24,6 @@ namespace MyApp.Logic.Entities
         public string AscDesc { get; set; }
         public long AdvancedSortId { get; set; }
 
-        ///start:slot:properties<<<///end:slot:properties<<<
+        
     }
 }

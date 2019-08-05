@@ -1,5 +1,6 @@
 import React from 'react';
 import { withRouter } from 'next/router';
+import { withSnackbar } from 'notistack';
 import { NoSsr, Typography, Grid } from '@material-ui/core';
 import SearchBox from '../../widgets/Searchbox';
 import Pagination from 'react-js-pagination';
@@ -29,18 +30,17 @@ class AreasList extends ListContainer {
   constructor(props, config) {
     Object.assign(defaultConfig, config);
     super(props, defaultConfig);
+    ///start:slot:ctor<<<///end:slot:ctor<<<
   }
 
   componentDidMount() {
     console.log('List did mount');
     this.load();
 
-    ///start:slot:didMount<<<
-    this.load();
-    ///end:slot:didMount<<<
+    ///start:slot:didMount<<<///end:slot:didMount<<<
   }
 
-  AFTER_LOAD = () => {
+  AFTER_LOAD = baseList => {
     console.log('AFTER_LOAD');
     ///start:slot:afterLoad<<<///end:slot:afterLoad<<<
   };
@@ -84,7 +84,7 @@ class AreasList extends ListContainer {
   ///start:slot:js<<<///end:slot:js<<<
 
   render() {
-    const { isLoading, baseEntity, baseList } = this.state;
+    const { isLoading, baseEntity, baseList, filterOptions } = this.state;
 
     return (
       <NoSsr>
@@ -95,9 +95,9 @@ class AreasList extends ListContainer {
           <Grid container direction='row'>
             <Grid item xs />
             <Pagination
-              activePage={this.state.filterOptions.page}
-              itemsCountPerPage={this.state.filterOptions.limit}
-              totalItemsCount={this.state.filterOptions.totalItems}
+              activePage={filterOptions.page}
+              itemsCountPerPage={filterOptions.limit}
+              totalItemsCount={filterOptions.totalItems}
               pageRangeDisplayed={5}
               onChange={newPage => {
                 this.pageChanged(newPage);
@@ -156,7 +156,7 @@ class AreasList extends ListContainer {
         </Dialog>
         <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
           <Toolbar variant='dense'>
-            <SearchBox bindFilterInput={this.bindFilterInput} value={this.state.filterOptions.filterGeneral} />
+            <SearchBox bindFilterInput={this.bindFilterInput} value={filterOptions.filterGeneral} />
             <Grid item xs />
             <Button
               variant='contained'
@@ -175,4 +175,4 @@ class AreasList extends ListContainer {
   }
 }
 
-export default withRouter(AreasList);
+export default withSnackbar(withRouter(AreasList));

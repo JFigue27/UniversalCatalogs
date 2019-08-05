@@ -251,6 +251,11 @@ class ListContainer extends FormContainer {
     this.onInputChange();
   };
 
+  localAddItem = (arrRows = this.state.baseList) => {
+    arrRows.push({});
+    this.onInputChange();
+  };
+
   removeSelected = () => {
     throw 'Not Implemented';
   };
@@ -466,7 +471,7 @@ class ListContainer extends FormContainer {
   };
 
   // Hooks:=======================================================================
-  AFTER_LOAD = () => {};
+  AFTER_LOAD = baseList => {};
 
   ON_OPEN_ITEM = entity => {};
 

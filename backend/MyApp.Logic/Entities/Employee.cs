@@ -16,11 +16,11 @@ namespace MyApp.Logic.Entities
         public Employee()
         {
             
-            ///start:slot:ctor<<<///end:slot:ctor<<<
+            
         }
 
         public string Value { get; set; }
 
-        ///start:slot:properties<<<///end:slot:properties<<<
+        
     }
 }

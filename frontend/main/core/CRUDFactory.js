@@ -28,6 +28,11 @@ const Request = async (method, url, data, BaseURL) => {
   return await response.json();
 };
 
+const Get = async (url, data, baseURL) => await Request('GET', url, data, baseURL);
+const Post = async (url, data, baseURL) => await Request('POST', url, data, baseURL);
+const Put = async (url, data, baseURL) => await Request('PUT', url, data, baseURL);
+const Delete = async (url, data, baseURL) => await Request('DELETE', url, data, baseURL);
+
 export class CRUDFactory {
   constructor(config) {
     this.config = config;
@@ -36,48 +41,45 @@ export class CRUDFactory {
 
   async InsertEntity(entity) {
     this.ADAPTER_OUT(entity);
-    return await Request('POST', this.EndPoint, entity)
+    return await Post(this.EndPoint, entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
 
   async CreateAndCheckout(entity) {
     this.ADAPTER_OUT(entity);
-    return await Request('POST', this.EndPoint + '/CreateAndCheckout', entity)
+    return await Post(this.EndPoint + '/CreateAndCheckout', entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
 
   async CreateInstance(entity) {
-    return await Request('POST', this.EndPoint + '/CreateInstance', entity)
+    return await Post(this.EndPoint + '/CreateInstance', entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
 
   async Get(operation) {
-    return await Request('GET', this.EndPoint + '/' + operation).catch(this.GeneralError);
+    return await Get(this.EndPoint + '/' + operation).catch(this.GeneralError);
   }
 
   async Post(operation, entity = {}) {
-    return await Request('POST', this.EndPoint + '/' + operation, entity).catch(this.GeneralError);
+    return await Post(this.EndPoint + '/' + operation, entity).catch(this.GeneralError);
   }
 
   async GetPaged(limit, page, params = '?') {
-    return await Request('GET', this.EndPoint + '/getPaged/' + limit + '/' + page + params + '&noCache=' + Number(new Date()))
+    return await Get(this.EndPoint + '/getPaged/' + limit + '/' + page + params + '&noCache=' + Number(new Date()))
       .then(r => this.UseCommonResponse(r, true))
       .catch(this.GeneralError);
   }
 
   async GetSingleWhere(property, value, params = '') {
     if (property && value) {
-      return await Request(
-        'GET',
-        this.EndPoint + '/GetSingleWhere/' + property + '/' + value + '?' + params + '&noCache=' + Number(new Date())
-      )
+      return await Get(this.EndPoint + '/GetSingleWhere/' + property + '/' + value + '?' + params + '&noCache=' + Number(new Date()))
         .then(r => this.UseNudeResponse(r))
         .catch(this.GeneralError);
     } else if (params.length > 1) {
-      return await Request('GET', this.EndPoint + '/GetSingleWhere?' + params + '&noCache=' + Number(new Date()))
+      return await Get(this.EndPoint + '/GetSingleWhere?' + params + '&noCache=' + Number(new Date()))
         .then(r => this.UseNudeResponse(r))
         .catch(this.GeneralError);
     } else {
@@ -86,14 +88,14 @@ export class CRUDFactory {
   }
 
   async LoadEntities(params = '?') {
-    return await Request('GET', this.EndPoint + params + '&noCache=' + Number(new Date()))
+    return await Get(this.EndPoint + params + '&noCache=' + Number(new Date()))
       .then(r => this.UseNudeResponse(r))
       .catch(this.GeneralError);
   }
 
   async LoadEntity(id) {
     if (id) {
-      return await Request('GET', this.EndPoint + '/' + id)
+      return await Get(this.EndPoint + '/' + id)
         .then(r => this.UseNudeResponse(r))
         .catch(this.GeneralError);
     } else {
@@ -102,13 +104,13 @@ export class CRUDFactory {
   }
 
   async Remove(entity) {
-    return await Request('DELETE', this.EndPoint, entity)
+    return await Delete(this.EndPoint, entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
 
   async RemoveById(id) {
-    return await Request('DELETE', this.EndPoint + '/' + id)
+    return await Delete(this.EndPoint + '/' + id)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
@@ -122,7 +124,7 @@ export class CRUDFactory {
   }
 
   async SendTestEmail(entity) {
-    return await Request('POST', this.EndPoint + '/SendTestEmail', entity)
+    return await Post(this.EndPoint + '/SendTestEmail', entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
@@ -133,7 +135,7 @@ export class CRUDFactory {
 
   async UpdateEntity(entity) {
     this.ADAPTER_OUT(entity);
-    return await Request('PUT', this.EndPoint, entity)
+    return await Put(this.EndPoint, entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
   }
@@ -290,30 +292,25 @@ export class CRUDFactory {
   };
 
   //Hooks:=======================================================================
-  ADAPTER_IN(entity) {}
+  ADAPTER_IN = entity => entity;
 
-  ADAPTER_OUT(entity) {}
+  ADAPTER_OUT = entity => entity;
 
-  //Universal Catalogs:==========================================================
-  async GetUniversalCatalog(catalog, params = '') {
-    return await Request('GET', `catalog?name=${catalog}&${params}'&noCache=` + Number(new Date()), null, AppConfig.UniversalCatalogsURL)
-      .then(e => e.Result)
+  //Catalogs:====================================================================
+  async GetCatalog(name, params = '', limit = 0, page = 1) {
+    return await Get(`catalog/${limit}/${page}?name=${name}&${params}&noCache=` + Number(new Date()))
+      .then(r => r.Result)
       .catch(this.GeneralError);
   }
 
-  async GetUniversalCatalogPaged(catalog, limit, page, params = '') {
-    return await Request(
-      'GET',
-      `catalog/${limit}/${page}?name=${catalog}&${params}&noCache=` + Number(new Date()),
-      null,
-      AppConfig.UniversalCatalogsURL
-    )
+  async GetUniversalCatalog(name, params = '', limit = 0, page = 1) {
+    return await Get(`catalog/${limit}/${page}?name=${name}&${params}&noCache=${Number(new Date())}`, null, AppConfig.UniversalCatalogsURL)
       .then(r => r.Result)
       .catch(this.GeneralError);
   }
 
   //Accounts:===================================================================
   async GetAccounts(params = '') {
-    return await Request('GET', 'Account?' + params + '&noCache=' + Number(new Date()), null, AppConfig.AuthURL).catch(this.GeneralError);
+    return await Get('Account?' + params + '&noCache=' + Number(new Date()), null, AppConfig.AuthURL).catch(this.GeneralError);
   }
 }

@@ -15,7 +15,8 @@ import PropTypes from 'prop-types';
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    background: 'white'
+    background: 'white',
+    marginBottom: 8
   },
   input: {
     display: 'flex',
@@ -284,6 +285,7 @@ export default function IntegrationReactSelect(props) {
           label: item[labelProp],
           email: item[emailProp]
         };
+      else return null;
     }
   };
 
