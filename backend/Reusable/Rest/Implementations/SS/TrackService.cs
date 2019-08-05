@@ -1,6 +1,11 @@
 using Reusable.CRUD.Contract;
 using Reusable.CRUD.Entities;
+using Reusable.CRUD.Implementations.SS.Logic;
 using ServiceStack;
+using ServiceStack.Data;
+using ServiceStack.OrmLite;
+using System;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace Reusable.Rest.Implementations.SS
@@ -8,32 +13,58 @@ namespace Reusable.Rest.Implementations.SS
     [Restrict(LocalhostOnly = true)]
     public class TrackService : Service
     {
-        public ITrackLogic Logic { get; set; }
+        public IDbConnectionFactory DbConnectionFactory { get; set; }
+        public TrackLogic logic { get; set; }
+
+        protected object WithDB(Func<IDbConnection, object> operation)
+        {
+            using (var db = DbConnectionFactory.OpenDbConnection())
+            {
+                logic.Init(db, GetSession(), Request);
+                return operation(db);
+            }
+        }
+
+        protected object InTransaction(Func<IDbConnection, object> operation)
+        {
+            return WithDB(db =>
+            {
+                using (var transaction = db.OpenTransaction())
+                {
+                    try
+                    {
+                        var result = operation(db);
+                        transaction.Commit();
+                        return result;
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            });
+        }
 
         #region Endpoints - Generic Read Only
         public async Task<object> Get(GetAllTracks request)
         {
-            Logic.SetDb(Db);
-            return await Logic.GetAllAsync();
+            return await logic.GetAllAsync();
         }
 
         public async Task<object> Get(GetTrackById request)
         {
-            Logic.SetDb(Db);
-            return await Logic.GetByIdAsync(request.Id);
+            return await logic.GetByIdAsync(request.Id);
         }
 
         public async Task<object> Get(GetTrackWhere request)
         {
-            Logic.SetDb(Db);
-            return await Logic.GetSingleWhereAsync(request.Property, request.Value);
+            return await logic.GetSingleWhereAsync(request.Property, request.Value);
         }
 
         public async Task<object> Get(GetPagedTracks request)
         {
-            Logic.SetDb(Db);
-            Logic.Request = Request;
-            return await Logic.GetPagedAsync(
+            return await logic.GetPagedAsync(
                 request.Limit,
                 request.Page,
                 request.FilterGeneral,
@@ -45,34 +76,33 @@ namespace Reusable.Rest.Implementations.SS
         #region Endpoints - Generic Write
         public object Post(CreateTrackInstance request)
         {
-            Logic.SetDb(Db);
             var entity = request.ConvertTo<Track>();
-            return new CommonResponse(Logic.CreateInstance(entity));
+            return new CommonResponse(logic.CreateInstance(entity));
         }
 
         public object Post(InsertTrack request)
         {
             var entity = request.ConvertTo<Track>();
-            return new CommonResponse(Logic.Add(ref entity));
+            return new CommonResponse(logic.Add(entity));
         }
 
         public object Put(UpdateTrack request)
         {
             var entity = request.ConvertTo<Track>();
-            return new CommonResponse(Logic.Update(entity));
+            return new CommonResponse(logic.Update(entity));
         }
         public object Delete(DeleteTrack request)
         {
             var entity = request.ConvertTo<Track>();
-            Logic.Remove(entity);
+            logic.Remove(entity);
             return new CommonResponse();
         }
         #endregion
 
         #region Endpoints - Specific
-        public object Post(AssignResponsible request)
+        public object Post(Assign request)
         {
-            Logic.AssignResponsible(request.TrackId, request.UserId);
+            //InTransaction(db => logic.AssignResponsible(request.TrackId, request.UserName));
             return new CommonResponse();
         }
         #endregion
@@ -80,12 +110,12 @@ namespace Reusable.Rest.Implementations.SS
     }
 
     #region Specific
-    [Route("/Track/AssignResponsible", "POST")]
-    [Route("/Track/AssignResponsible/{TrackId}/{UserId}", "POST")]
-    public class AssignResponsible
+    [Route("/Track/Assign", "POST")]
+    [Route("/Track/Assign/{TrackId}/{UserName}", "POST")]
+    public class Assign
     {
         public long TrackId { get; set; }
-        public long UserId { get; set; }
+        public string UserName { get; set; }
     }
     #endregion
 

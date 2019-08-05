@@ -10,6 +10,8 @@ namespace Reusable.EmailServices
         List<string> To { get; set; }
         List<string> Cc { get; set; }
         List<string> Bcc { get; set; }
+        string Template { get; set; }
+        Dictionary<string, object> TemplateParameters { get; set; }
 
         string Subject { get; set; }
         string Body { get; set; }

@@ -6,7 +6,7 @@ namespace Reusable.CRUD.Contract
     {
         //CommonResponse AddTransaction(Entity entity);
         Entity CreateInstance(Entity entity = null);
-        Entity Add(ref Entity entity);
+        Entity Add(Entity entity);
         Entity Update(Entity entity);
         void Remove(Entity id);
         void RemoveAll();

@@ -42,6 +42,9 @@
       <HintPath>..\packages\EPPlus.4.5.3.1\lib\net40\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="RestSharp, Version=106.6.10.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.6.10\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="ServiceStack, Version=5.0.0.0, Culture=neutral, PublicKeyToken=02c12cbda47e6587, processorArchitecture=MSIL">
       <HintPath>..\packages\ServiceStack.5.5.0\lib\net45\ServiceStack.dll</HintPath>
     </Reference>
@@ -114,45 +117,30 @@
     <Compile Include="CRUD\Contract\Entity\IRecursiveEntity.cs" />
     <Compile Include="CRUD\Contract\Entity\IRepository.cs" />
     <Compile Include="CRUD\Contract\Entity\IRepositoryReadOnly.cs" />
-    <Compile Include="CRUD\Contract\ITokenLogic.cs" />
-    <Compile Include="CRUD\Contract\IRevisionLogic.cs" />
-    <Compile Include="CRUD\Contract\IAdvancedSortLogic.cs" />
     <Compile Include="CRUD\Contract\Logic\ILogicWrite.cs" />
-    <Compile Include="CRUD\Contract\Track\ITrackLogic.cs" />
     <Compile Include="CRUD\Contract\Track\Trackable.cs" />
-    <Compile Include="CRUD\Contract\IUserLogic.cs" />
-    <Compile Include="CRUD\Entities\AdvancedSort.cs" />
-    <Compile Include="CRUD\Entities\Email.cs" />
-    <Compile Include="CRUD\Entities\JsonEntities\Catalog.cs" />
     <Compile Include="CRUD\Entities\JsonEntities\Contact.cs" />
     <Compile Include="CRUD\Entities\Revision.cs" />
-    <Compile Include="CRUD\Entities\Token.cs" />
     <Compile Include="CRUD\Entities\Track.cs" />
-    <Compile Include="CRUD\Entities\User.cs" />
     <Compile Include="CRUD\Implementations\SS\BaseLogic.cs" />
     <Compile Include="CRUD\Implementations\SS\LogicWrite.cs" />
     <Compile Include="CRUD\Implementations\SS\LogicDocument.cs" />
     <Compile Include="CRUD\Implementations\SS\LogicReadOnly.cs" />
     <Compile Include="Email\Email.cs" />
     <Compile Include="Email\IEmailService.cs" />
+    <Compile Include="Email\Mailgun\MailgunService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\Report.cs" />
     <Compile Include="Rest\GenericRoutesDTOs.cs" />
     <Compile Include="Rest\CommonResponse.cs" />
     <Compile Include="CRUD\Implementations\SS\Logic\TrackLogic.cs" />
-    <Compile Include="CRUD\Implementations\SS\Logic\TokenLogic.cs" />
     <Compile Include="CRUD\Implementations\SS\Logic\RevisionLogic.cs" />
+    <Compile Include="Rest\Implementations\SS\BaseService.cs" />
     <Compile Include="Rest\Implementations\SS\CacheService.cs" />
     <Compile Include="Rest\Implementations\SS\TrackService.cs" />
-    <Compile Include="Rest\Implementations\SS\TokenService.cs" />
     <Compile Include="Rest\Implementations\SS\RevisionService.cs" />
     <Compile Include="Rest\Implementations\SS\AttachmentService.cs" />
     <Compile Include="Rest\Implementations\SS\PingService.cs" />
-    <Compile Include="CRUD\Implementations\SS\Logic\AdvancedSortLogic.cs" />
-    <Compile Include="Rest\Implementations\SS\AdvancedSortService.cs" />
-    <Compile Include="Rest\Implementations\SS\UserService.cs" />
-    <Compile Include="CRUD\Implementations\SS\Logic\UserLogic.cs" />
-    <Compile Include="Rest\LoggedUser.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\MD5HashGenerator.cs" />
   </ItemGroup>

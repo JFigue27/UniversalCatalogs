@@ -1,5 +1,8 @@
+using Reusable.Attachments;
 using Reusable.CRUD.Contract;
 using Reusable.CRUD.Entities;
+using Reusable.CRUD.JsonEntities;
+using ServiceStack;
 using ServiceStack.DataAnnotations;
 using System;
 using System.Collections.Generic;

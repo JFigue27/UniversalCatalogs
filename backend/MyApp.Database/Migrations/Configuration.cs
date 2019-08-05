@@ -1,5 +1,6 @@
 namespace MyApp.Database.Migrations
 {
+    using MyApp.Logic.Entities;
     using Reusable.CRUD.Entities;
     using System;
     using System.Collections.Generic;

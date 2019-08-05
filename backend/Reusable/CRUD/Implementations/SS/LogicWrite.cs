@@ -1,4 +1,5 @@
 using Reusable.CRUD.Contract;
+using Reusable.Rest;
 using ServiceStack.OrmLite;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace Reusable.CRUD.Implementations.SS
             return OnCreateInstance(entity);
         }
 
-        virtual public Entity Add(ref Entity entity)
+        virtual public Entity Add(Entity entity)
         {
             OnBeforeSaving(entity, OPERATION_MODE.ADD);
 
@@ -80,6 +81,22 @@ namespace Reusable.CRUD.Implementations.SS
             return entity;
         }
 
+        virtual public void RemoveById(long id)
+        {
+            var entity = GetById(id);
+            if (entity == null) throw new KnownError("Error. Cannot remove entity, it no longer exists");
+
+            Remove(entity);
+        }
+
+        virtual public async Task RemoveByIdAsync(long id)
+        {
+            var entity = await GetByIdAsync(id);
+            if (entity == null) throw new KnownError("Error. Cannot remove entity, it no longer exists");
+
+            await RemoveAsync(entity);
+        }
+
         virtual public void Remove(Entity entity)
         {
             OnBeforeRemoving(entity);
@@ -110,26 +127,26 @@ namespace Reusable.CRUD.Implementations.SS
         {
             entity.RowVersion = Db.SingleById<Entity>(entity.Id).RowVersion;
 
-            var cacheGetAll = Cache.Get<List<Entity>>(CacheGetAllKey);
+            var cacheGetAll = Cache.Get<List<Entity>>(CACHE_GET_ALL);
             if (cacheGetAll != null)
             {
                 cacheGetAll.Add(entity);
-                Cache.Replace(CacheGetAllKey, cacheGetAll);
+                Cache.Replace(CACHE_GET_ALL, cacheGetAll);
             }
 
-            var cacheGetById = Cache.Get<object>(CacheGetByIdKey + "_" + entity.Id);
+            var cacheGetById = Cache.Get<object>(CACHE_GET_BY_ID + entity.Id);
             if (cacheGetById != null)
-                Cache.Replace(CacheGetByIdKey + "_" + entity.Id, entity);
+                Cache.Replace(CACHE_GET_BY_ID + entity.Id, entity);
 
-            Cache.Remove(CacheContainerGetPagedKey);
-            Cache.Remove(CacheContainerGetSingleWhereKey);
+            Cache.Remove(CACHE_CONTAINER_GET_PAGED);
+            Cache.Remove(CACHE_CONTAINER_GET_SINGLE_WHERE);
         }
 
         virtual protected void CacheOnUpdate(Entity entity)
         {
             entity.RowVersion = Db.SingleById<Entity>(entity.Id).RowVersion;
 
-            var cacheGetAll = Cache.Get<List<Entity>>(CacheGetAllKey);
+            var cacheGetAll = Cache.Get<List<Entity>>(CACHE_GET_ALL);
             if (cacheGetAll != null)
             {
                 if (cacheGetAll.Exists(e => e.Id == entity.Id))
@@ -141,36 +158,36 @@ namespace Reusable.CRUD.Implementations.SS
                 {
                     cacheGetAll.Add(entity);
                 }
-                Cache.Replace(CacheGetAllKey, cacheGetAll);
+                Cache.Replace(CACHE_GET_ALL, cacheGetAll);
             }
 
-            var cacheGetById = Cache.Get<object>(CacheGetByIdKey + "_" + entity.Id);
+            var cacheGetById = Cache.Get<object>(CACHE_GET_BY_ID + entity.Id);
             if (cacheGetById != null)
-                Cache.Replace(CacheGetByIdKey + "_" + entity.Id, entity);
+                Cache.Replace(CACHE_GET_BY_ID + entity.Id, entity);
 
-            Cache.Remove(CacheContainerGetPagedKey);
-            Cache.Remove(CacheContainerGetSingleWhereKey);
+            Cache.Remove(CACHE_CONTAINER_GET_PAGED);
+            Cache.Remove(CACHE_CONTAINER_GET_SINGLE_WHERE);
         }
 
         virtual protected void CacheOnDelete(Entity entity)
         {
-            var cacheGetAll = Cache.Get<List<Entity>>(CacheGetAllKey);
+            var cacheGetAll = Cache.Get<List<Entity>>(CACHE_GET_ALL);
             if (cacheGetAll != null)
             {
                 var toRemove = cacheGetAll.Find(e => e.Id == entity.Id);
                 cacheGetAll.Remove(toRemove);
-                Cache.Replace(CacheGetAllKey, cacheGetAll);
+                Cache.Replace(CACHE_GET_ALL, cacheGetAll);
             }
 
-            Cache.Remove(CacheGetByIdKey + "_" + entity.Id);
+            Cache.Remove(CACHE_GET_BY_ID + entity.Id);
 
-            Cache.Remove(CacheContainerGetPagedKey);
-            Cache.Remove(CacheContainerGetSingleWhereKey);
+            Cache.Remove(CACHE_CONTAINER_GET_PAGED);
+            Cache.Remove(CACHE_CONTAINER_GET_SINGLE_WHERE);
         }
 
         virtual protected void CacheOnDeleteAll()
         {
-            //ToDO: Remove only concerning to Current Entity.
+            //ToDO: Remove only concerning to Current Entity Type.
             Cache.FlushAll();
         }
         #endregion

@@ -6,7 +6,7 @@ using ServiceStack.OrmLite;
 
 namespace Reusable.CRUD.Implementations.SS.Logic
 {
-    public class RevisionLogic : LogicWrite<Revision>, IRevisionLogic
+    public class RevisionLogic : LogicWrite<Revision>
     {
         #region Overrides
         #endregion

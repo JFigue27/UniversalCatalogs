@@ -18,52 +18,53 @@ namespace Reusable.CRUD.Implementations.SS
 {
     public abstract class ReadOnlyLogic<Entity> : BaseLogic, ILogicReadOnly<Entity>, ILogicReadOnlyAsync<Entity> where Entity : BaseEntity, new()
     {
-        protected string CacheGetAllKey { get { return typeof(Entity).Name + "_GetAll"; } }
-        protected string CacheGetByIdKey { get { return typeof(Entity).Name + "_GetById"; } }
-        protected string CacheGetPagedKey { get { return typeof(Entity).Name + "_GetPaged"; } }
-        protected string CacheGetSingleWhereKey { get { return typeof(Entity).Name + "_GetSingleWhere"; } }
+        protected string CACHE_GET_ALL { get { return typeof(Entity).Name + "_GetAll_"; } }
+        protected string CACHE_GET_BY_ID { get { return typeof(Entity).Name + "_GetById_"; } }
+        protected string CACHE_GET_PAGED { get { return typeof(Entity).Name + "_GetPaged_"; } }
+        protected string CACHE_GET_SINGLE_WHERE { get { return typeof(Entity).Name + "_GetSingleWhere_"; } }
 
-        protected string CacheContainerGetPagedKey { get { return typeof(Entity).Name + "_Container_GetPaged"; } }
-        protected string CacheContainerGetSingleWhereKey { get { return typeof(Entity).Name + "_ContainerGetSingleWhere"; } }
+        protected string CACHE_CONTAINER_GET_PAGED { get { return typeof(Entity).Name + "_Container_GetPaged_"; } }
+        protected string CACHE_CONTAINER_GET_SINGLE_WHERE { get { return typeof(Entity).Name + "_Container_GetSingleWhere_"; } }
 
         #region HOOKS
         virtual protected SqlExpression<Entity> OnGetList(SqlExpression<Entity> query) { return query; }
         virtual protected SqlExpression<Entity> OnGetSingle(SqlExpression<Entity> query) { return OnGetList(query); }
         virtual protected IEnumerable<Entity> AdapterOut(params Entity[] entities) { return entities.ToList(); }
+        virtual protected List<Entity> BeforePaginate(List<Entity> entities) { return entities; }
         virtual protected bool PopulateForSearch(params Entity[] entities) { return false; } // return true to avoid calling AdapterOut when getPage because they are the same.
         #endregion
 
         virtual public List<Entity> GetAll()
         {
-            var cache = Cache.Get<List<Entity>>(CacheGetAllKey);
+            var cache = Cache.Get<List<Entity>>(CACHE_GET_ALL);
             if (cache != null)
                 return cache;
 
             var query = OnGetList(Db.From<Entity>());
-            var entities = AdapterOut(Db.LoadSelect(query).ToArray());
+            var entities = AdapterOut(BeforePaginate(Db.LoadSelect(query)).ToArray());
 
             var response = entities.ToList();
-            Cache.Set(CacheGetAllKey, response);
+            Cache.Set(CACHE_GET_ALL, response);
             return response;
         }
 
         virtual public async Task<List<Entity>> GetAllAsync()
         {
-            var cache = Cache.Get<List<Entity>>(CacheGetAllKey);
+            var cache = Cache.Get<List<Entity>>(CACHE_GET_ALL);
             if (cache != null)
                 return cache;
 
             var query = OnGetList(Db.From<Entity>());
-            var entities = AdapterOut((await Db.LoadSelectAsync(query)).ToArray());
+            var entities = AdapterOut(BeforePaginate(await Db.LoadSelectAsync(query)).ToArray());
 
             var response = entities.ToList();
-            Cache.Set(CacheGetAllKey, response);
+            Cache.Set(CACHE_GET_ALL, response);
             return response;
         }
 
         virtual public Entity GetById(long id)
         {
-            var cacheKey = CacheGetByIdKey + "_" + id;
+            var cacheKey = CACHE_GET_BY_ID + id;
 
             var cache = Cache.Get<Entity>(cacheKey);
             if (cache != null)
@@ -83,7 +84,7 @@ namespace Reusable.CRUD.Implementations.SS
 
         virtual public async Task<Entity> GetByIdAsync(long id)
         {
-            var cacheKey = CacheGetByIdKey + "_" + id;
+            var cacheKey = CACHE_GET_BY_ID + id;
 
             var cache = Cache.Get<Entity>(cacheKey);
             if (cache != null)
@@ -101,9 +102,9 @@ namespace Reusable.CRUD.Implementations.SS
 
         virtual public CommonResponse GetPaged(int perPage, int page, string filterGeneral, SqlExpression<Entity> query = null, string cacheKey = null)
         {
-            var cacheContainer = Cache.Get<Dictionary<string, CommonResponse>>(CacheContainerGetPagedKey);
+            var cacheContainer = Cache.Get<Dictionary<string, CommonResponse>>(CACHE_CONTAINER_GET_PAGED);
             if (cacheContainer == null) cacheContainer = new Dictionary<string, CommonResponse>();
-            if (string.IsNullOrWhiteSpace(cacheKey)) cacheKey = CacheGetPagedKey;
+            if (string.IsNullOrWhiteSpace(cacheKey)) cacheKey = CACHE_GET_PAGED;
             cacheKey += $"_{ perPage}_{page}_{filterGeneral}";
 
             if (query == null) query = Db.From<Entity>();
@@ -125,6 +126,8 @@ namespace Reusable.CRUD.Implementations.SS
                 string queryParamValue = Request.QueryString[queryParam];
                 if (IsValidParam(queryParam) && IsValidJSValue(queryParamValue))
                 {
+                    cacheKey += $"_{queryParam}_{queryParamValue}";
+
                     string sPropertyName = queryParam;
 
                     PropertyInfo oProp = typeof(Entity).GetProperty(sPropertyName);
@@ -136,37 +139,18 @@ namespace Reusable.CRUD.Implementations.SS
                     //  use their underlying property to set the value in the object
                     if (tProp.IsGenericType
                         && tProp.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
-                    {
                         //Get the underlying type property instead of the nullable generic
                         tProp = new NullableConverter(oProp.PropertyType).UnderlyingType;
-                    }
 
                     ParameterExpression entityParameter = Expression.Parameter(typeof(Entity), "entityParameter");
                     Expression childProperty = Expression.PropertyOrField(entityParameter, sPropertyName);
 
-
                     var value = Expression.Constant(Convert.ChangeType(queryParamValue, tProp));
 
-                    // let's perform the conversion only if we really need it
-                    var converted = value.Type != childProperty.Type
-                        ? Expression.Convert(value, childProperty.Type)
-                        : (Expression)value;
-
-                    Expression<Func<Entity, bool>> lambda;
-                    if (tProp == typeof(String))
-                    {
-                        MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-                        lambda = Expression.Lambda<Func<Entity, bool>>(Expression.Call(converted, method, childProperty), entityParameter);
-                    }
+                    if (tProp == typeof(string))
+                        query.Where($"{query.SqlColumn(sPropertyName)} like '%{value.Value}%'");
                     else
-                    {
-                        Expression comparison = Expression.Equal(childProperty, converted);
-                        lambda = Expression.Lambda<Func<Entity, bool>>(comparison, entityParameter);
-                    }
-
-                    cacheKey += "_" + lambda.ToString();
-
-                    query.And(lambda);
+                        query.Where($"{query.SqlColumn(sPropertyName)} = {value.Value}");
                 }
             }
             #endregion
@@ -221,9 +205,7 @@ namespace Reusable.CRUD.Implementations.SS
                         }
                     }
                     if (bAllKeywordsFound)
-                    {
                         filteredResultSet.Add(e);
-                    }
                 }
 
                 //DID NOT WORK SOMETIMES:
@@ -233,9 +215,7 @@ namespace Reusable.CRUD.Implementations.SS
                 //                                        .Contains(keyword))));
             }
             else
-            {
                 filteredResultSet = new HashSet<Entity>(entities);
-            }
 
             filterResponse.total_filtered_items = filteredResultSet.Count();
             #endregion
@@ -244,32 +224,33 @@ namespace Reusable.CRUD.Implementations.SS
             IEnumerable<Entity> afterPaginate;
             if (perPage != 0)
             {
-                afterPaginate = filteredResultSet.Skip((page - 1) * perPage).Take(perPage);
+                var totalPagesCount = (filterResponse.total_filtered_items + perPage - 1) / perPage;
+                if (page > totalPagesCount)
+                    page = totalPagesCount;
+
+                afterPaginate = BeforePaginate(filteredResultSet.ToList()).Skip((page - 1) * perPage).Take(perPage);
+                filterResponse.page = page;
             }
             else
-            {
-                afterPaginate = filteredResultSet;
-            }
+                afterPaginate = BeforePaginate(filteredResultSet.ToList());
             #endregion
 
             #region AdapterOut Hook
             if (!PopulateForSearchEqualsAdapterOut)
-            {
                 AdapterOut(afterPaginate.ToArray());
-            }
             #endregion
 
             var response = new CommonResponse { Result = afterPaginate, AdditionalData = filterResponse };
             cacheContainer[cacheKey] = response;
-            Cache.Replace(CacheContainerGetPagedKey, cacheContainer);
+            Cache.Replace(CACHE_CONTAINER_GET_PAGED, cacheContainer);
             return response;
         }
 
         virtual public async Task<CommonResponse> GetPagedAsync(int perPage, int page, string filterGeneral, SqlExpression<Entity> query = null, string cacheKey = null)
         {
-            var cacheContainer = Cache.Get<Dictionary<string, CommonResponse>>(CacheContainerGetPagedKey);
+            var cacheContainer = Cache.Get<Dictionary<string, CommonResponse>>(CACHE_CONTAINER_GET_PAGED);
             if (cacheContainer == null) cacheContainer = new Dictionary<string, CommonResponse>();
-            if (string.IsNullOrWhiteSpace(cacheKey)) cacheKey = CacheGetPagedKey;
+            if (string.IsNullOrWhiteSpace(cacheKey)) cacheKey = CACHE_GET_PAGED;
             cacheKey += $"_{ perPage}_{page}_{filterGeneral}";
 
             if (query == null) query = Db.From<Entity>();
@@ -291,6 +272,8 @@ namespace Reusable.CRUD.Implementations.SS
                 string queryParamValue = Request.QueryString[queryParam];
                 if (IsValidParam(queryParam) && IsValidJSValue(queryParamValue))
                 {
+                    cacheKey += $"_{queryParam}_{queryParamValue}";
+
                     string sPropertyName = queryParam;
 
                     PropertyInfo oProp = typeof(Entity).GetProperty(sPropertyName);
@@ -302,37 +285,18 @@ namespace Reusable.CRUD.Implementations.SS
                     //  use their underlying property to set the value in the object
                     if (tProp.IsGenericType
                         && tProp.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
-                    {
                         //Get the underlying type property instead of the nullable generic
                         tProp = new NullableConverter(oProp.PropertyType).UnderlyingType;
-                    }
 
                     ParameterExpression entityParameter = Expression.Parameter(typeof(Entity), "entityParameter");
                     Expression childProperty = Expression.PropertyOrField(entityParameter, sPropertyName);
 
-
                     var value = Expression.Constant(Convert.ChangeType(queryParamValue, tProp));
 
-                    // let's perform the conversion only if we really need it
-                    var converted = value.Type != childProperty.Type
-                        ? Expression.Convert(value, childProperty.Type)
-                        : (Expression)value;
-
-                    Expression<Func<Entity, bool>> lambda;
-                    if (tProp == typeof(String))
-                    {
-                        MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-                        lambda = Expression.Lambda<Func<Entity, bool>>(Expression.Call(converted, method, childProperty), entityParameter);
-                    }
+                    if (tProp == typeof(string))
+                        query.Where($"{query.SqlColumn(sPropertyName)} like '%{value.Value}%'");
                     else
-                    {
-                        Expression comparison = Expression.Equal(childProperty, converted);
-                        lambda = Expression.Lambda<Func<Entity, bool>>(comparison, entityParameter);
-                    }
-
-                    cacheKey += "_" + lambda.ToString();
-
-                    query.And(lambda);
+                        query.Where($"{query.SqlColumn(sPropertyName)} = {value.Value}");
                 }
             }
 
@@ -389,9 +353,7 @@ namespace Reusable.CRUD.Implementations.SS
                         }
                     }
                     if (bAllKeywordsFound)
-                    {
                         filteredResultSet.Add(e);
-                    }
                 }
 
                 //DID NOT WORK SOMETIMES:
@@ -401,9 +363,7 @@ namespace Reusable.CRUD.Implementations.SS
                 //                                        .Contains(keyword))));
             }
             else
-            {
                 filteredResultSet = new HashSet<Entity>(entities);
-            }
 
             filterResponse.total_filtered_items = filteredResultSet.Count();
             #endregion
@@ -411,153 +371,29 @@ namespace Reusable.CRUD.Implementations.SS
             #region Pagination
             IEnumerable<Entity> afterPaginate;
             if (perPage != 0)
-            {
-                afterPaginate = filteredResultSet.Skip((page - 1) * perPage).Take(perPage);
-            }
+                afterPaginate = BeforePaginate(filteredResultSet.ToList()).Skip((page - 1) * perPage).Take(perPage);
             else
-            {
-                afterPaginate = filteredResultSet;
-            }
+                afterPaginate = BeforePaginate(filteredResultSet.ToList());
             #endregion
 
             #region AdapterOut Hook
             if (!PopulateForSearchEqualsAdapterOut)
-            {
                 AdapterOut(afterPaginate.ToArray());
-            }
             #endregion
 
             var response = new CommonResponse { Result = afterPaginate.ToList(), AdditionalData = filterResponse };
             cacheContainer[cacheKey] = response;
-            Cache.Replace(CacheContainerGetPagedKey, cacheContainer);
+            Cache.Replace(CACHE_CONTAINER_GET_PAGED, cacheContainer);
             return response;
         }
 
         virtual public Entity GetSingleWhere(string Property, object Value, SqlExpression<Entity> query = null, string cacheKey = null)
         {
-            var cacheContainer = Cache.Get<Dictionary<string, Entity>>(CacheContainerGetSingleWhereKey);
+            var cacheContainer = Cache.Get<Dictionary<string, Entity>>(CACHE_CONTAINER_GET_SINGLE_WHERE);
             if (cacheContainer == null) cacheContainer = new Dictionary<string, Entity>();
 
-            if (string.IsNullOrWhiteSpace(cacheKey)) cacheKey = CacheGetSingleWhereKey;
+            if (string.IsNullOrWhiteSpace(cacheKey)) cacheKey = CACHE_GET_SINGLE_WHERE;
             cacheKey += $"_{ Property}_{Value}";
-
-            cacheContainer.TryGetValue(cacheKey, out Entity cache);
-            if (cache != null) return cache;
-
-            if (query == null) query = Db.From<Entity>();
-
-            if (!string.IsNullOrWhiteSpace(Property) && Value != null)
-            {
-                string sPropertyName = Property;
-
-                PropertyInfo oProp = typeof(Entity).GetProperty(sPropertyName);
-                Type tProp = oProp.PropertyType;
-                //Nullable properties have to be treated differently, since we
-                //  use their underlying property to set the value in the object
-                if (tProp.IsGenericType
-                    && tProp.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
-                {
-                    //Get the underlying type property instead of the nullable generic
-                    tProp = new NullableConverter(oProp.PropertyType).UnderlyingType;
-                }
-
-                ParameterExpression entityParameter = Expression.Parameter(typeof(Entity), "entityParameter");
-                Expression childProperty = Expression.PropertyOrField(entityParameter, sPropertyName);
-
-
-                var value = Expression.Constant(Convert.ChangeType(Value, tProp));
-
-                // let's perform the conversion only if we really need it
-                var converted = value.Type != childProperty.Type
-                    ? Expression.Convert(value, childProperty.Type)
-                    : (Expression)value;
-
-                Expression<Func<Entity, bool>> lambda;
-                if (tProp == typeof(String))
-                {
-                    MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-                    lambda = Expression.Lambda<Func<Entity, bool>>(Expression.Call(converted, method, childProperty), entityParameter);
-                }
-                else
-                {
-                    Expression comparison = Expression.Equal(childProperty, converted);
-                    lambda = Expression.Lambda<Func<Entity, bool>>(comparison, entityParameter);
-                }
-
-                query.And(lambda);
-            }
-
-            foreach (var queryParam in Request.QueryString.AllKeys)
-            {
-                string queryParamValue = Request.QueryString[queryParam];
-                if (IsValidParam(queryParam) && IsValidJSValue(queryParamValue))
-                {
-                    string sPropertyName = queryParam;
-
-                    PropertyInfo oProp = typeof(Entity).GetProperty(sPropertyName);
-                    if (oProp == null) continue; //Ignore non-existing properties, they could be just different query parameters.
-
-
-                    Type tProp = oProp.PropertyType;
-                    //Nullable properties have to be treated differently, since we
-                    //  use their underlying property to set the value in the object
-                    if (tProp.IsGenericType
-                        && tProp.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
-                    {
-                        //Get the underlying type property instead of the nullable generic
-                        tProp = new NullableConverter(oProp.PropertyType).UnderlyingType;
-                    }
-
-                    ParameterExpression entityParameter = Expression.Parameter(typeof(Entity), "entityParameter");
-                    Expression childProperty = Expression.PropertyOrField(entityParameter, sPropertyName);
-
-
-                    var value = Expression.Constant(Convert.ChangeType(queryParamValue, tProp));
-
-                    // let's perform the conversion only if we really need it
-                    var converted = value.Type != childProperty.Type
-                        ? Expression.Convert(value, childProperty.Type)
-                        : (Expression)value;
-
-                    Expression<Func<Entity, bool>> lambda;
-                    if (tProp == typeof(String))
-                    {
-                        MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-                        lambda = Expression.Lambda<Func<Entity, bool>>(Expression.Call(converted, method, childProperty), entityParameter);
-                    }
-                    else
-                    {
-                        Expression comparison = Expression.Equal(childProperty, converted);
-                        lambda = Expression.Lambda<Func<Entity, bool>>(comparison, entityParameter);
-                    }
-
-                    cacheKey += "_" + lambda.ToString();
-
-                    query.And(lambda);
-                }
-            }
-
-            query = OnGetSingle(query);
-
-            var entity = Db.LoadSelect(query).FirstOrDefault();
-            if (entity != null) AdapterOut(entity);
-
-            var response = entity;
-            cacheContainer[cacheKey] = response;
-            Cache.Replace(CacheContainerGetSingleWhereKey, cacheContainer);
-            return response;
-        }
-
-        virtual public async Task<Entity> GetSingleWhereAsync(string Property, object Value, SqlExpression<Entity> query = null, string cacheKey = null)
-        {
-            var cacheContainer = Cache.Get<Dictionary<string, Entity>>(CacheContainerGetSingleWhereKey);
-            if (cacheContainer == null) cacheContainer = new Dictionary<string, Entity>();
-
-            if (string.IsNullOrWhiteSpace(cacheKey)) cacheKey = CacheGetSingleWhereKey;
-            cacheKey += $"_{ Property}_{Value}";
-
-            cacheContainer.TryGetValue(cacheKey, out Entity cache);
-            if (cache != null) return cache;
 
             if (query == null) query = Db.From<Entity>();
 
@@ -588,13 +424,12 @@ namespace Reusable.CRUD.Implementations.SS
                 }
             }
 
-            query = OnGetSingle(query);
-
             foreach (var queryParam in Request.QueryString.AllKeys)
             {
                 string queryParamValue = Request.QueryString[queryParam];
                 if (IsValidParam(queryParam) && IsValidJSValue(queryParamValue))
                 {
+                    cacheKey += $"_{queryParam}={queryParamValue}";
                     string sPropertyName = queryParam;
 
                     PropertyInfo oProp = typeof(Entity).GetProperty(sPropertyName);
@@ -634,19 +469,121 @@ namespace Reusable.CRUD.Implementations.SS
                         lambda = Expression.Lambda<Func<Entity, bool>>(comparison, entityParameter);
                     }
 
-                    cacheKey += "_" + lambda.ToString();
+                    query.And(lambda);
+                }
+            }
+
+            cacheContainer.TryGetValue(cacheKey, out Entity cache);
+            if (cache != null) return cache;
+
+            query = OnGetSingle(query);
+
+            var entity = Db.LoadSelect(query).FirstOrDefault();
+            if (entity != null) AdapterOut(entity);
+
+            var response = entity;
+            cacheContainer[cacheKey] = response;
+            Cache.Replace(CACHE_CONTAINER_GET_SINGLE_WHERE, cacheContainer);
+            return response;
+        }
+
+        virtual public async Task<Entity> GetSingleWhereAsync(string Property, object Value, SqlExpression<Entity> query = null, string cacheKey = null)
+        {
+            var cacheContainer = Cache.Get<Dictionary<string, Entity>>(CACHE_CONTAINER_GET_SINGLE_WHERE);
+            if (cacheContainer == null) cacheContainer = new Dictionary<string, Entity>();
+
+            if (string.IsNullOrWhiteSpace(cacheKey)) cacheKey = CACHE_GET_SINGLE_WHERE;
+            cacheKey += $"_{ Property}_{Value}";
+
+            if (query == null) query = Db.From<Entity>();
+
+            if (!string.IsNullOrWhiteSpace(Property) && Value != null)
+            {
+                string sPropertyName = Property;
+
+                PropertyInfo oProp = typeof(Entity).GetProperty(sPropertyName);
+                Type tProp = oProp.PropertyType;
+                //Nullable properties have to be treated differently, since we
+                //  use their underlying property to set the value in the object
+                if (tProp.IsGenericType
+                    && tProp.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                {
+                    //Get the underlying type property instead of the nullable generic
+                    tProp = new NullableConverter(oProp.PropertyType).UnderlyingType;
+                }
+
+                var value = Expression.Constant(Convert.ChangeType(Value, tProp));
+
+                if (tProp == typeof(string))
+                {
+                    query.Where($"{query.SqlColumn(Property)} like '%{value.Value}%'");
+                }
+                else
+                {
+                    query.Where($"{query.SqlColumn(Property)} = {value.Value}");
+                }
+            }
+
+            foreach (var queryParam in Request.QueryString.AllKeys)
+            {
+                string queryParamValue = Request.QueryString[queryParam];
+                if (IsValidParam(queryParam) && IsValidJSValue(queryParamValue))
+                {
+                    cacheKey += $"_{queryParam}={queryParamValue}";
+                    string sPropertyName = queryParam;
+
+                    PropertyInfo oProp = typeof(Entity).GetProperty(sPropertyName);
+                    if (oProp == null) continue; //Ignore non-existing properties, they could be just different query parameters.
+
+
+                    Type tProp = oProp.PropertyType;
+                    //Nullable properties have to be treated differently, since we
+                    //  use their underlying property to set the value in the object
+                    if (tProp.IsGenericType
+                        && tProp.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                    {
+                        //Get the underlying type property instead of the nullable generic
+                        tProp = new NullableConverter(oProp.PropertyType).UnderlyingType;
+                    }
+
+                    ParameterExpression entityParameter = Expression.Parameter(typeof(Entity), "entityParameter");
+                    Expression childProperty = Expression.PropertyOrField(entityParameter, sPropertyName);
+
+
+                    var value = Expression.Constant(Convert.ChangeType(queryParamValue, tProp));
+
+                    // let's perform the conversion only if we really need it
+                    var converted = value.Type != childProperty.Type
+                        ? Expression.Convert(value, childProperty.Type)
+                        : (Expression)value;
+
+                    Expression<Func<Entity, bool>> lambda;
+                    if (tProp == typeof(String))
+                    {
+                        MethodInfo method = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+                        lambda = Expression.Lambda<Func<Entity, bool>>(Expression.Call(converted, method, childProperty), entityParameter);
+                    }
+                    else
+                    {
+                        Expression comparison = Expression.Equal(childProperty, converted);
+                        lambda = Expression.Lambda<Func<Entity, bool>>(comparison, entityParameter);
+                    }
 
                     query.And(lambda);
                 }
             }
 
-            var entity = (await Db.LoadSelectAsync(query)).FirstOrDefault();
+            cacheContainer.TryGetValue(cacheKey, out Entity cache);
+            if (cache != null) return cache;
 
+            query = OnGetSingle(query);
+
+            var entity = (await Db.LoadSelectAsync(query)).FirstOrDefault();
             if (entity != null) AdapterOut(entity);
 
             var response = entity;
             cacheContainer[cacheKey] = response;
-            Cache.Replace(CacheContainerGetSingleWhereKey, cacheContainer);
+            Cache.Replace(CACHE_CONTAINER_GET_SINGLE_WHERE, cacheContainer);
             return response;
         }
     }

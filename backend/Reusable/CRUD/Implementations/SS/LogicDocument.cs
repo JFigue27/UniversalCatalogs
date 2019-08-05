@@ -1,9 +1,11 @@
 using Reusable.CRUD.Contract;
 using Reusable.CRUD.Entities;
+using Reusable.CRUD.Implementations.SS.Logic;
 using Reusable.Rest;
 using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.OrmLite;
+using ServiceStack.Web;
 using System;
 using System.Data;
 using System.Threading.Tasks;
@@ -12,21 +14,14 @@ namespace Reusable.CRUD.Implementations.SS
 {
     public class DocumentLogic<Entity> : LogicWrite<Entity>, IDocumentLogic<Entity>, IDocumentLogicAsync<Entity> where Entity : BaseDocument, new()
     {
-        public IRevisionLogic RevisionLogic { get; set; }
-        public ITrackLogic TrackLogic { get; set; }
+        public RevisionLogic RevisionLogic { get; set; }
+        public TrackLogic TrackLogic { get; set; }
 
-        public override void SetDb(IDbConnection Db)
+        public override void Init(IDbConnection db, IAuthSession auth, IRequest request)
         {
-            base.SetDb(Db);
-            RevisionLogic.SetDb(Db);
-            TrackLogic.SetDb(Db);
-        }
-
-        public override void SetAuth(IAuthSession Auth)
-        {
-            base.SetAuth(Auth);
-            RevisionLogic.SetAuth(Auth);
-            TrackLogic.SetAuth(Auth);
+            base.Init(db, auth, request);
+            RevisionLogic.Init(db, auth, request);
+            TrackLogic.Init(db, auth, request);
         }
 
         #region HOOKS
@@ -36,15 +31,20 @@ namespace Reusable.CRUD.Implementations.SS
 
         protected override SqlExpression<Entity> OnGetList(SqlExpression<Entity> query)
         {
-            return query;
+            return query
+                .Where(e => !e.IsDeleted)
+                .LeftJoin<Track>();
         }
+
         protected override SqlExpression<Entity> OnGetSingle(SqlExpression<Entity> query)
         {
-            return query;
+            return query
+                .Where(e => !e.IsDeleted)
+                .LeftJoin<Track>();
         }
         #endregion
 
-        public override Entity Add(ref Entity entity)
+        public override Entity Add(Entity entity)
         {
             entity.CreatedAt = DateTimeOffset.Now;
 
@@ -54,10 +54,10 @@ namespace Reusable.CRUD.Implementations.SS
                 Discriminator = entity.EntityName,
                 CreatedBy = Auth.UserName
             };
-            TrackLogic.Add(ref track);
+            TrackLogic.Add(track);
             entity.TrackId = track.Id;
 
-            return base.Add(ref entity);
+            return base.Add(entity);
         }
 
         public override async Task<Entity> AddAsync(Entity entity)
@@ -74,6 +74,54 @@ namespace Reusable.CRUD.Implementations.SS
             entity.TrackId = track.Id;
 
             return await base.AddAsync(entity);
+        }
+
+        public override void Remove(Entity entity)
+        {
+            OnBeforeRemoving(entity);
+
+            var track = TrackLogic.GetById(entity.TrackId ?? 0);
+            if (track == null)
+            {
+                track = new Track
+                {
+                    CreatedAt = entity.CreatedAt,
+                    Discriminator = entity.EntityName,
+                    CreatedBy = Auth.UserName
+                };
+                TrackLogic.Add(track);
+            }
+            track.RemovedAt = DateTimeOffset.Now;
+            track.RemovedBy = Auth.UserName;
+            TrackLogic.Update(track);
+
+            Db.Update<Entity>(new { IsDeleted = true, TrackId = track.Id }, e => e.Id == entity.Id);
+
+            CacheOnDelete(entity);
+        }
+
+        public override async Task RemoveAsync(Entity entity)
+        {
+            OnBeforeRemoving(entity);
+
+            var track = await TrackLogic.GetByIdAsync(entity.TrackId ?? 0);
+            if (track == null)
+            {
+                track = new Track
+                {
+                    CreatedAt = entity.CreatedAt,
+                    Discriminator = entity.EntityName,
+                    CreatedBy = Auth.UserName
+                };
+                await TrackLogic.AddAsync(track);
+            }
+            track.RemovedAt = DateTimeOffset.Now;
+            track.RemovedBy = Auth.UserName;
+            await TrackLogic.UpdateAsync(track);
+
+            await Db.UpdateAsync<Entity>(new { IsDeleted = true, TrackId = track.Id }, e => e.Id == entity.Id);
+
+            CacheOnDelete(entity);
         }
 
         virtual public void Finalize(Entity entity)
@@ -93,17 +141,27 @@ namespace Reusable.CRUD.Implementations.SS
             #endregion
 
             #region Finalization
-            originalEntity.DocumentStatus = "FINALIZED";
-            originalEntity.IsLockedOut = true;
+            entity.DocumentStatus = "FINALIZED";
+            entity.IsLockedOut = true;
 
-            if (originalEntity.Track == null)
-                originalEntity.Track = new Track();
-
-            originalEntity.Track.UpdatedAt = DateTimeOffset.Now;
-            originalEntity.Track.UpdatedBy = Auth.UserName;
+            var track = TrackLogic.GetById(originalEntity.TrackId ?? 0);
+            if (track == null)
+            {
+                track = new Track
+                {
+                    CreatedAt = entity.CreatedAt,
+                    Discriminator = entity.EntityName,
+                    CreatedBy = Auth.UserName
+                };
+                TrackLogic.Add(track);
+            }
+            track.UpdatedAt = DateTimeOffset.Now;
+            track.UpdatedBy = Auth.UserName;
+            TrackLogic.Update(track);
+            entity.TrackId = track.Id;
 
             entity.RevisionMessage = "Finalized";
-            Db.Save(originalEntity, references: true);
+            Db.Save(entity);
             #endregion
 
             #region Make Revision
@@ -115,7 +173,7 @@ namespace Reusable.CRUD.Implementations.SS
             #endregion
         }
 
-        virtual public async System.Threading.Tasks.Task FinalizeAsync(Entity entity)
+        virtual public async Task FinalizeAsync(Entity entity)
         {
             var originalEntity = await GetByIdAsync(entity.Id);
 
@@ -132,17 +190,27 @@ namespace Reusable.CRUD.Implementations.SS
             #endregion
 
             #region Finalization
-            originalEntity.DocumentStatus = "FINALIZED";
-            originalEntity.IsLockedOut = true;
+            entity.DocumentStatus = "FINALIZED";
+            entity.IsLockedOut = true;
 
-            if (originalEntity.Track == null)
-                originalEntity.Track = new Track();
-
-            originalEntity.Track.UpdatedAt = DateTimeOffset.Now;
-            originalEntity.Track.UpdatedBy = Auth.UserName;
+            var track = await TrackLogic.GetByIdAsync(originalEntity.TrackId ?? 0);
+            if (track == null)
+            {
+                track = new Track
+                {
+                    CreatedAt = entity.CreatedAt,
+                    Discriminator = entity.EntityName,
+                    CreatedBy = Auth.UserName
+                };
+                await TrackLogic.AddAsync(track);
+            }
+            track.UpdatedAt = DateTimeOffset.Now;
+            track.UpdatedBy = Auth.UserName;
+            await TrackLogic.UpdateAsync(track);
+            entity.TrackId = track.Id;
 
             entity.RevisionMessage = "Finalized";
-            await Db.SaveAsync(originalEntity, references: true);
+            await Db.SaveAsync(entity);
             #endregion
 
             #region Make Revision
@@ -171,17 +239,27 @@ namespace Reusable.CRUD.Implementations.SS
             #endregion
 
             #region UnFinalization
-            originalEntity.DocumentStatus = "IN PROGRESS";
-            originalEntity.IsLockedOut = false;
+            entity.DocumentStatus = "IN PROGRESS";
+            entity.IsLockedOut = false;
 
-            if (originalEntity.Track == null)
-                originalEntity.Track = new Track();
-
-            originalEntity.Track.UpdatedAt = DateTimeOffset.Now;
-            originalEntity.Track.UpdatedBy = Auth.UserName;
+            var track = TrackLogic.GetById(originalEntity.TrackId ?? 0);
+            if (track == null)
+            {
+                track = new Track
+                {
+                    CreatedAt = entity.CreatedAt,
+                    Discriminator = entity.EntityName,
+                    CreatedBy = Auth.UserName
+                };
+                TrackLogic.Add(track);
+            }
+            track.UpdatedAt = DateTimeOffset.Now;
+            track.UpdatedBy = Auth.UserName;
+            TrackLogic.Update(track);
+            entity.TrackId = track.Id;
 
             entity.RevisionMessage = "Unfinalized";
-            Db.Save(originalEntity, references: true);
+            Db.Save(entity);
             #endregion
 
             #region Make Revision
@@ -193,7 +271,7 @@ namespace Reusable.CRUD.Implementations.SS
             #endregion
         }
 
-        virtual public async System.Threading.Tasks.Task UnfinalizeAsync(Entity entity)
+        virtual public async Task UnfinalizeAsync(Entity entity)
         {
             var originalEntity = GetById(entity.Id);
 
@@ -210,17 +288,27 @@ namespace Reusable.CRUD.Implementations.SS
             #endregion
 
             #region UnFinalization
-            originalEntity.DocumentStatus = "IN PROGRESS";
-            originalEntity.IsLockedOut = false;
+            entity.DocumentStatus = "IN PROGRESS";
+            entity.IsLockedOut = false;
 
-            if (originalEntity.Track == null)
-                originalEntity.Track = new Track();
-
-            originalEntity.Track.UpdatedAt = DateTimeOffset.Now;
-            originalEntity.Track.UpdatedBy = Auth.UserName;
+            var track = await TrackLogic.GetByIdAsync(originalEntity.TrackId ?? 0);
+            if (track == null)
+            {
+                track = new Track
+                {
+                    CreatedAt = entity.CreatedAt,
+                    Discriminator = entity.EntityName,
+                    CreatedBy = Auth.UserName
+                };
+                await TrackLogic.AddAsync(track);
+            }
+            track.UpdatedAt = DateTimeOffset.Now;
+            track.UpdatedBy = Auth.UserName;
+            await TrackLogic.UpdateAsync(track);
+            entity.TrackId = track.Id;
 
             entity.RevisionMessage = "Unfinalized";
-            await Db.SaveAsync(originalEntity, references: true);
+            await Db.SaveAsync(entity);
             #endregion
 
             #region Make Revision
@@ -249,10 +337,10 @@ namespace Reusable.CRUD.Implementations.SS
                 CreatedAt = DateTimeOffset.Now
             };
 
-            RevisionLogic.Add(ref revision);
+            RevisionLogic.Add(revision);
         }
 
-        virtual public async System.Threading.Tasks.Task MakeRevisionAsync(Entity entity)
+        virtual public async Task MakeRevisionAsync(Entity entity)
         {
             //Revision itself:
             var clone = entity.Clone() as Entity;
@@ -279,7 +367,7 @@ namespace Reusable.CRUD.Implementations.SS
             return entity;
         }
 
-        virtual public async System.Threading.Tasks.Task<Entity> UpdateAndMakeRevisionAsync(Entity entity)
+        virtual public async Task<Entity> UpdateAndMakeRevisionAsync(Entity entity)
         {
             await UpdateAsync(entity);
             await MakeRevisionAsync(entity);
@@ -291,7 +379,7 @@ namespace Reusable.CRUD.Implementations.SS
             var document = GetById(id) as BaseDocument;
 
             if (!Auth.IsAuthenticated)
-                throw new KnownError("User not signed in or User not registered.");
+                throw new KnownError("User not authenticated.");
 
             if (document.CheckedoutBy == null)
             {
@@ -301,7 +389,7 @@ namespace Reusable.CRUD.Implementations.SS
             else if (!string.IsNullOrWhiteSpace(document.CheckedoutBy)
                 && Auth.UserName != document.CheckedoutBy)
             {
-                throw new KnownError("This document is already Checked Out by: {0}".Fmt(document.CheckedoutBy));
+                throw new KnownError($"This document is already Checked Out by: {document.CheckedoutBy}");
             }
 
             #region Cache
@@ -309,12 +397,12 @@ namespace Reusable.CRUD.Implementations.SS
             #endregion
         }
 
-        virtual public async System.Threading.Tasks.Task CheckoutAsync(long id)
+        virtual public async Task CheckoutAsync(long id)
         {
             var document = await GetByIdAsync(id);
 
             if (Auth.UserName == null)
-                throw new KnownError("User not signed in or User not registered.");
+                throw new KnownError("User not authenticated.");
 
             if (document.CheckedoutBy == null)
             {
@@ -338,8 +426,8 @@ namespace Reusable.CRUD.Implementations.SS
 
             if (!string.IsNullOrWhiteSpace(document.CheckedoutBy)
                 && Auth.UserName != document.CheckedoutBy
-                && !Auth.Roles.Contains("Admin"))
-                throw new KnownError("Only User who Checked Out can \"Cancel Checked Out\": {0}".Fmt(document.CheckedoutBy));
+                && !HasRoles("Admin"))
+                throw new KnownError($"Only User who Checked Out can \"Cancel Checked Out\": {document.CheckedoutBy}");
 
             document.CheckedoutBy = null;
             Db.UpdateOnly(document, only => only.CheckedoutBy);
@@ -349,13 +437,13 @@ namespace Reusable.CRUD.Implementations.SS
             #endregion
         }
 
-        virtual public async System.Threading.Tasks.Task CancelCheckoutAsync(long id)
+        virtual public async Task CancelCheckoutAsync(long id)
         {
             var document = await GetByIdAsync(id);
 
             if (!string.IsNullOrWhiteSpace(document.CheckedoutBy) && Auth.UserName != document.CheckedoutBy
-                && !Auth.Roles.Contains("Admin"))
-                throw new KnownError("Only User who Checked Out can \"Cancel Checked Out\": {0}".Fmt(document.CheckedoutBy));
+                && !HasRoles("Admin"))
+                throw new KnownError($"Only User who Checked Out can \"Cancel Checked Out\": {document.CheckedoutBy}");
 
             document.CheckedoutBy = null;
             await Db.UpdateOnlyAsync(document, only => only.CheckedoutBy);
@@ -368,7 +456,6 @@ namespace Reusable.CRUD.Implementations.SS
         virtual public void Checkin(Entity entity)
         {
             entity.CheckedoutBy = null;
-            entity.CheckedoutBy = null;
             Db.UpdateOnly(entity, only => only.CheckedoutBy);
 
             #region Cache
@@ -378,7 +465,6 @@ namespace Reusable.CRUD.Implementations.SS
 
         virtual public async System.Threading.Tasks.Task CheckinAsync(Entity entity)
         {
-            entity.CheckedoutBy = null;
             entity.CheckedoutBy = null;
             await Db.UpdateOnlyAsync(entity, only => only.CheckedoutBy);
 
@@ -390,7 +476,7 @@ namespace Reusable.CRUD.Implementations.SS
         virtual public Entity CreateAndCheckout(Entity document)
         {
             var instance = CreateInstance(document);
-            var entity = Add(ref instance);
+            var entity = Add(instance);
             Checkout(entity.Id);
             return entity;
         }

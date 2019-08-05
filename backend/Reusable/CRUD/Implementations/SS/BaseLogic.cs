@@ -1,9 +1,7 @@
 using Reusable.CRUD.Contract;
-using Reusable.CRUD.Entities;
-using Reusable.Rest;
+using Reusable.EmailServices;
 using ServiceStack.Auth;
 using ServiceStack.Caching;
-using ServiceStack.OrmLite;
 using ServiceStack.Web;
 using System;
 using System.Collections.Generic;
@@ -12,39 +10,33 @@ using System.Linq;
 
 namespace Reusable.CRUD.Implementations.SS
 {
-    public abstract class BaseLogic : Contract.ILogic
+    public abstract class BaseLogic : ILogic
     {
-        //public LoggedUser LoggedUser { get; set; }
         public IRequest Request { get; set; }
         public IDbConnection Db { get; set; }
         public ICacheClient Cache { get; set; }
         public IAuthSession Auth { get; set; }
+        public IEmailService EmailService { get; set; }
 
-        public virtual void SetDb(IDbConnection Db)
+        public virtual void Init(IDbConnection db, IAuthSession auth, IRequest request)
         {
-            this.Db = Db;
+            Db = db;
+            Auth = auth;
+            Request = request;
         }
 
-        public virtual void SetAuth(IAuthSession Auth)
+        public bool HasRoles(params string[] roles)
         {
-            this.Auth = Auth;
-            //LoggedUser = new LoggedUser(); //Anonymous by default.
+            if (Auth != null && Auth.Roles != null)
+            {
+                foreach (var role in roles)
+                    if (!Auth.Roles.Contains(role))
+                        return false;
+            }
+            else
+                return false;
 
-            //var localUser = Db.Single(Db.From<User>()
-            //        .Where(u => u.UserName == Auth.UserName || u.Email == Auth.Email));
-
-            //if (localUser != null)
-            //{
-            //    LoggedUser = new LoggedUser
-            //    {
-            //        Email = Auth.Email,
-            //        IdentityProvider = Auth.AuthProvider,
-            //        UserName = Auth.UserName,
-            //        Value = Auth.DisplayName,
-            //        LocalUser = localUser,
-            //        UserID = localUser.Id
-            //    };
-            //}
+            return true;
         }
 
         static public object TryCatch(Action operation)
@@ -65,6 +57,7 @@ namespace Reusable.CRUD.Implementations.SS
             public List<List<BaseEntity>> Dropdowns { get; set; }
             public int total_items { get; set; }
             public int total_filtered_items { get; set; }
+            public int page { get; set; }
         }
 
         protected bool IsValidJSValue(string value)
@@ -97,7 +90,8 @@ namespace Reusable.CRUD.Implementations.SS
                 "totalItems",
                 "parentKey",
                 "parentField",
-                "filterUser"
+                "filterUser",
+                null
             }.Contains(param))
                 return false;
 

@@ -66,6 +66,7 @@ const searchBox = props => {
             root: classes.inputRoot,
             input: classes.inputInput
           }}
+          value={props.value || ''}
         />
       </div>
     </NoSsr>

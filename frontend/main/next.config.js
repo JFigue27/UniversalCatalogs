@@ -5,14 +5,13 @@ const withBundleAnalyzer = require('@zeit/next-bundle-analyzer');
 module.exports = withBundleAnalyzer(
   withSass({
     target: 'serverless',
-    // assetPrefix: isProd ? http://localhost/UniversalCatalogs/Main' : '',
-    // assetPrefix: isProd ? http://jucvwdoccnl01/UniversalCatalogs/Main' : '',
-    exportPathMap: function() {
-      return {
-        '/': { page: '/' },
-        '/items': { page: '/items' }
-      };
-    },
+    // assetPrefix: isProd ? 'http://apps.capsonic.com/UniversalCatalogs/main' : '',
+    // exportPathMap: function() {
+    //   return {
+    //     '/': { page: '/' },
+    //     '/items': { page: '/items' }
+    //   };
+    // },
     analyzeServer: ['server', 'both'].includes(process.env.BUNDLE_ANALYZE),
     analyzeBrowser: ['browser', 'both'].includes(process.env.BUNDLE_ANALYZE),
     bundleAnalyzerConfig: {

@@ -1,38 +1,91 @@
-import { NoSsr, Grid, Typography } from '@material-ui/core';
-import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { Button } from '@material-ui/core';
-import SearchBox from '../../widgets/searchbox';
+import React from 'react';
+import { withRouter } from 'next/router';
+import { NoSsr, Typography, Grid } from '@material-ui/core';
+import SearchBox from '../../widgets/Searchbox';
 import Pagination from 'react-js-pagination';
+import ListContainer from '../../core/ListContainer';
+import { Table } from '@material-ui/core';
+import { TableHead } from '@material-ui/core';
+import { TableBody } from '@material-ui/core';
+import { TableRow } from '@material-ui/core';
+import { TableCell } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { Icon } from '@material-ui/core';
 import { InputBase } from '@material-ui/core';
 import Dialog from '../../widgets/Dialog';
 import Area from './area.js';
 import { AppBar, Toolbar } from '@material-ui/core';
 
-import AreasListContainer from './area.list.container';
+import AreaService from './area.service';
 ///start:slot:dependencies<<<///end:slot:dependencies<<<
 
-const config = {
-  limit: 20
+const service = new AreaService();
+const defaultConfig = {
+  service
   ///start:slot:config<<<///end:slot:config<<<
 };
 
-class Areas extends AreasListContainer {
-  constructor(props) {
-    super(props, config);
+class AreasList extends ListContainer {
+  constructor(props, config) {
+    Object.assign(defaultConfig, config);
+    super(props, defaultConfig);
   }
 
   componentDidMount() {
     console.log('List did mount');
     this.load();
+
     ///start:slot:didMount<<<
     this.load();
     ///end:slot:didMount<<<
   }
 
+  AFTER_LOAD = () => {
+    console.log('AFTER_LOAD');
+    ///start:slot:afterLoad<<<///end:slot:afterLoad<<<
+  };
+
+  AFTER_CREATE = instance => {
+    console.log('AFTER_CREATE', instance);
+
+    ///start:slot:afterCreate<<<///end:slot:afterCreate<<<
+  };
+
+  AFTER_CREATE_AND_CHECKOUT = entity => {
+    console.log('AFTER_CREATE_AND_CHECKOUT', entity);
+    ///start:slot:afterCreateCheckout<<<///end:slot:afterCreateCheckout<<<
+  };
+
+  AFTER_REMOVE = () => {
+    console.log('AFTER_REMOVE');
+    ///start:slot:afterRemove<<<///end:slot:afterRemove<<<
+  };
+
+  ON_OPEN_ITEM = item => {
+    console.log('ON_OPEN_ITEM', item);
+
+    ///start:slot:onOpenItem<<<///end:slot:onOpenItem<<<
+  };
+
+  openDialog = item => {
+    this.setState({
+      area: item
+    });
+  };
+
+  closeDialog = feedback => {
+    if (feedback == 'ok') {
+      this.refresh();
+    }
+    this.setState({
+      area: false
+    });
+  };
   ///start:slot:js<<<///end:slot:js<<<
 
   render() {
+    const { isLoading, baseEntity, baseList } = this.state;
+
     return (
       <NoSsr>
         <Grid className='container-fluid' container direction='column' item xs={12} style={{ padding: 20 }}>
@@ -42,9 +95,9 @@ class Areas extends AreasListContainer {
           <Grid container direction='row'>
             <Grid item xs />
             <Pagination
-              activePage={this.filterOptions.page}
-              itemsCountPerPage={this.filterOptions.limit}
-              totalItemsCount={this.filterOptions.totalItems}
+              activePage={this.state.filterOptions.page}
+              itemsCountPerPage={this.state.filterOptions.limit}
+              totalItemsCount={this.state.filterOptions.totalItems}
               pageRangeDisplayed={5}
               onChange={newPage => {
                 this.pageChanged(newPage);
@@ -59,11 +112,11 @@ class Areas extends AreasListContainer {
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.state.baseList &&
-                this.state.baseList.map(item => (
+              {baseList &&
+                baseList.map(item => (
                   <TableRow key={item.Id}>
                     <TableCell>
-                      <Grid container direction='row' className='row' justify='center' alignItems='center' spacing={2}>
+                      <Grid container direction='row' className='row' justify='center' alignItems='flex-start' spacing={2}>
                         <Grid item xs>
                           <Button
                             variant='contained'
@@ -98,12 +151,12 @@ class Areas extends AreasListContainer {
         </Grid>
         <Dialog open={!!this.state.area} onClose={this.closeDialog} draggable title='Area' okLabel='Save'>
           {dialog => {
-            return !this.state.isLoading && <Area dialog={dialog} data={this.state.area} />;
+            return !isLoading && <Area dialog={dialog} data={this.state.area} />;
           }}
         </Dialog>
         <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
           <Toolbar variant='dense'>
-            <SearchBox bindFilterInput={this.bindFilterInput} />
+            <SearchBox bindFilterInput={this.bindFilterInput} value={this.state.filterOptions.filterGeneral} />
             <Grid item xs />
             <Button
               variant='contained'
@@ -122,4 +175,4 @@ class Areas extends AreasListContainer {
   }
 }
 
-export default Areas;
+export default withRouter(AreasList);

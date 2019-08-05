@@ -247,19 +247,43 @@ export default function IntegrationReactSelect(props) {
     })
   };
 
-  const adapterIn = value => {
-    let options = value || [];
+  const { keyProp = 'Id', labelProp = 'Value', emailProp = 'Email' } = props;
+
+  const adaptOptions = opts => {
+    let options = opts || [];
     if (options.length) {
-      const { keyProp = 'Id', labelProp = 'Value', emailProp = 'Email' } = props;
-      return options.map(person => {
+      return options.map(item => {
+        if (typeof item == 'string') {
+          return {
+            value: item,
+            label: item,
+            email: item
+          };
+        }
         return {
-          value: person[keyProp],
-          label: person[labelProp],
-          email: person[emailProp]
+          ...item,
+          value: item[keyProp],
+          label: item[labelProp],
+          email: item[emailProp]
         };
       });
     } else {
       return [];
+    }
+  };
+
+  const adaptValue = () => {
+    const item = props.value;
+    if (props.flat) {
+      return { ...item, label: props.value };
+    } else {
+      if (item)
+        return {
+          ...item,
+          value: item[keyProp],
+          label: item[labelProp],
+          email: item[emailProp]
+        };
     }
   };
 
@@ -279,11 +303,13 @@ export default function IntegrationReactSelect(props) {
             },
             placeholder: props.placeholder
           }}
-          options={adapterIn(props.options)}
+          options={adaptOptions(props.options)}
           components={components}
-          value={props.flat ? { label: props.value } : props.value}
+          // value={props.flat ? { label: props.value } : props.value}
+          value={adaptValue()}
           onChange={props.onChange}
           menuPlacement={props.placement}
+          maxMenuHeight={props.height || 250}
         />
         {/* <Select
           classes={classes}

@@ -24,6 +24,8 @@ namespace Reusable.EmailServices
         public string Body { get; set; }
 
         public string AttachmentsFolder { get; set; }
+        public string Template { get; set; }
+        public Dictionary<string, object> TemplateParameters { get; set; }
 
         public EmailService()
         {

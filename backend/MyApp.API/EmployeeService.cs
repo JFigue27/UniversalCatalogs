@@ -6,105 +6,80 @@ using ServiceStack.OrmLite;
 using System;
 using System.Threading.Tasks;
 using ServiceStack.Text;
+using Reusable.Rest.Implementations.SS;
 
 namespace MyApp.API
 {
     // [Authenticate]
-    public class EmployeeService : Service
+    public class EmployeeService : BaseService<EmployeeLogic>
     {
-        public IEmployeeLogic Logic { get; set; }
-
         #region Endpoints - Generic Read Only
-        public async Task<object> Get(GetAllEmployees request)
+        public object Get(GetAllEmployees request)
         {
-            Logic.SetDb(Db);
-            return await Logic.GetAllAsync();
+            return WithDb(db => Logic.GetAll());
         }
 
-        public async Task<object> Get(GetEmployeeById request)
+        public object Get(GetEmployeeById request)
         {
-            Logic.SetDb(Db);
-            return await Logic.GetByIdAsync(request.Id);
+            return WithDb(db => Logic.GetById(request.Id));
         }
 
-        public async Task<object> Get(GetEmployeeWhere request)
+        public object Get(GetEmployeeWhere request)
         {
-            Logic.SetDb(Db);
-            Logic.Request = Request;
-            return await Logic.GetSingleWhereAsync(request.Property, request.Value);
+            return WithDb(db => Logic.GetSingleWhere(request.Property, request.Value));
         }
 
-        public async Task<object> Get(GetPagedEmployees request)
+        public object Get(GetPagedEmployees request)
         {
-            Logic.SetDb(Db);
-            Logic.Request = Request;
-            return await Logic.GetPagedAsync(
+            return WithDb(db => Logic.GetPaged(
                 request.Limit,
                 request.Page,
-                request.FilterGeneral,
-                null,
-                null);
+                request.FilterGeneral));
         }
         #endregion
 
         #region Endpoints - Generic Write
         public object Post(CreateEmployeeInstance request)
         {
-            Logic.SetDb(Db);
-            var entity = request.ConvertTo<Employee>();
-            return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
-            {
-                ResultScope = () => JsConfig.With(new Config { IncludeNullValues = true })
-            };
+            return WithDb(db => {
+                var entity = request.ConvertTo<Employee>();
+                return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
+                {
+                    ResultScope = () => JsConfig.With(new Config { IncludeNullValues = true })
+                };
+            });
         }
 
         public object Post(InsertEmployee request)
         {
             var entity = request.ConvertTo<Employee>();
-            InTransaction(() => Logic.Add(ref entity));
-            return new CommonResponse(Logic.GetById(entity.Id));
+            return InTransaction(db => {
+                Logic.Add(entity);
+                return new CommonResponse(Logic.GetById(entity.Id));
+            });
         }
 
         public object Put(UpdateEmployee request)
         {
             var entity = request.ConvertTo<Employee>();
-            InTransaction(() => Logic.Update(entity));
-            return new CommonResponse(Logic.GetById(entity.Id));
+            return InTransaction(db => {
+                Logic.Update(entity);
+                return new CommonResponse(Logic.GetById(entity.Id));
+            });
         }
         public object Delete(DeleteEmployee request)
         {
             var entity = request.ConvertTo<Employee>();
-            InTransaction(() => Logic.Remove(entity));
-            return new CommonResponse();
+            return InTransaction(db => {
+                Logic.Remove(entity);
+                return new CommonResponse();
+            });
         }
         #endregion
 
         #region Endpoints - Specific
         ///start:slot:endpoints<<<///end:slot:endpoints<<<
         #endregion
-
-        private void InTransaction(params Action[] Operations)
-        {
-            Logic.SetDb(Db);
-            Logic.SetAuth(GetSession());
-            using (var transaction = Db.OpenTransaction())
-            {
-                try
-                {
-                    foreach (var operation in Operations)
-                    {
-                        operation();
-                    }
-
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-        }
     }
 
     #region Specific

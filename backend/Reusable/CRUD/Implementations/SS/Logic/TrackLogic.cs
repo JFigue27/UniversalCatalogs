@@ -4,18 +4,18 @@ using ServiceStack.OrmLite;
 
 namespace Reusable.CRUD.Implementations.SS.Logic
 {
-    public class TrackLogic : LogicWrite<Track>, ITrackLogic
+    public class TrackLogic : LogicWrite<Track>
     {
         #region Overrides
         #endregion
 
         #region Specific Operations
-        public void AssignResponsible(long trackId, long userId)
+        public void AssignResponsible(long trackId, string username)
         {
             Db.Update<Track>(new
             {
-                User_AssignedToKey = userId,
-                //User_AssignedByKey = LoggedUser.UserID
+                AssignedTo = username,
+                AssignedBy = Auth.UserName
             }, where => where.Id == trackId);
         }
         #endregion

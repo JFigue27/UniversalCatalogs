@@ -50,13 +50,9 @@ class FormContainer extends React.Component {
     }
     //Open by query parameters
     else if (typeof criteria == 'string') {
-      console.log('Form opened by Query Parameters.', criteria);
-      console.log('criteria');
-      console.log(criteria);
-      return this.service.GetSingleWhere(null, null, criteria).then(entity => {
-        console.log('GetSingleWhere..' + criteria);
-        console.log(entity);
-        this.ON_CHANGE(entity);
+      return this.service.GetSingleWhere(null, null, criteria).then(baseEntity => {
+        this.setState({ baseEntity });
+        this.ON_CHANGE(baseEntity);
       });
     }
     //Create instance
@@ -88,7 +84,7 @@ class FormContainer extends React.Component {
       this.setState({
         baseEntity: instance
       });
-      this.ON_CHANGE(baseEntity);
+      this.ON_CHANGE(instance);
     });
   };
 
@@ -104,10 +100,11 @@ class FormContainer extends React.Component {
   };
 
   save = async () => {
+    this.BEFORE_SAVE(this.state.baseEntity);
     return await this.service.Save(this.state.baseEntity).then(entity => {
       this.AFTER_SAVE(entity);
-      this.setState({ baseEntity: entity });
       this.ON_CHANGE(entity);
+      this.setState({ baseEntity: entity });
     });
   };
 
@@ -219,42 +216,42 @@ class FormContainer extends React.Component {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = event.target.value;
     this.setState({ baseEntity });
-    this.ON_CHANGE(baseEntity);
+    this.ON_CHANGE(baseEntity, field);
   };
 
   handleCheckBoxChange = (event, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = event.target.checked;
     this.setState({ baseEntity });
-    this.ON_CHANGE(baseEntity);
+    this.ON_CHANGE(baseEntity, field);
   };
 
   handleDateChange = (date, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = date.toDate();
     this.setState({ baseEntity });
-    this.ON_CHANGE(baseEntity);
+    this.ON_CHANGE(baseEntity, field);
   };
 
   handleRichText = (event, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = event.value;
     this.setState({ baseEntity });
-    this.ON_CHANGE(baseEntity);
+    this.ON_CHANGE(baseEntity, field);
   };
 
   handleChipsChange = (value, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = value;
     this.setState({ baseEntity });
-    this.ON_CHANGE(baseEntity);
+    this.ON_CHANGE(baseEntity, field);
   };
 
   handleAutocompleteChange = (value, field) => {
     let baseEntity = this.state.baseEntity;
-    baseEntity[field] = value.label;
+    baseEntity[field] = value ? value.label : null;
     this.setState({ baseEntity });
-    this.ON_CHANGE(baseEntity);
+    this.ON_CHANGE(baseEntity, field);
   };
 
   getCurrentUser = () => {
@@ -319,6 +316,9 @@ class FormContainer extends React.Component {
   formatTime = (time, format) => {
     if (this.service) return this.service.formatTime(time, format);
   };
+  formatCurrency = (number, decimals) => {
+    if (this.service) return this.service.formatCurrency(number, decimals);
+  };
 
   // Events:======================================================================
   on_input_change = item => {
@@ -332,13 +332,17 @@ class FormContainer extends React.Component {
 
   AFTER_CREATE_AND_CHECKOUT = entity => {};
 
+  BEFORE_SAVE = entity => {};
+
   AFTER_SAVE = entity => {};
 
   AFTER_REMOVE = entity => {};
 
   BEFORE_CHECKIN = () => {};
 
-  ON_CHANGE = entity => {};
+  ON_CHANGE = (data, field) => {
+    this.props.onChange && this.props.onChange(data, field);
+  };
 
   render() {
     return <></>;

@@ -58,7 +58,7 @@ export class CRUDFactory {
     return await Request('GET', this.EndPoint + '/' + operation).catch(this.GeneralError);
   }
 
-  async Post(operation, entity = null) {
+  async Post(operation, entity = {}) {
     return await Request('POST', this.EndPoint + '/' + operation, entity).catch(this.GeneralError);
   }
 
@@ -68,13 +68,16 @@ export class CRUDFactory {
       .catch(this.GeneralError);
   }
 
-  async GetSingleWhere(property, value, params = '?') {
+  async GetSingleWhere(property, value, params = '') {
     if (property && value) {
-      return await Request('GET', this.EndPoint + '/GetSingleWhere/' + property + '/' + value + params + '&noCache=' + Number(new Date()))
+      return await Request(
+        'GET',
+        this.EndPoint + '/GetSingleWhere/' + property + '/' + value + '?' + params + '&noCache=' + Number(new Date())
+      )
         .then(r => this.UseNudeResponse(r))
         .catch(this.GeneralError);
     } else if (params.length > 1) {
-      return await Request('GET', this.EndPoint + '/GetSingleWhere' + params + '&noCache=' + Number(new Date()))
+      return await Request('GET', this.EndPoint + '/GetSingleWhere?' + params + '&noCache=' + Number(new Date()))
         .then(r => this.UseNudeResponse(r))
         .catch(this.GeneralError);
     } else {
@@ -82,7 +85,7 @@ export class CRUDFactory {
     }
   }
 
-  async LoadEntities(params) {
+  async LoadEntities(params = '?') {
     return await Request('GET', this.EndPoint + params + '&noCache=' + Number(new Date()))
       .then(r => this.UseNudeResponse(r))
       .catch(this.GeneralError);
@@ -270,26 +273,47 @@ export class CRUDFactory {
     if (time) return moment(time).format(format);
   };
 
+  toServerDate = date => {
+    var momentDate = moment(date);
+    if (momentDate.isValid()) {
+      momentDate.local();
+      return momentDate.format();
+    }
+    return null;
+  };
+
+  formatCurrency = (number, decimals = 2) => {
+    if (!isNaN(number) && number > 0) {
+      return new Intl.NumberFormat('en-IN', { maximumFractionDigits: decimals }).format(number);
+    }
+    return '';
+  };
+
   //Hooks:=======================================================================
   ADAPTER_IN(entity) {}
 
   ADAPTER_OUT(entity) {}
 
   //Universal Catalogs:==========================================================
-  async GetUniversalCatalog(catalog, params = '?') {
-    return await Request('GET', catalog + params + '&noCache=' + Number(new Date()), null, AppConfig.UniversalCatalogsURL).catch(
-      this.GeneralError
-    );
+  async GetUniversalCatalog(catalog, params = '') {
+    return await Request('GET', `catalog?name=${catalog}&${params}'&noCache=` + Number(new Date()), null, AppConfig.UniversalCatalogsURL)
+      .then(e => e.Result)
+      .catch(this.GeneralError);
   }
 
-  async GetUniversalCatalogPaged(catalog, limit, page, params = '?') {
+  async GetUniversalCatalogPaged(catalog, limit, page, params = '') {
     return await Request(
       'GET',
-      catalog + '/getPaged/' + limit + '/' + page + params + '&noCache=' + Number(new Date()),
+      `catalog/${limit}/${page}?name=${catalog}&${params}&noCache=` + Number(new Date()),
       null,
       AppConfig.UniversalCatalogsURL
     )
-      .then(r => this.UseCommonResponse(r, true))
+      .then(r => r.Result)
       .catch(this.GeneralError);
+  }
+
+  //Accounts:===================================================================
+  async GetAccounts(params = '') {
+    return await Request('GET', 'Account?' + params + '&noCache=' + Number(new Date()), null, AppConfig.AuthURL).catch(this.GeneralError);
   }
 }

@@ -6,105 +6,80 @@ using ServiceStack.OrmLite;
 using System;
 using System.Threading.Tasks;
 using ServiceStack.Text;
+using Reusable.Rest.Implementations.SS;
 
 namespace MyApp.API
 {
     // [Authenticate]
-    public class WorkstationService : Service
+    public class WorkstationService : BaseService<WorkstationLogic>
     {
-        public IWorkstationLogic Logic { get; set; }
-
         #region Endpoints - Generic Read Only
-        public async Task<object> Get(GetAllWorkstations request)
+        public object Get(GetAllWorkstations request)
         {
-            Logic.SetDb(Db);
-            return await Logic.GetAllAsync();
+            return WithDb(db => Logic.GetAll());
         }
 
-        public async Task<object> Get(GetWorkstationById request)
+        public object Get(GetWorkstationById request)
         {
-            Logic.SetDb(Db);
-            return await Logic.GetByIdAsync(request.Id);
+            return WithDb(db => Logic.GetById(request.Id));
         }
 
-        public async Task<object> Get(GetWorkstationWhere request)
+        public object Get(GetWorkstationWhere request)
         {
-            Logic.SetDb(Db);
-            Logic.Request = Request;
-            return await Logic.GetSingleWhereAsync(request.Property, request.Value);
+            return WithDb(db => Logic.GetSingleWhere(request.Property, request.Value));
         }
 
-        public async Task<object> Get(GetPagedWorkstations request)
+        public object Get(GetPagedWorkstations request)
         {
-            Logic.SetDb(Db);
-            Logic.Request = Request;
-            return await Logic.GetPagedAsync(
+            return WithDb(db => Logic.GetPaged(
                 request.Limit,
                 request.Page,
-                request.FilterGeneral,
-                null,
-                null);
+                request.FilterGeneral));
         }
         #endregion
 
         #region Endpoints - Generic Write
         public object Post(CreateWorkstationInstance request)
         {
-            Logic.SetDb(Db);
-            var entity = request.ConvertTo<Workstation>();
-            return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
-            {
-                ResultScope = () => JsConfig.With(new Config { IncludeNullValues = true })
-            };
+            return WithDb(db => {
+                var entity = request.ConvertTo<Workstation>();
+                return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
+                {
+                    ResultScope = () => JsConfig.With(new Config { IncludeNullValues = true })
+                };
+            });
         }
 
         public object Post(InsertWorkstation request)
         {
             var entity = request.ConvertTo<Workstation>();
-            InTransaction(() => Logic.Add(ref entity));
-            return new CommonResponse(Logic.GetById(entity.Id));
+            return InTransaction(db => {
+                Logic.Add(entity);
+                return new CommonResponse(Logic.GetById(entity.Id));
+            });
         }
 
         public object Put(UpdateWorkstation request)
         {
             var entity = request.ConvertTo<Workstation>();
-            InTransaction(() => Logic.Update(entity));
-            return new CommonResponse(Logic.GetById(entity.Id));
+            return InTransaction(db => {
+                Logic.Update(entity);
+                return new CommonResponse(Logic.GetById(entity.Id));
+            });
         }
         public object Delete(DeleteWorkstation request)
         {
             var entity = request.ConvertTo<Workstation>();
-            InTransaction(() => Logic.Remove(entity));
-            return new CommonResponse();
+            return InTransaction(db => {
+                Logic.Remove(entity);
+                return new CommonResponse();
+            });
         }
         #endregion
 
         #region Endpoints - Specific
         ///start:slot:endpoints<<<///end:slot:endpoints<<<
         #endregion
-
-        private void InTransaction(params Action[] Operations)
-        {
-            Logic.SetDb(Db);
-            Logic.SetAuth(GetSession());
-            using (var transaction = Db.OpenTransaction())
-            {
-                try
-                {
-                    foreach (var operation in Operations)
-                    {
-                        operation();
-                    }
-
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-        }
     }
 
     #region Specific

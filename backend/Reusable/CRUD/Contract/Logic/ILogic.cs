@@ -1,3 +1,4 @@
+using Reusable.EmailServices;
 using Reusable.Rest;
 using ServiceStack.Auth;
 using ServiceStack.Web;
@@ -7,10 +8,9 @@ namespace Reusable.CRUD.Contract
 {
     public interface ILogic
     {
-        //LoggedUser LoggedUser { get; set; }
         IRequest Request { get; set; }
         IDbConnection Db { get; set; }
-        void SetDb(IDbConnection Db);
-        void SetAuth(IAuthSession Auth);
+        void Init(IDbConnection db, IAuthSession auth, IRequest request);
+        IEmailService EmailService { get; set; }
     }
 }

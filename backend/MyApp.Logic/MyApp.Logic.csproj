@@ -36,6 +36,9 @@
     <Reference Include="ServiceStack, Version=5.0.0.0, Culture=neutral, PublicKeyToken=02c12cbda47e6587, processorArchitecture=MSIL">
       <HintPath>..\packages\ServiceStack.5.5.0\lib\net45\ServiceStack.dll</HintPath>
     </Reference>
+    <Reference Include="ServiceStack.Client, Version=5.0.0.0, Culture=neutral, PublicKeyToken=02c12cbda47e6587, processorArchitecture=MSIL">
+      <HintPath>..\packages\ServiceStack.Client.5.5.0\lib\net45\ServiceStack.Client.dll</HintPath>
+    </Reference>
     <Reference Include="ServiceStack.Common, Version=5.0.0.0, Culture=neutral, PublicKeyToken=02c12cbda47e6587, processorArchitecture=MSIL">
       <HintPath>..\packages\ServiceStack.Common.5.5.0\lib\net45\ServiceStack.Common.dll</HintPath>
     </Reference>
@@ -58,6 +61,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
     </Reference>
@@ -84,23 +88,41 @@
   </ItemGroup>
   <ItemGroup>
     <!-- start:generated:entities -->
+    <Compile Include="Entities\Email.cs" />
+    <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\AdditionalField.cs" />
+    <Compile Include="Entities\AdvancedSort.cs" />
     <Compile Include="Entities\Area.cs" />
+    <Compile Include="Entities\Catalog.cs" />
+    <Compile Include="Entities\CatalogType.cs" />
     <Compile Include="Entities\Customer.cs" />
     <Compile Include="Entities\Department.cs" />
     <Compile Include="Entities\Employee.cs" />
+    <Compile Include="Entities\FilterData.cs" />
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\Material.cs" />
     <Compile Include="Entities\Shift.cs" />
+    <Compile Include="Entities\SortData.cs" />
+    <Compile Include="Entities\Token.cs" />
     <Compile Include="Entities\Workstation.cs" />
     <!-- end:generated:entities -->
     <!-- start:generated:Logic -->
+    <Compile Include="Logic\EmailLogic.cs" />
+    <Compile Include="Logic\UserLogic.cs" />
+    <Compile Include="Logic\AdditionalFieldLogic.cs" />
+    <Compile Include="Logic\AdvancedSortLogic.cs" />
     <Compile Include="Logic\AreaLogic.cs" />
+    <Compile Include="Logic\CatalogLogic.cs" />
+    <Compile Include="Logic\CatalogTypeLogic.cs" />
     <Compile Include="Logic\CustomerLogic.cs" />
     <Compile Include="Logic\DepartmentLogic.cs" />
     <Compile Include="Logic\EmployeeLogic.cs" />
+    <Compile Include="Logic\FilterDataLogic.cs" />
     <Compile Include="Logic\ItemLogic.cs" />
     <Compile Include="Logic\MaterialLogic.cs" />
     <Compile Include="Logic\ShiftLogic.cs" />
+    <Compile Include="Logic\SortDataLogic.cs" />
+    <Compile Include="Logic\TokenLogic.cs" />
     <Compile Include="Logic\WorkstationLogic.cs" />
     <!-- end:generated:Logic -->
     <Compile Include="Namespaces.cs" />

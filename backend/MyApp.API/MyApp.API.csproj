@@ -90,13 +90,22 @@
   </ItemGroup>
   <ItemGroup>
     <!-- start:generated:services -->
+    <Compile Include="EmailService.cs" />
+    <Compile Include="UserService.cs" />
+    <Compile Include="AdditionalFieldService.cs" />
+    <Compile Include="AdvancedSortService.cs" />
     <Compile Include="AreaService.cs" />
+    <Compile Include="CatalogService.cs" />
+    <Compile Include="CatalogTypeService.cs" />
     <Compile Include="CustomerService.cs" />
     <Compile Include="DepartmentService.cs" />
     <Compile Include="EmployeeService.cs" />
+    <Compile Include="FilterDataService.cs" />
     <Compile Include="ItemService.cs" />
     <Compile Include="MaterialService.cs" />
     <Compile Include="ShiftService.cs" />
+    <Compile Include="SortDataService.cs" />
+    <Compile Include="TokenService.cs" />
     <Compile Include="WorkstationService.cs" />
     <!-- end:generated:services -->
     <Compile Include="MyServices.cs" />
