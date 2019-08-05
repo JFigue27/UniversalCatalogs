@@ -78,12 +78,12 @@ namespace MyApp.API
         #endregion
 
         #region Endpoints - Specific
-        
+        ///start:slot:endpoints<<<///end:slot:endpoints<<<
         #endregion
     }
 
     #region Specific
-    
+    ///start:slot:endpointsRoutes<<<///end:slot:endpointsRoutes<<<
     #endregion
 
     #region Generic Read Only

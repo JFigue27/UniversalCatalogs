@@ -13,6 +13,7 @@ import { TableCell } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import { Icon } from '@material-ui/core';
 import { InputBase } from '@material-ui/core';
+
 import Dialog from '../../widgets/Dialog';
 import Employee from './employee.js';
 import { AppBar, Toolbar } from '@material-ui/core';
@@ -48,7 +49,9 @@ class EmployeesList extends ListContainer {
   AFTER_CREATE = instance => {
     console.log('AFTER_CREATE', instance);
 
-    ///start:slot:afterCreate<<<///end:slot:afterCreate<<<
+    ///start:slot:afterCreate<<<
+    this.openDialog(instance);
+    ///end:slot:afterCreate<<<
   };
 
   AFTER_CREATE_AND_CHECKOUT = entity => {
@@ -64,7 +67,9 @@ class EmployeesList extends ListContainer {
   ON_OPEN_ITEM = item => {
     console.log('ON_OPEN_ITEM', item);
 
-    ///start:slot:onOpenItem<<<///end:slot:onOpenItem<<<
+    ///start:slot:onOpenItem<<<
+    this.openDialog(item);
+    ///end:slot:onOpenItem<<<
   };
 
   openDialog = item => {
@@ -89,11 +94,12 @@ class EmployeesList extends ListContainer {
     return (
       <NoSsr>
         <Grid className='container-fluid' container direction='column' item xs={12} style={{ padding: 20 }}>
-          <Typography variant='h4' className='h4' gutterBottom>
-            Employees
-          </Typography>
           <Grid container direction='row'>
-            <Grid item xs />
+            <Grid item xs>
+              <Typography variant='h4' className='h4' gutterBottom style={{ textAlign: 'center' }}>
+                Employees
+              </Typography>
+            </Grid>
             <Pagination
               activePage={filterOptions.page}
               itemsCountPerPage={filterOptions.limit}
@@ -108,7 +114,18 @@ class EmployeesList extends ListContainer {
             <TableHead>
               <TableRow>
                 <TableCell />
-                <TableCell>Value</TableCell>
+                <TableCell>Clock Number</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Last Name</TableCell>
+                <TableCell>Second Last Name</TableCell>
+                <TableCell>CURP</TableCell>
+                <TableCell>Personal Number</TableCell>
+                <TableCell>Time Id Number</TableCell>
+                <TableCell>STPS Position</TableCell>
+                <TableCell>Area</TableCell>
+                <TableCell>Shift</TableCell>
+                <TableCell>Job Position</TableCell>
+                <TableCell>SupervisedBy</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -141,6 +158,138 @@ class EmployeesList extends ListContainer {
                         readOnly={true}
                         onChange={event => this.handleInputChange(event, 'Value')}
                         value={item.Value || ''}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <InputBase
+                        type='text'
+                        className=''
+                        autoComplete='off'
+                        disabled={this.isDisabled}
+                        readOnly={true}
+                        onChange={event => this.handleInputChange(event, 'Name')}
+                        value={item.Name || ''}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <InputBase
+                        type='text'
+                        className=''
+                        autoComplete='off'
+                        disabled={this.isDisabled}
+                        readOnly={true}
+                        onChange={event => this.handleInputChange(event, 'LastName')}
+                        value={item.LastName || ''}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <InputBase
+                        type='text'
+                        className=''
+                        autoComplete='off'
+                        disabled={this.isDisabled}
+                        readOnly={true}
+                        onChange={event => this.handleInputChange(event, 'SecondLastName')}
+                        value={item.SecondLastName || ''}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <InputBase
+                        type='text'
+                        className=''
+                        autoComplete='off'
+                        disabled={this.isDisabled}
+                        readOnly={true}
+                        onChange={event => this.handleInputChange(event, 'CURP')}
+                        value={item.CURP || ''}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <InputBase
+                        type='text'
+                        className=''
+                        autoComplete='off'
+                        disabled={this.isDisabled}
+                        readOnly={true}
+                        onChange={event => this.handleInputChange(event, 'PersonalNumber')}
+                        value={item.PersonalNumber || ''}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <InputBase
+                        type='text'
+                        className=''
+                        autoComplete='off'
+                        disabled={this.isDisabled}
+                        readOnly={true}
+                        onChange={event => this.handleInputChange(event, 'TimeIdNumber')}
+                        value={item.TimeIdNumber || ''}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <InputBase
+                        type='text'
+                        className=''
+                        autoComplete='off'
+                        disabled={this.isDisabled}
+                        readOnly={true}
+                        onChange={event => this.handleInputChange(event, 'STPSPosition')}
+                        value={item.STPSPosition || ''}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <InputBase
+                        type='number'
+                        className=''
+                        autoComplete='off'
+                        disabled={this.isDisabled}
+                        readOnly={true}
+                        onChange={event => this.handleInputChange(event, 'Area')}
+                        value={item.Area || ''}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <InputBase
+                        type='number'
+                        className=''
+                        autoComplete='off'
+                        disabled={this.isDisabled}
+                        readOnly={true}
+                        onChange={event => this.handleInputChange(event, 'Shift')}
+                        value={item.Shift || ''}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <InputBase
+                        type='number'
+                        className=''
+                        autoComplete='off'
+                        disabled={this.isDisabled}
+                        readOnly={true}
+                        onChange={event => this.handleInputChange(event, 'JobPosition')}
+                        value={item.JobPosition || ''}
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <InputBase
+                        type='number'
+                        className=''
+                        autoComplete='off'
+                        disabled={this.isDisabled}
+                        readOnly={true}
+                        onChange={event => this.handleInputChange(event, 'SupervisedBy')}
+                        value={item.SupervisedBy || ''}
                         fullWidth
                       />
                     </TableCell>

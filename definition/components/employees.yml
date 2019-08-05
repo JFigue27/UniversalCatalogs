@@ -10,7 +10,18 @@ layout:
           columns:
             - row:
                 - button: openItem
-            - Value
+            - Clock Number
+            - Name
+            - Last Name
+            - Second Last Name
+            - CURP
+            - Personal Number
+            - Time Id Number
+            - STPS Position
+            - Area
+            - Shift
+            - Job Position
+            - SupervisedBy
   - dialog:
       id: employee
       title: Employee

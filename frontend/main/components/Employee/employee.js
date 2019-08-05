@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'next/router';
-import { NoSsr, Typography, Grid } from '@material-ui/core';
+import { NoSsr, Typography, Grid, TextField } from '@material-ui/core';
 import FormContainer from '../../core/FormContainer';
 import { withSnackbar } from 'notistack';
 import { InputBase } from '@material-ui/core';
@@ -69,9 +69,119 @@ class EmployeeForm extends FormContainer {
         <Grid className='' container direction='column' item xs={12}>
           <TextField
             type='text'
-            label='Employee'
+            label='Clock Number'
             value={baseEntity.Value || ''}
             onChange={event => this.handleInputChange(event, 'Value')}
+            style={{ textAlign: 'left' }}
+            margin='normal'
+            disabled={this.isDisabled}
+            fullWidth
+          />
+          <TextField
+            type='text'
+            label='Name'
+            value={baseEntity.Name || ''}
+            onChange={event => this.handleInputChange(event, 'Name')}
+            style={{ textAlign: 'left' }}
+            margin='normal'
+            disabled={this.isDisabled}
+            fullWidth
+          />
+          <TextField
+            type='text'
+            label='Last Name'
+            value={baseEntity.LastName || ''}
+            onChange={event => this.handleInputChange(event, 'LastName')}
+            style={{ textAlign: 'left' }}
+            margin='normal'
+            disabled={this.isDisabled}
+            fullWidth
+          />
+          <TextField
+            type='text'
+            label='Second Last Name'
+            value={baseEntity.SecondLastName || ''}
+            onChange={event => this.handleInputChange(event, 'SecondLastName')}
+            style={{ textAlign: 'left' }}
+            margin='normal'
+            disabled={this.isDisabled}
+            fullWidth
+          />
+          <TextField
+            type='text'
+            label='CURP'
+            value={baseEntity.CURP || ''}
+            onChange={event => this.handleInputChange(event, 'CURP')}
+            style={{ textAlign: 'left' }}
+            margin='normal'
+            disabled={this.isDisabled}
+            fullWidth
+          />
+          <TextField
+            type='text'
+            label='Personal Number'
+            value={baseEntity.PersonalNumber || ''}
+            onChange={event => this.handleInputChange(event, 'PersonalNumber')}
+            style={{ textAlign: 'left' }}
+            margin='normal'
+            disabled={this.isDisabled}
+            fullWidth
+          />
+          <TextField
+            type='text'
+            label='Time Id Number'
+            value={baseEntity.TimeIdNumber || ''}
+            onChange={event => this.handleInputChange(event, 'TimeIdNumber')}
+            style={{ textAlign: 'left' }}
+            margin='normal'
+            disabled={this.isDisabled}
+            fullWidth
+          />
+          <TextField
+            type='text'
+            label='STPS Position'
+            value={baseEntity.STPSPosition || ''}
+            onChange={event => this.handleInputChange(event, 'STPSPosition')}
+            style={{ textAlign: 'left' }}
+            margin='normal'
+            disabled={this.isDisabled}
+            fullWidth
+          />
+          <TextField
+            type='number'
+            label='Area'
+            value={baseEntity.Area || ''}
+            onChange={event => this.handleInputChange(event, 'Area')}
+            style={{ textAlign: 'left' }}
+            margin='normal'
+            disabled={this.isDisabled}
+            fullWidth
+          />
+          <TextField
+            type='number'
+            label='Shift'
+            value={baseEntity.Shift || ''}
+            onChange={event => this.handleInputChange(event, 'Shift')}
+            style={{ textAlign: 'left' }}
+            margin='normal'
+            disabled={this.isDisabled}
+            fullWidth
+          />
+          <TextField
+            type='number'
+            label='Job Position'
+            value={baseEntity.JobPosition || ''}
+            onChange={event => this.handleInputChange(event, 'JobPosition')}
+            style={{ textAlign: 'left' }}
+            margin='normal'
+            disabled={this.isDisabled}
+            fullWidth
+          />
+          <TextField
+            type='number'
+            label='SupervisedBy'
+            value={baseEntity.SupervisedBy || ''}
+            onChange={event => this.handleInputChange(event, 'SupervisedBy')}
             style={{ textAlign: 'left' }}
             margin='normal'
             disabled={this.isDisabled}

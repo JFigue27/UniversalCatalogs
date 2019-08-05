@@ -48,7 +48,9 @@ class AreasList extends ListContainer {
   AFTER_CREATE = instance => {
     console.log('AFTER_CREATE', instance);
 
-    ///start:slot:afterCreate<<<///end:slot:afterCreate<<<
+    ///start:slot:afterCreate<<<
+    this.openDialog(instance);
+    ///end:slot:afterCreate<<<
   };
 
   AFTER_CREATE_AND_CHECKOUT = entity => {
@@ -64,7 +66,9 @@ class AreasList extends ListContainer {
   ON_OPEN_ITEM = item => {
     console.log('ON_OPEN_ITEM', item);
 
-    ///start:slot:onOpenItem<<<///end:slot:onOpenItem<<<
+    ///start:slot:onOpenItem<<<
+    this.openDialog(item);
+    ///end:slot:onOpenItem<<<
   };
 
   openDialog = item => {
@@ -88,12 +92,13 @@ class AreasList extends ListContainer {
 
     return (
       <NoSsr>
-        <Grid className='container-fluid' container direction='column' item xs={12} style={{ padding: 20 }}>
-          <Typography variant='h4' className='h4' gutterBottom>
-            Areas
-          </Typography>
+        <Grid className='container-fluid' container direction='column' item xs={12} style={{ padding: 10 }}>
           <Grid container direction='row'>
-            <Grid item xs />
+            <Grid item xs style={{ textAlign: 'center' }}>
+              <Typography variant='h4' className='h4' gutterBottom>
+                Areas
+              </Typography>
+            </Grid>
             <Pagination
               activePage={filterOptions.page}
               itemsCountPerPage={filterOptions.limit}
@@ -118,6 +123,18 @@ class AreasList extends ListContainer {
                     <TableCell>
                       <Grid container direction='row' className='row' justify='center' alignItems='flex-start' spacing={2}>
                         <Grid item xs>
+                          <Button
+                            variant='contained'
+                            color='default'
+                            className=''
+                            style={{ marginRight: 5 }}
+                            onClick={event => {
+                              this.removeItem(event, item);
+                            }}
+                            size='small'
+                          >
+                            <Icon>delete</Icon>Delete
+                          </Button>
                           <Button
                             variant='contained'
                             color='default'

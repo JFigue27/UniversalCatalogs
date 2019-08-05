@@ -145,10 +145,10 @@ class App extends React.Component {
           <AppBar position='fixed' className='MainAppBar app-nav'>
             <Toolbar>
               {/* <IconButton color='inherit' onClick={this.toggleDrawer('right', true)}>
-              <Icon>menu</Icon>
-            </IconButton> */}
-              <Typography variant='h6' color='inherit'>
-                Universal Catalogs
+                <Icon>menu</Icon>
+              </IconButton> */}
+              <Typography>
+                <img src='/static/images/Molex_White.png' alt='Molex Logo' style={{ width: 100 }} />
               </Typography>
               <Grid item xs />
 
@@ -189,7 +189,10 @@ class App extends React.Component {
         <SnackbarProvider autoHideDuration={1500}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <GlobalContext.Provider value={this.state.globals}>
-              <Grid container direction='column' item xs={12} style={{ padding: 10 }}>
+              <Grid container direction='column' item xs={12} style={{ padding: 20 }}>
+                <Typography variant='h6' color='inherit'>
+                  Universal Catalogs
+                </Typography>
                 {this.props.children}
               </Grid>
             </GlobalContext.Provider>
