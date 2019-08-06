@@ -41,7 +41,7 @@ const Login = props => {
                 <Fingerprint style={{ fontSize: 80 }} />
               </div> */}
               <div className='text-field'>
-                <TextField required fullWidth label='User' margin='normal' onChange={event => setUsername(event.target.value)} />
+                <TextField required fullWidth label='User Name' margin='normal' onChange={event => setUsername(event.target.value)} />
               </div>
               <div className='text-field'>
                 <TextField
