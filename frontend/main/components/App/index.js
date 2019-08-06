@@ -19,7 +19,6 @@ class App extends React.Component {
     { href: '/materials', label: 'Materials' },
     { href: '/workstations', label: 'Workstations' },
     { href: '/employees', label: 'Employees' },
-    { href: '/departments', label: 'Departments' },
     { href: '/shifts', label: 'Shifts' }
     ///end:slot:pages<<<
   ];

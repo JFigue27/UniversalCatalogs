@@ -7,6 +7,6 @@ pages:
   workstations | menu: workstations
   employees | menu: employees
   customers: customers
-  departments | menu: departments
+  departments : departments
   shifts | menu: shifts
 components: []
