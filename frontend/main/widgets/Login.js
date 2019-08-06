@@ -33,10 +33,10 @@ const Login = props => {
         <Card className='card'>
           <form onSubmit={login}>
             <CardContent style={{ textAlign: 'center' }}>
-              <img src='/static/images/Molex_Red.png' alt='Logo Molex' style={{ width: 150 }} />
               <Typography style={{ margin: '40px 5px' }} variant='h4' align='center' color='inherit'>
                 Universal Catalogs
               </Typography>
+              <img src='/static/images/Molex_Red.png' alt='Logo Molex' style={{ width: 150 }} />
               {/* <div className="finger">
                 <Fingerprint style={{ fontSize: 80 }} />
               </div> */}
