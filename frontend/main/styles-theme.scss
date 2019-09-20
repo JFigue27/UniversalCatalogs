@@ -2,14 +2,28 @@
 
 .app-nav {
   .MuiToolbar-regular {
+    background: #000000;
   }
 
   .app-nav-item {
     &:hover {
+      color: #ff0000;
+    }
+
+    &:focus {
+      color: #ff0000;
     }
 
     &:active {
     }
+  }
+}
+
+// Links
+
+.app-link-button {
+  &:hover {
+    text-decoration: none !important;
   }
 }
 
@@ -47,7 +61,13 @@
   &:hover {
   }
 }
+// Home
 
+.home {
+  text-align: center;
+}
+
+// Layouts
 .app-header-primary {
 }
 

@@ -138,9 +138,11 @@ class App extends React.Component {
               {/* <IconButton color='inherit' onClick={this.toggleDrawer('right', true)}>
               <Icon>menu</Icon>
             </IconButton> */}
-              <Typography variant='h6' color='inherit'>
-                Universal Catalogs
-              </Typography>
+              <Link href='/'>
+                <Typography>
+                  <img src='/static/images/Molex_White.png' alt='Molex Logo' style={{ width: 100 }} />
+                </Typography>
+              </Link>
               <Grid item xs />
 
               <Tabs variant='scrollable' value={this.state.currentTab} onChange={this.handleTabsChange}>
@@ -181,6 +183,9 @@ class App extends React.Component {
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <GlobalContext.Provider value={this.state.globals}>
               <Grid container direction='column' item xs={12} style={{ paddingTop: '2%' }}>
+                <Typography variant='h6' color='inherit' style={{ paddingLeft: 15 }}>
+                  Universal Catalogs
+                </Typography>
                 {this.props.children}
               </Grid>
             </GlobalContext.Provider>

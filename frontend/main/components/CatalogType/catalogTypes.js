@@ -165,7 +165,7 @@ class CatalogTypesList extends ListContainer {
             return !this.state.isLoading && <CatalogType dialog={dialog} data={this.state.catalog} />;
           }}
         </Dialog>
-        <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
+        <AppBar position='fixed' style={{ top: 'auto', bottom: 0, backgroundColor: '#333333' }}>
           <Toolbar variant='dense'>
             <SearchBox bindFilterInput={this.bindFilterInput} value={this.state.filterOptions.filterGeneral} />
             <Grid item xs />

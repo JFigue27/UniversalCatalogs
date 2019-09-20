@@ -33,20 +33,21 @@ const Login = props => {
         <Card className='card'>
           <form onSubmit={login}>
             <CardContent>
-              <Typography style={{ margin: '40px 5px' }} variant='h4' align='center' color='inherit'>
+              <Typography style={{ margin: '20px 5px' }} variant='h4' align='center' color='inherit'>
                 Universal Catalogs
+                <img src='/static/images/Molex_Red.png' alt='Logo Molex' style={{ width: 150, paddingTop: 15 }} />
               </Typography>
-              {/* <div className="finger">
-                <Fingerprint style={{ fontSize: 80 }} />
-              </div> */}
+              <div className='finger'>
+                <Fingerprint style={{ fontSize: 60 }} />
+              </div>
               <div className='text-field'>
-                <TextField required fullWidth label='Usuario' margin='normal' onChange={event => setUsername(event.target.value)} />
+                <TextField required fullWidth label='User Name' margin='normal' onChange={event => setUsername(event.target.value)} />
               </div>
               <div className='text-field'>
                 <TextField
                   required
                   fullWidth
-                  label='Contraseña'
+                  label='Password'
                   type='password'
                   autoComplete='current-password'
                   margin='normal'
@@ -57,7 +58,7 @@ const Login = props => {
               <div className='botton'>
                 <Fab variant='extended' aria-label='Delete' type='submit'>
                   <Lock />
-                  Inicio de Sesion
+                  Login
                 </Fab>
               </div>
             </CardContent>
@@ -70,7 +71,7 @@ const Login = props => {
           justify-content: center;
         }
         .login {
-          padding-top: 30%;
+          padding-top: 20%;
           width: 350px;
         }
         .botton {
@@ -78,7 +79,6 @@ const Login = props => {
           text-align: center;
         }
         .finger {
-          padding-top: 15px;
           text-align: center;
         }
         .image {

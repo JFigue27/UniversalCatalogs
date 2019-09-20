@@ -178,7 +178,7 @@ class CatalogsList extends ListContainer {
             );
           }}
         </Dialog>
-        <AppBar position='fixed' style={{ top: 'auto', bottom: 0 }}>
+        <AppBar position='fixed' style={{ top: 'auto', bottom: 0, backgroundColor: '#333333' }}>
           <Toolbar variant='dense'>
             <SearchBox bindFilterInput={this.bindFilterInput} value={this.state.filterOptions.filterGeneral} />
             <Grid item xs />
@@ -190,7 +190,7 @@ class CatalogsList extends ListContainer {
                 this.createInstance(event, {});
               }}
             >
-              <Icon>add_circle</Icon>New
+              <Icon>add_circle</Icon> New
             </Button>
           </Toolbar>
         </AppBar>
