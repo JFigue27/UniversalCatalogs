@@ -20,8 +20,9 @@ using System.Threading.Tasks;
 
 namespace MyApp.Logic
 {
-    public class EmployeeLogic : LogicWrite<Employee>, ILogicWriteAsync<Employee>
+    public class EmployeeLogic : WriteLogic<Employee>, ILogicWriteAsync<Employee>
     {
+        
         ///start:slot:init<<<///end:slot:init<<<
 
         ///start:slot:ctor<<<///end:slot:ctor<<<
@@ -68,7 +69,7 @@ namespace MyApp.Logic
             ///start:slot:beforeRemove<<<///end:slot:beforeRemove<<<
         }
 
-        protected override IEnumerable<Employee> AdapterOut(params Employee[] entities)
+        protected override List<Employee> AdapterOut(params Employee[] entities)
         {
             ///start:slot:adapterOut<<<///end:slot:adapterOut<<<
 
@@ -77,7 +78,7 @@ namespace MyApp.Logic
                 
             }
 
-            return entities;
+            return entities.ToList();
         }
 
         

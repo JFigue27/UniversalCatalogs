@@ -12,7 +12,7 @@ function DraggableDialog(props) {
   return (
     <Draggable
       cancel={
-        '.NoDraggable,.MuiGrid-root,.MuiFormControl-root,button,.Person-Chip,.MuiInputBase-input,.filled,.MuiSwitch-root,.MuiList-root,.react-swipeable-view-container,.MuiTable-root'
+        '.NoDraggable,.MuiGrid-root,.MuiFormControl-root,button,.Person-Chip,.MuiInputBase-input,.filled,.MuiSwitch-root,.MuiList-root,.react-swipeable-view-container,.MuiTable-root,.e-rte-content'
       }
     >
       <Paper {...props} />

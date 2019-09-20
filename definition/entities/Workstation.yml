@@ -1,7 +1,0 @@
-name: Workstation
-fields:
-  Value as Workstation: string
-relationships:
-  oneToParent: []
-  oneToMany: []
-  manyToOne: []

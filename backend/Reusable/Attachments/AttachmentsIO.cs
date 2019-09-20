@@ -4,6 +4,7 @@ using ServiceStack;
 using ServiceStack.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 
 namespace Reusable.Attachments
@@ -18,21 +19,15 @@ namespace Reusable.Attachments
             if (!string.IsNullOrWhiteSpace(folderName))
             {
                 bool useAttachmentsRelativePath = false;
-                string sUseAttachmentsRelativePath = AppSettings.Get<string>("UseAttachmentsRelativePath");
+                string sUseAttachmentsRelativePath = ConfigurationManager.AppSettings["UseAttachmentsRelativePath"];
                 if (!string.IsNullOrWhiteSpace(sUseAttachmentsRelativePath) && bool.TryParse(sUseAttachmentsRelativePath, out bool bUseAttachmentsRelativePath))
-                {
                     useAttachmentsRelativePath = bUseAttachmentsRelativePath;
-                }
 
                 string baseAttachmentsPath;
                 if (useAttachmentsRelativePath)
-                {
-                    baseAttachmentsPath =  "~/".MapHostAbsolutePath() + AppSettings.Get<string>(attachmentKind);
-                }
+                    baseAttachmentsPath = "~/".MapHostAbsolutePath() + ConfigurationManager.AppSettings[attachmentKind];
                 else
-                {
-                    baseAttachmentsPath = AppSettings.Get<string>(attachmentKind);
-                }
+                    baseAttachmentsPath = ConfigurationManager.AppSettings[attachmentKind];
 
                 if (folderName != "" && Directory.Exists(baseAttachmentsPath + folderName.Trim()))
                 {
@@ -42,7 +37,9 @@ namespace Reusable.Attachments
                         Attachment attachment = new Attachment();
                         attachment.FileName = file.Name;
                         attachment.Directory = folderName;
+                        attachment.AttachmentKind = attachmentKind;
                         attachmentsList.Add(attachment);
+
                     }
                 }
             }
@@ -55,21 +52,15 @@ namespace Reusable.Attachments
             if (!string.IsNullOrWhiteSpace(folderName))
             {
                 bool useAttachmentsRelativePath = false;
-                string sUseAttachmentsRelativePath = AppSettings.Get<string>("UseAttachmentsRelativePath");
+                string sUseAttachmentsRelativePath = ConfigurationManager.AppSettings["UseAttachmentsRelativePath"];
                 if (!string.IsNullOrWhiteSpace(sUseAttachmentsRelativePath) && bool.TryParse(sUseAttachmentsRelativePath, out bool bUseAttachmentsRelativePath))
-                {
                     useAttachmentsRelativePath = bUseAttachmentsRelativePath;
-                }
 
                 string baseAttachmentsPath;
                 if (useAttachmentsRelativePath)
-                {
-                    baseAttachmentsPath = "~/".MapHostAbsolutePath() + AppSettings.Get<string>(attachmentKind);
-                }
+                    baseAttachmentsPath = "~/".MapHostAbsolutePath() + ConfigurationManager.AppSettings[attachmentKind];
                 else
-                {
-                    baseAttachmentsPath = AppSettings.Get<string>(attachmentKind);
-                }
+                    baseAttachmentsPath = ConfigurationManager.AppSettings[attachmentKind];
 
                 if (folderName != "" && Directory.Exists(baseAttachmentsPath + folderName.Trim()))
                 {
@@ -103,11 +94,9 @@ namespace Reusable.Attachments
             string currentPath;
 
             bool useAttachmentsRelativePath = false;
-            string sUseAttachmentsRelativePath = AppSettings.Get<string>("UseAttachmentsRelativePath");
+            string sUseAttachmentsRelativePath = ConfigurationManager.AppSettings["UseAttachmentsRelativePath"];
             if (!string.IsNullOrWhiteSpace(sUseAttachmentsRelativePath) && bool.TryParse(sUseAttachmentsRelativePath, out bool bUseAttachmentsRelativePath))
-            {
                 useAttachmentsRelativePath = bUseAttachmentsRelativePath;
-            }
 
             do
             {
@@ -116,13 +105,10 @@ namespace Reusable.Attachments
                                 date.Day.ToString("d2") + "_" + MD5HashGenerator.GenerateKey(date);
 
                 if (useAttachmentsRelativePath)
-                {
                     currentPath = "~/".MapHostAbsolutePath() + baseDirectory + theNewFolderName;
-                }
                 else
-                {
                     currentPath = baseDirectory + theNewFolderName;
-                }
+
             } while (Directory.Exists(currentPath));
             Directory.CreateDirectory(currentPath);
             return theNewFolderName;
@@ -132,17 +118,13 @@ namespace Reusable.Attachments
         {
             DirectoryInfo dir = new DirectoryInfo(targetDirectory);
             if (!dir.Exists)
-            {
                 throw new DirectoryNotFoundException(
                     "Source directory does not exist or could not be found: "
                     + targetDirectory);
-            }
 
             FileInfo[] files = dir.GetFiles();
             foreach (FileInfo file in files)
-            {
                 file.Delete();
-            }
         }
 
         public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
@@ -150,25 +132,18 @@ namespace Reusable.Attachments
             // Get the subdirectories for the specified directory.
             DirectoryInfo dir = new DirectoryInfo(sourceDirName);
             if (!dir.Exists)
-            {
                 return;
-            }
-
 
             DirectoryInfo[] dirs = dir.GetDirectories();
 
             if (!dir.Exists)
-            {
                 throw new DirectoryNotFoundException(
                     "Source directory does not exist or could not be found: "
                     + sourceDirName);
-            }
 
             // If the destination directory doesn't exist, create it. 
             if (!Directory.Exists(destDirName))
-            {
                 Directory.CreateDirectory(destDirName);
-            }
 
             // Get the files in the directory and copy them to the new location.
             FileInfo[] files = dir.GetFiles();
@@ -196,17 +171,15 @@ namespace Reusable.Attachments
 
             // Copy Files
             foreach (FileInfo file in SourceDirectory.EnumerateFiles())
-            {
                 using (FileStream SourceStream = file.OpenRead())
                 {
                     string dirPath = SourceDirectory.FullName;
                     string outputPath = dirPath.Replace(SourceDirectory.FullName, TargetDirectory.FullName);
                     using (FileStream DestinationStream = File.Create(outputPath + "\\" + file.Name))
                     {
-                        SourceStream.CopyToAsync(DestinationStream);
+                        SourceStream.CopyTo(DestinationStream);
                     }
                 }
-            }
 
             if (copySubDirs)
             {
@@ -228,6 +201,44 @@ namespace Reusable.Attachments
         {
             FileInfo fileInfo = new FileInfo(filePath);
             fileInfo.Delete();
+        }
+
+        public static void DeleteFile(Attachment file)
+        {
+            bool useAttachmentsRelativePath = false;
+            string sUseAttachmentsRelativePath = ConfigurationManager.AppSettings["UseAttachmentsRelativePath"];
+            if (!string.IsNullOrWhiteSpace(sUseAttachmentsRelativePath) && bool.TryParse(sUseAttachmentsRelativePath, out bool bUseAttachmentsRelativePath))
+                useAttachmentsRelativePath = bUseAttachmentsRelativePath;
+
+            string baseAttachmentsPath = ConfigurationManager.AppSettings[file.AttachmentKind];
+
+            string filePath;
+            if (useAttachmentsRelativePath)
+                filePath = "~/" + baseAttachmentsPath + file.Directory + "/" + file.FileName.MapHostAbsolutePath();
+            else
+                filePath = baseAttachmentsPath + file.Directory + "\\" + file.FileName;
+
+            DeleteFile(filePath);
+        }
+
+        public static string CopyAttachments(string fromFolder, List<Attachment> list, string basePath)
+        {
+            string targetFolder = null;
+            if (!string.IsNullOrWhiteSpace(fromFolder))
+                if (list != null && list.Count > 0)
+                {
+                    string sourceAttachmentsPath = basePath + fromFolder;
+                    string targetAttachmentsPath = basePath;
+                    targetFolder = CreateFolder(targetAttachmentsPath);
+                    targetAttachmentsPath += targetFolder;
+                    DirectoryCopyStreams(sourceAttachmentsPath, targetAttachmentsPath, false);
+
+                    foreach (var file in list)
+                        if (file.ToDelete)
+                            DeleteFile(targetAttachmentsPath + "\\" + file.FileName);
+                }
+
+            return targetFolder;
         }
     }
 }

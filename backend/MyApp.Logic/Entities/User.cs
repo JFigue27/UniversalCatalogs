@@ -16,7 +16,7 @@ namespace MyApp.Logic.Entities
         public User()
         {
             
-            
+            ///start:slot:ctor<<<///end:slot:ctor<<<
         }
 
         public string Value { get; set; }
@@ -45,5 +45,6 @@ namespace MyApp.Logic.Entities
         public bool ChangePassword { get; set; }
 
         
+        ///start:slot:properties<<<///end:slot:properties<<<
     }
 }

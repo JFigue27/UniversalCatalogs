@@ -174,10 +174,6 @@ fieldset {
   margin: 0 2px;
   padding: 0.35em 0.625em 0.75em;
 }
-legend {
-  border: 0;
-  padding: 0;
-}
 textarea {
   overflow: auto;
 }
@@ -1014,17 +1010,6 @@ fieldset {
   padding: 0;
   margin: 0;
   border: 0;
-}
-legend {
-  display: block;
-  width: 100%;
-  padding: 0;
-  margin-bottom: 20px;
-  font-size: 21px;
-  line-height: inherit;
-  color: #333333;
-  border: 0;
-  border-bottom: 1px solid #e5e5e5;
 }
 label {
   display: inline-block;

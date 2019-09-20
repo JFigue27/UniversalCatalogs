@@ -1,7 +1,0 @@
-name: shift
-type: form
-entity: Shift
-load: this.load(this.props.data.Id)
-layout:
-  - content:
-      - field: Value

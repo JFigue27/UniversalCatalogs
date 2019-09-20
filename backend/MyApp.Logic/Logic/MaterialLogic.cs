@@ -16,20 +16,21 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-
+///start:slot:imports<<<///end:slot:imports<<<
 
 namespace MyApp.Logic
 {
-    public class MaterialLogic : LogicWrite<Material>, ILogicWriteAsync<Material>
+    public class MaterialLogic : WriteLogic<Material>, ILogicWriteAsync<Material>
     {
         
+        ///start:slot:init<<<///end:slot:init<<<
 
-        
+        ///start:slot:ctor<<<///end:slot:ctor<<<
 
         protected override Material OnCreateInstance(Material entity)
         {
             
-            
+            ///start:slot:createInstance<<<///end:slot:createInstance<<<
 
             return entity;
         }
@@ -37,7 +38,7 @@ namespace MyApp.Logic
         protected override SqlExpression<Material> OnGetList(SqlExpression<Material> query)
         {
             
-            
+            ///start:slot:listQuery<<<///end:slot:listQuery<<<
 
             return query;
         }
@@ -45,7 +46,7 @@ namespace MyApp.Logic
         protected override SqlExpression<Material> OnGetSingle(SqlExpression<Material> query)
         {
             
-            
+            ///start:slot:singleQuery<<<///end:slot:singleQuery<<<
 
             return query;
         }
@@ -53,34 +54,34 @@ namespace MyApp.Logic
         protected override void OnBeforeSaving(Material entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            
+            ///start:slot:beforeSave<<<///end:slot:beforeSave<<<
         }
 
         protected override void OnAfterSaving(Material entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            
+            ///start:slot:afterSave<<<///end:slot:afterSave<<<
         }
 
         protected override void OnBeforeRemoving(Material entity)
         {
             
-            
+            ///start:slot:beforeRemove<<<///end:slot:beforeRemove<<<
         }
 
-        protected override IEnumerable<Material> AdapterOut(params Material[] entities)
+        protected override List<Material> AdapterOut(params Material[] entities)
         {
-            
+            ///start:slot:adapterOut<<<///end:slot:adapterOut<<<
 
             foreach (var item in entities)
             {
                 
             }
 
-            return entities;
+            return entities.ToList();
         }
 
         
-        
+        ///start:slot:logic<<<///end:slot:logic<<<
     }
 }

@@ -13,25 +13,25 @@ using Reusable.Rest.Implementations.SS;
 namespace MyApp.API
 {
     // [Authenticate]
-    public class EmailService : BaseService<EmailLogic>
+    public class ApprovalService : BaseService<ApprovalLogic>
     {
         #region Endpoints - Generic Read Only
-        public object Get(GetAllEmails request)
+        public object Get(GetAllApprovals request)
         {
             return WithDb(db => Logic.GetAll());
         }
 
-        public object Get(GetEmailById request)
+        public object Get(GetApprovalById request)
         {
             return WithDb(db => Logic.GetById(request.Id));
         }
 
-        public object Get(GetEmailWhere request)
+        public object Get(GetApprovalWhere request)
         {
             return WithDb(db => Logic.GetSingleWhere(request.Property, request.Value));
         }
 
-        public object Get(GetPagedEmails request)
+        public object Get(GetPagedApprovals request)
         {
             return WithDb(db => Logic.GetPaged(
                 request.Limit,
@@ -41,11 +41,11 @@ namespace MyApp.API
         #endregion
 
         #region Endpoints - Generic Write
-        public object Post(CreateEmailInstance request)
+        public object Post(CreateApprovalInstance request)
         {
             return WithDb(db =>
             {
-                var entity = request.ConvertTo<Email>();
+                var entity = request.ConvertTo<Approval>();
                 return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
                 {
                     ResultScope = () => JsConfig.With(new Config { IncludeNullValues = true })
@@ -53,9 +53,9 @@ namespace MyApp.API
             });
         }
 
-        public object Post(InsertEmail request)
+        public object Post(InsertApproval request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Approval>();
             return InTransaction(db =>
             {
                 Logic.Add(entity);
@@ -63,18 +63,18 @@ namespace MyApp.API
             });
         }
 
-        public object Put(UpdateEmail request)
+        public object Put(UpdateApproval request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Approval>();
             return InTransaction(db =>
             {
                 Logic.Update(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
         }
-        public object Delete(DeleteEmail request)
+        public object Delete(DeleteApproval request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Approval>();
             return InTransaction(db =>
             {
                 Logic.Remove(entity);
@@ -84,9 +84,9 @@ namespace MyApp.API
         #endregion
 
         #region Endpoints - Generic Document
-        virtual public object Post(FinalizeEmail request)
+        virtual public object Post(FinalizeApproval request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Approval>();
             return InTransaction(db =>
             {
                 Logic.Finalize(entity);
@@ -94,9 +94,9 @@ namespace MyApp.API
             });
         }
 
-        virtual public object Post(UnfinalizeEmail request)
+        virtual public object Post(UnfinalizeApproval request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Approval>();
             return InTransaction(db =>
             {
                 Logic.Unfinalize(entity);
@@ -104,9 +104,9 @@ namespace MyApp.API
             });
         }
 
-        virtual public object Post(MakeEmailRevision request)
+        virtual public object Post(MakeApprovalRevision request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Approval>();
             return InTransaction(db =>
             {
                 Logic.MakeRevision(entity);
@@ -114,9 +114,9 @@ namespace MyApp.API
             });
         }
 
-        virtual public object Post(CheckoutEmail request)
+        virtual public object Post(CheckoutApproval request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Approval>();
             return InTransaction(db =>
             {
                 Logic.Checkout(entity.Id);
@@ -124,9 +124,9 @@ namespace MyApp.API
             });
         }
 
-        virtual public object Post(CancelCheckoutEmail request)
+        virtual public object Post(CancelCheckoutApproval request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Approval>();
             return InTransaction(db =>
             {
                 Logic.CancelCheckout(entity.Id);
@@ -134,9 +134,9 @@ namespace MyApp.API
             });
         }
 
-        virtual public object Post(CheckinEmail request)
+        virtual public object Post(CheckinApproval request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Approval>();
             return InTransaction(db =>
             {
                 Logic.Checkin(entity);
@@ -144,9 +144,9 @@ namespace MyApp.API
             });
         }
 
-        virtual public object Post(CreateAndCheckoutEmail request)
+        virtual public object Post(CreateAndCheckoutApproval request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Approval>();
             return InTransaction(db =>
             {
                 Logic.CreateAndCheckout(entity);
@@ -167,55 +167,55 @@ namespace MyApp.API
     #endregion
 
     #region Generic Read Only
-    [Route("/Email", "GET")]
-    public class GetAllEmails : GetAll<Email> { }
+    [Route("/Approval", "GET")]
+    public class GetAllApprovals : GetAll<Approval> { }
 
-    [Route("/Email/{Id}", "GET")]
-    public class GetEmailById : GetSingleById<Email> { }
+    [Route("/Approval/{Id}", "GET")]
+    public class GetApprovalById : GetSingleById<Approval> { }
 
-    [Route("/Email/GetSingleWhere", "GET")]
-    [Route("/Email/GetSingleWhere/{Property}/{Value}", "GET")]
-    public class GetEmailWhere : GetSingleWhere<Email> { }
+    [Route("/Approval/GetSingleWhere", "GET")]
+    [Route("/Approval/GetSingleWhere/{Property}/{Value}", "GET")]
+    public class GetApprovalWhere : GetSingleWhere<Approval> { }
 
-    [Route("/Email/GetPaged/{Limit}/{Page}", "GET")]
-    public class GetPagedEmails : GetPaged<Email> { }
+    [Route("/Approval/GetPaged/{Limit}/{Page}", "GET")]
+    public class GetPagedApprovals : GetPaged<Approval> { }
     #endregion
 
     #region Generic Write
-    [Route("/Email/CreateInstance", "POST")]
-    public class CreateEmailInstance : Email { }
+    [Route("/Approval/CreateInstance", "POST")]
+    public class CreateApprovalInstance : Approval { }
 
-    [Route("/Email", "POST")]
-    public class InsertEmail : Email { }
+    [Route("/Approval", "POST")]
+    public class InsertApproval : Approval { }
 
-    [Route("/Email", "PUT")]
-    public class UpdateEmail : Email { }
+    [Route("/Approval", "PUT")]
+    public class UpdateApproval : Approval { }
 
-    [Route("/Email", "DELETE")]
-    [Route("/Email/{Id}", "DELETE")]
-    public class DeleteEmail : Email { }
+    [Route("/Approval", "DELETE")]
+    [Route("/Approval/{Id}", "DELETE")]
+    public class DeleteApproval : Approval { }
     #endregion
 
     #region Generic Documents
-    [Route("/Email/Finalize", "POST")]
-    public class FinalizeEmail : Email { }
+    [Route("/Approval/Finalize", "POST")]
+    public class FinalizeApproval : Approval { }
 
-    [Route("/Email/Unfinalize", "POST")]
-    public class UnfinalizeEmail : Email { }
+    [Route("/Approval/Unfinalize", "POST")]
+    public class UnfinalizeApproval : Approval { }
 
-    [Route("/Email/MakeRevision", "POST")]
-    public class MakeEmailRevision : Email { }
+    [Route("/Approval/MakeRevision", "POST")]
+    public class MakeApprovalRevision : Approval { }
 
-    [Route("/Email/Checkout/{Id}", "POST")]
-    public class CheckoutEmail : Email { }
+    [Route("/Approval/Checkout/{Id}", "POST")]
+    public class CheckoutApproval : Approval { }
 
-    [Route("/Email/CancelCheckout/{Id}", "POST")]
-    public class CancelCheckoutEmail : Email { }
+    [Route("/Approval/CancelCheckout/{Id}", "POST")]
+    public class CancelCheckoutApproval : Approval { }
 
-    [Route("/Email/Checkin", "POST")]
-    public class CheckinEmail : Email { }
+    [Route("/Approval/Checkin", "POST")]
+    public class CheckinApproval : Approval { }
 
-    [Route("/Email/CreateAndCheckout", "POST")]
-    public class CreateAndCheckoutEmail : Email { }
+    [Route("/Approval/CreateAndCheckout", "POST")]
+    public class CreateAndCheckoutApproval : Approval { }
     #endregion
 }

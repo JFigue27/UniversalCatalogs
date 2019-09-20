@@ -16,7 +16,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-
+///start:slot:imports<<<///end:slot:imports<<<
 
 
 namespace MyApp.Logic
@@ -24,13 +24,14 @@ namespace MyApp.Logic
     public class EmailLogic : DocumentLogic<Email>, IDocumentLogicAsync<Email>
     {
         
+        ///start:slot:init<<<///end:slot:init<<<
 
-        
+        ///start:slot:ctor<<<///end:slot:ctor<<<
 
         protected override Email OnCreateInstance(Email entity)
         {
             
-            
+            ///start:slot:createInstance<<<///end:slot:createInstance<<<
 
             return entity;
         }
@@ -38,7 +39,7 @@ namespace MyApp.Logic
         protected override SqlExpression<Email> OnGetList(SqlExpression<Email> query)
         {
             
-            
+            ///start:slot:listQuery<<<///end:slot:listQuery<<<
 
             return base.OnGetList(query);
         }
@@ -46,7 +47,7 @@ namespace MyApp.Logic
         protected override SqlExpression<Email> OnGetSingle(SqlExpression<Email> query)
         {
             
-            
+            ///start:slot:singleQuery<<<///end:slot:singleQuery<<<
 
             return base.OnGetSingle(query);
         }
@@ -54,44 +55,44 @@ namespace MyApp.Logic
         protected override void OnBeforeSaving(Email entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            
+            ///start:slot:beforeSave<<<///end:slot:beforeSave<<<
         }
 
         protected override void OnAfterSaving(Email entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            
+            ///start:slot:afterSave<<<///end:slot:afterSave<<<
         }
 
         protected override void OnBeforeRemoving(Email entity)
         {
             
-            
+            ///start:slot:beforeRemove<<<///end:slot:beforeRemove<<<
         }
 
-        protected override IEnumerable<Email> AdapterOut(params Email[] entities)
+        protected override List<Email> AdapterOut(params Email[] entities)
         {
-            
+            ///start:slot:adapterOut<<<///end:slot:adapterOut<<<
 
             foreach (var item in entities)
             {
                 
             }
 
-            return entities;
+            return entities.ToList();
         }
 
         protected override void OnFinalize(Email entity)
         {
-            
+            ///start:slot:finalize<<<///end:slot:finalize<<<
         }
 
         protected override void OnUnfinalize(Email entity)
         {
-            
+            ///start:slot:unfinalize<<<///end:slot:unfinalize<<<
         }
 
         
-        
+        ///start:slot:logic<<<///end:slot:logic<<<
     }
 }

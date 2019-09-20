@@ -10,6 +10,7 @@ import CatalogService from './catalog.service';
 ///start:slot:dependencies<<<
 import { FormControlLabel, Checkbox } from '@material-ui/core';
 import Select from '../../widgets/Select';
+import { withSnackbar } from 'notistack';
 ///end:slot:dependencies<<<
 
 const service = new CatalogService();
@@ -28,13 +29,13 @@ class CatalogForm extends FormContainer {
   componentDidMount() {
     console.log('Form did mount');
     this.load(this.props.data);
-    ///start:slot:didMount<<<
+    ///start:slot:load<<<
     if (this.props.parentType) {
       this.service.GetPaged(0, 1, '?CatalogType=' + this.props.parentType).then(parents => {
         this.setState({ parents: parents.Result });
       });
     }
-    ///end:slot:didMount<<<
+    ///end:slot:load<<<
   }
 
   AFTER_LOAD = entity => {
@@ -65,15 +66,7 @@ class CatalogForm extends FormContainer {
     ///start:slot:beforeCheckin<<<///end:slot:beforeCheckin<<<
   };
 
-  ///start:slot:js<<<
-  handleAutocompleteChange = (value, field) => {
-    let baseEntity = this.state.baseEntity;
-    baseEntity[field] = value ? value.Id : null;
-    baseEntity.ParentValue = value ? value.label : null;
-    this.setState({ baseEntity });
-    this.ON_CHANGE(baseEntity);
-  };
-  ///end:slot:js<<<
+  ///start:slot:js<<<///end:slot:js<<<
 
   render() {
     const { dialog } = this.props;
@@ -108,10 +101,9 @@ class CatalogForm extends FormContainer {
           {this.props.parentType && (
             <Select
               flat
-              label='Parent'
               options={this.state.parents}
-              value={this.state.baseEntity.ParentValue}
-              onChange={event => this.handleAutocompleteChange(event, 'ParentId')}
+              value={this.state.baseEntity.Parent}
+              onChange={event => this.handleAutocompleteChange(event, 'Parent')}
               style={{ marginTop: 20 }}
             />
           )}
@@ -158,4 +150,4 @@ class CatalogForm extends FormContainer {
   }
 }
 
-export default withRouter(CatalogForm);
+export default withSnackbar(withRouter(CatalogForm));

@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using ServiceStack.Text;
 using Reusable.Rest.Implementations.SS;
 
+///start:slot:imports<<<///end:slot:imports<<<
+
 namespace MyApp.API
 {
     // [Authenticate]
@@ -41,7 +43,8 @@ namespace MyApp.API
         #region Endpoints - Generic Write
         public object Post(CreateEmployeeInstance request)
         {
-            return WithDb(db => {
+            return WithDb(db =>
+            {
                 var entity = request.ConvertTo<Employee>();
                 return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
                 {
@@ -53,7 +56,8 @@ namespace MyApp.API
         public object Post(InsertEmployee request)
         {
             var entity = request.ConvertTo<Employee>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Add(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -62,7 +66,8 @@ namespace MyApp.API
         public object Put(UpdateEmployee request)
         {
             var entity = request.ConvertTo<Employee>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Update(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -70,7 +75,8 @@ namespace MyApp.API
         public object Delete(DeleteEmployee request)
         {
             var entity = request.ConvertTo<Employee>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Remove(entity);
                 return new CommonResponse();
             });
@@ -78,11 +84,13 @@ namespace MyApp.API
         #endregion
 
         #region Endpoints - Specific
+        
         ///start:slot:endpoints<<<///end:slot:endpoints<<<
         #endregion
     }
 
     #region Specific
+    
     ///start:slot:endpointsRoutes<<<///end:slot:endpointsRoutes<<<
     #endregion
 

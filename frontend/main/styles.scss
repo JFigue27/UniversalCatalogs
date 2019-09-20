@@ -1,3 +1,5 @@
+@import './static/styles/bootstrap.css';
+
 @import './node_modules/@syncfusion/ej2-base/styles/material.css';
 @import './node_modules/@syncfusion/ej2-icons/styles/material.css';
 @import './node_modules/@syncfusion/ej2-buttons/styles/material.css';
@@ -17,7 +19,9 @@
 @import './styles-theme.scss';
 
 body {
-  padding: 50px 0;
+  font-family: 'Roboto';
+  padding-top: 60px;
+  // padding-bottom: 60px;
 }
 
 .filled {
@@ -50,18 +54,38 @@ input[type='number']::-webkit-outer-spin-button {
   margin-top: 2px;
 }
 
+.Approved-Chip {
+  background-color: green !important;
+  color: white !important;
+}
+
+.Rejected-Chip {
+  background-color: red !important;
+  color: white !important;
+}
+
+.Approval-Approved {
+  background-color: lightgreen;
+}
+
+.Approval-Rejected {
+  // background-color: darkgray;
+  color: darkred;
+  border: darkred;
+}
+
 .Sheet {
   max-width: 1200px;
   margin: auto;
   padding: 15px;
 }
 
-.MuiPaper-root {
-  z-index: 120 !important;
-}
+// .MuiPaper-root {
+//   z-index: 120 !important;
+// }
 
 .MainAppBar {
-  z-index: 200 !important;
+  // z-index: 1500 !important;
 }
 
 .CellEditable {
@@ -69,7 +93,7 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .well {
-  margin: 10px 0 !important;
+  // margin: 10px 0 !important;
   padding: 0;
   padding-top: 5px;
   border: 0;
@@ -79,8 +103,60 @@ input[type='number']::-webkit-outer-spin-button {
   // background-color: lightgray;
 }
 
-.MuiToolbar-root {
-  button {
-    margin-left: 5px;
+.BottomToolbar {
+  .MuiToolbar-root {
+    & > button {
+      margin-left: 5px;
+      min-width: inherit;
+      .MuiIcon-root {
+        font-size: 1.3em;
+      }
+    }
+    .MuiGrid-item {
+      margin-left: 10px;
+      .MuiTypography-root {
+        line-height: 1.5;
+      }
+    }
+    .MuiButton-contained {
+      span {
+        margin-right: 3px;
+      }
+    }
+    .MuiButtonGroup-root {
+      margin-left: 3px;
+    }
   }
+
+  .FloatingButton {
+    width: 70px;
+    button {
+      position: fixed;
+      bottom: 25px;
+      right: 10px;
+      z-index: 500;
+      width: 70px;
+      height: 70px;
+      .MuiIcon-root {
+        font-size: 40px;
+      }
+    }
+  }
+}
+
+.Attachments {
+  padding: 3px;
+  border: solid #f6f6f6 2px;
+  border-style: dotted;
+  .AttachmentsRow {
+    padding-left: 3px;
+    border-bottom: 1px solid lightgray;
+  }
+  .AttachmentsRow:hover {
+    background: lightgray;
+  }
+}
+
+.BottomSheetButton {
+  padding: 5px !important;
 }

@@ -1,7 +1,0 @@
-name: material
-type: form
-entity: Material
-load: this.load(this.props.data.Id);
-layout:
-  - content:
-      - field: Value

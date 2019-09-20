@@ -38,7 +38,7 @@ class CatalogTypesList extends ListContainer {
   componentDidMount() {
     console.log('List did mount');
     this.load();
-    ///start:slot:didMount<<<///end:slot:didMount<<<
+    ///start:slot:load<<<///end:slot:load<<<
   }
 
   AFTER_LOAD = () => {

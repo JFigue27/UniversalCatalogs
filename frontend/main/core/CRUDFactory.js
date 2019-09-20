@@ -3,35 +3,67 @@ import moment from 'moment';
 import AppConfig from './AppConfig';
 import AuthService from '../core/AuthService';
 
-const Request = async (method, url, data, BaseURL) => {
+const GeneralError = response => {
+  //CommonResponse wrapper
+  if (response.ErrorThrown) {
+    switch (response.ErrorType) {
+      case 'MESSAGE':
+        alertify.alert(response.ResponseDescription);
+    }
+    throw response.ResponseDescription;
+  }
+  //ServiceStack wrapper
+  else if (response.ResponseStatus) {
+    switch (response.ResponseStatus.ErrorCode) {
+      case 'KnownError':
+      case 'SqlException':
+      default:
+        console.log(response);
+        console.log(response.ResponseStatus.StackTrace);
+        alert(response.ResponseStatus.Message);
+    }
+    throw response.ResponseStatus.Message;
+  }
+  //Other
+  else {
+    switch (response.status) {
+      case 401:
+        AuthService.OpenLogin();
+        throw 'Your session has expired. Log in again';
+    }
+  }
+  throw response;
+};
+
+const Request = async (method, endpoint, data, BaseURL) => {
   if (AuthService.auth == null) AuthService.fillAuthData();
+  if (!AuthService.auth || !AuthService.auth.user) throw 'User not signed in.';
 
   const config = {
     method: method,
     mode: 'cors',
-    cache: 'no-cache',
+    // cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${AuthService.auth.user.BearerToken}`
     }
   };
   if (['POST', 'PUT', 'DELETE'].includes(method)) config.body = JSON.stringify(data);
-  let response;
-  try {
-    response = await fetch((BaseURL || AppConfig.BaseURL) + url, config);
-  } catch (e) {
-    console.log(e);
+  let response = await fetch((BaseURL || AppConfig.BaseURL) + endpoint, config);
+  if (response) {
+    if (!response.ok) throw await response.json();
+    if (response.status == 403) alert('Invalid Role.');
+    if (response.status == 401) throw response;
+  } else {
     alert('Failed to fetch. Probably server is down.');
   }
-  if (response.status == 401) throw response;
-  if (response.status == 403) alert('Invalid Role.');
   return await response.json();
 };
 
-const Get = async (url, data, baseURL) => await Request('GET', url, data, baseURL);
-const Post = async (url, data, baseURL) => await Request('POST', url, data, baseURL);
-const Put = async (url, data, baseURL) => await Request('PUT', url, data, baseURL);
-const Delete = async (url, data, baseURL) => await Request('DELETE', url, data, baseURL);
+const Get = async (endpoint, data, baseURL) => await Request('GET', endpoint, data, baseURL).catch(GeneralError);
+const Post = async (endpoint, data, baseURL) => await Request('POST', endpoint, data, baseURL).catch(GeneralError);
+const Put = async (endpoint, data, baseURL) => await Request('PUT', endpoint, data, baseURL).catch(GeneralError);
+const Delete = async (endpoint, data, baseURL) => await Request('DELETE', endpoint, data, baseURL).catch(GeneralError);
 
 export class CRUDFactory {
   constructor(config) {
@@ -53,6 +85,50 @@ export class CRUDFactory {
       .catch(this.GeneralError);
   }
 
+  async Checkout(entity) {
+    return await Post(this.EndPoint + '/Checkout/' + entity.Id)
+      .then(r => this.UseCommonResponse(r))
+      .catch(this.GeneralError);
+  }
+
+  async CancelCheckout(entity) {
+    return await Post(this.EndPoint + '/CancelCheckout/' + entity.Id)
+      .then(r => this.UseCommonResponse(r))
+      .catch(this.GeneralError);
+  }
+
+  async Checkin(entity) {
+    return await Post(this.EndPoint + '/Checkin', entity)
+      .then(r => this.UseCommonResponse(r))
+      .catch(this.GeneralError);
+  }
+
+  async Finalize(entity) {
+    this.ADAPTER_OUT(entity);
+    return await Post(this.EndPoint + '/Finalize', entity)
+      .then(r => this.UseCommonResponse(r))
+      .catch(this.GeneralError);
+  }
+
+  async Unfinalize(entity) {
+    this.ADAPTER_OUT(entity);
+    return await Post(this.EndPoint + '/Unfinalize', entity)
+      .then(r => this.UseCommonResponse(r))
+      .catch(this.GeneralError);
+  }
+
+  async MakeRevision(entity) {
+    return await Post(this.EndPoint + '/MakeRevision', entity)
+      .then(r => this.UseCommonResponse(r))
+      .catch(this.GeneralError);
+  }
+
+  async Duplicate(entity) {
+    return await Post(this.EndPoint + '/Duplicate', entity)
+      .then(r => this.UseCommonResponse(r))
+      .catch(this.GeneralError);
+  }
+
   async CreateInstance(entity) {
     return await Post(this.EndPoint + '/CreateInstance', entity)
       .then(r => this.UseCommonResponse(r))
@@ -68,18 +144,18 @@ export class CRUDFactory {
   }
 
   async GetPaged(limit, page, params = '?') {
-    return await Get(this.EndPoint + '/getPaged/' + limit + '/' + page + params + '&noCache=' + Number(new Date()))
+    return await Get(this.EndPoint + '/getPaged/' + limit + '/' + page + params)
       .then(r => this.UseCommonResponse(r, true))
       .catch(this.GeneralError);
   }
 
   async GetSingleWhere(property, value, params = '') {
     if (property && value) {
-      return await Get(this.EndPoint + '/GetSingleWhere/' + property + '/' + value + '?' + params + '&noCache=' + Number(new Date()))
+      return await Get(this.EndPoint + '/GetSingleWhere/' + property + '/' + value + '?' + params)
         .then(r => this.UseNudeResponse(r))
         .catch(this.GeneralError);
     } else if (params.length > 1) {
-      return await Get(this.EndPoint + '/GetSingleWhere?' + params + '&noCache=' + Number(new Date()))
+      return await Get(this.EndPoint + '/GetSingleWhere?' + params)
         .then(r => this.UseNudeResponse(r))
         .catch(this.GeneralError);
     } else {
@@ -88,7 +164,7 @@ export class CRUDFactory {
   }
 
   async LoadEntities(params = '?') {
-    return await Get(this.EndPoint + params + '&noCache=' + Number(new Date()))
+    return await Get(this.EndPoint + params)
       .then(r => this.UseNudeResponse(r))
       .catch(this.GeneralError);
   }
@@ -184,8 +260,12 @@ export class CRUDFactory {
 
     //Call Adapter In Hook:
     if (Array.isArray(response.Result)) {
-      response.Result.forEach(entity => this.ADAPTER_IN(entity));
+      response.Result.forEach(entity => {
+        this.closeRevisions(entity);
+        this.ADAPTER_IN(entity);
+      });
     } else if (typeof response.Result === 'object') {
+      this.closeRevisions(response.Result);
       this.ADAPTER_IN(response.Result);
     }
 
@@ -203,8 +283,12 @@ export class CRUDFactory {
 
     //Call Adapter In Hook:
     if (Array.isArray(response.Result)) {
-      response.Result.forEach(entity => this.ADAPTER_IN(entity));
+      response.Result.forEach(entity => {
+        this.closeRevisions(entity);
+        this.ADAPTER_IN(entity);
+      });
     } else if (typeof response.Result === 'object') {
+      this.closeRevisions(response.Result);
       this.ADAPTER_IN(response.Result);
     }
 
@@ -218,8 +302,12 @@ export class CRUDFactory {
   UseNudeResponse = response => {
     //Call Adapter In Hook:
     if (Array.isArray(response.Result)) {
-      response.forEach(entity => this.ADAPTER_IN(entity));
+      response.forEach(entity => {
+        this.closeRevisions(entity);
+        this.ADAPTER_IN(entity);
+      });
     } else if (typeof response === 'object') {
+      this.closeRevisions(response);
       this.ADAPTER_IN(response);
     }
 
@@ -227,35 +315,12 @@ export class CRUDFactory {
     return response;
   };
 
-  GeneralError = response => {
-    //CommonResponse wrapper
-    if (response.ErrorThrown) {
-      switch (response.ErrorType) {
-        case 'MESSAGE':
-          alertify.alert(response.ResponseDescription);
-      }
-      return Promise.resolve();
-    }
-    //ServiceStack wrapper
-    else if (response.ResponseStatus) {
-      switch (response.ResponseStatus.ErrorCode) {
-        case 'KnownError':
-        case 'SqlException':
-        default:
-          console.log(response);
-          console.log(response.ResponseStatus.StackTrace);
-          alert(response.ResponseStatus.Message);
-      }
-    }
-    //Other
-    else {
-      switch (response.status) {
-        case 401:
-          AuthService.OpenLogin();
-          return Promise.reject('Your session has expired. Log in again');
-      }
-    }
-    return Promise.reject(response.statusText);
+  closeRevisions = entity => {
+    entity &&
+      entity.Revisions &&
+      entity.Revisions.forEach(revision => {
+        revision.isOpened = false;
+      });
   };
 
   //Formatters:===================================================================
@@ -276,7 +341,7 @@ export class CRUDFactory {
   };
 
   toServerDate = date => {
-    var momentDate = moment(date);
+    var momentDate = moment(date || null);
     if (momentDate.isValid()) {
       momentDate.local();
       return momentDate.format();
@@ -292,25 +357,29 @@ export class CRUDFactory {
   };
 
   //Hooks:=======================================================================
-  ADAPTER_IN = entity => entity;
+  ADAPTER_IN(entity) {
+    return entity;
+  }
 
-  ADAPTER_OUT = entity => entity;
+  ADAPTER_OUT(entity) {
+    return entity;
+  }
 
   //Catalogs:====================================================================
   async GetCatalog(name, params = '', limit = 0, page = 1) {
-    return await Get(`catalog/${limit}/${page}?name=${name}&${params}&noCache=` + Number(new Date()))
+    return await Get(`catalog/${limit}/${page}?name=${name}&${params}`)
       .then(r => r.Result)
       .catch(this.GeneralError);
   }
 
   async GetUniversalCatalog(name, params = '', limit = 0, page = 1) {
-    return await Get(`catalog/${limit}/${page}?name=${name}&${params}&noCache=${Number(new Date())}`, null, AppConfig.UniversalCatalogsURL)
+    return await Get(`catalog/${limit}/${page}?name=${name}&${params}`, null, AppConfig.UniversalCatalogsURL)
       .then(r => r.Result)
       .catch(this.GeneralError);
   }
 
   //Accounts:===================================================================
   async GetAccounts(params = '') {
-    return await Get('Account?' + params + '&noCache=' + Number(new Date()), null, AppConfig.AuthURL).catch(this.GeneralError);
+    return await Get('Account?' + params, null, AppConfig.AuthURL).catch(this.GeneralError);
   }
 }

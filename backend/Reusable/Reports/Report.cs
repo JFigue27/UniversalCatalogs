@@ -9,7 +9,7 @@ using System.IO;
 
 namespace Reusable.Reports
 {
-    public interface IReport: ILogic
+    public interface IReport : ILogic
     {
         byte[] Generate();
         string FileName { get; }

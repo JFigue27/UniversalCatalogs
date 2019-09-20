@@ -1,5 +1,6 @@
 import React from 'react';
-import AuthService from './AuthService';
+import Router from 'next/router';
+import { GlobalContext } from '../components/App/globals-context';
 
 class FormContainer extends React.Component {
   state = {
@@ -7,52 +8,69 @@ class FormContainer extends React.Component {
       service: null
     },
     isLoading: true,
-    baseEntity: {}
+    baseEntity: {},
+    isDisabled: true
   };
+
+  auth = {};
 
   constructor(props, config) {
     super(props);
     if (config) Object.assign(this.state.config, config);
 
     this.service = this.state.config.service;
+  }
 
-    AuthService.ON_LOGIN = this.refresh;
+  UNSAFE_componentWillMount() {
+    this.auth = this.context.auth;
+  }
+
+  componentDidUpdate() {
+    if (!this.auth && this.context.auth && this.context.auth.user) {
+      console.log('Refresh after login.');
+      this.refreshForm();
+    }
+    this.auth = this.context.auth;
   }
 
   // Service Operations:==========================================================
-
   load = async criteria => {
-    return await this.refreshForm(criteria);
+    this.criteria = criteria;
+    return await this.refreshForm();
   };
 
-  refreshForm = async criteria => {
+  refreshForm = async criteriaParam => {
+    let criteria = criteriaParam === undefined ? this.criteria : criteriaParam;
+    console.log('Form criteria: ' + criteria);
+
     //Clear form:
     if (criteria === null) {
       console.log('Form Reset.', criteria);
-      this.setState({
-        baseEntity: {},
-        isLoading: false
-      });
-      this.ON_CHANGE({});
+      const baseEntity = {};
+      this.ON_CHANGE(baseEntity);
+      this.setState({ baseEntity, isLoading: false });
     }
     //Open by ID
     else if (!isNaN(criteria) && criteria > 0) {
       console.log('Form opened by ID.', criteria);
       //TODO: Catch non-existent record
-      return this.service.LoadEntity(criteria).then(entity => {
-        this.AFTER_LOAD(entity);
+      return this.service.LoadEntity(criteria).then(baseEntity => {
+        baseEntity.isOpened = true;
+        this._afterLoad(baseEntity);
+        this.ON_CHANGE(baseEntity);
         this.setState({
           isLoading: false,
-          baseEntity: entity
+          baseEntity
         });
-        this.ON_CHANGE(entity);
       });
     }
     //Open by query parameters
     else if (typeof criteria == 'string') {
       return this.service.GetSingleWhere(null, null, criteria).then(baseEntity => {
-        this.setState({ baseEntity });
+        baseEntity.isOpened = true;
+        this._afterLoad(baseEntity);
         this.ON_CHANGE(baseEntity);
+        this.setState({ isLoading: false, baseEntity });
       });
     }
     //Create instance
@@ -63,13 +81,14 @@ class FormContainer extends React.Component {
     //Open direct object
     else if (criteria instanceof Object || typeof criteria == 'object') {
       console.log('Form opened by Object.', criteria);
+      criteria.isOpened = true;
       this.service.ADAPTER_IN(criteria);
-      this.AFTER_LOAD(criteria);
+      this._afterLoad(criteria);
+      this.ON_CHANGE(criteria);
       this.setState({
         baseEntity: criteria,
         isLoading: false
       });
-      this.ON_CHANGE(criteria);
     }
   };
 
@@ -79,33 +98,41 @@ class FormContainer extends React.Component {
       // theArguments.unshift(instance);
       // this.AFTER_CREATE.apply(this, theArguments);
       instance.Entry_State = 1;
-      instance.isDisabled = false;
       this.AFTER_CREATE(instance);
-      this.setState({
-        baseEntity: instance
-      });
       this.ON_CHANGE(instance);
+      this.setState({ baseEntity: instance, isDisabled: false });
     });
   };
 
   createAndCheckout = async (event, item = {}) => {
     if (event) event.stopPropagation();
     if (confirm(`Please confirm to create a new ${this.service.config.EndPoint}`)) {
-      return await this.service.CreateAndCheckout(item).then(entity => {
-        this.AFTER_CREATE_AND_CHECKOUT(entity);
-        console.log('success');
-        return entity;
+      return await this.service.CreateAndCheckout(item).then(baseEntity => {
+        this.AFTER_CREATE_AND_CHECKOUT(baseEntity);
+        this.setState({ baseEntity, isDisabled: false });
+        this.success('Created and Checked Out.');
+        return baseEntity;
       });
     }
   };
 
-  save = async () => {
-    this.BEFORE_SAVE(this.state.baseEntity);
-    return await this.service.Save(this.state.baseEntity).then(entity => {
-      this.AFTER_SAVE(entity);
-      this.ON_CHANGE(entity);
-      this.setState({ baseEntity: entity });
-    });
+  save = () => {
+    return this.BEFORE_SAVE(this.state.baseEntity)
+      .then((entity = this.state.baseEntity) => {
+        return this.service.Save(entity).then(baseEntity => {
+          baseEntity.isOpened = true;
+          this.AFTER_SAVE(baseEntity);
+          this.ON_CHANGE(baseEntity);
+          this.setState({ baseEntity });
+          this.success('Saved.');
+        });
+      })
+      .catch(error => {
+        console.log(error);
+        let sError = JSON.stringify(error);
+        this.error(sError);
+        // alert(sError);
+      });
   };
 
   loadRevision = selectedRevision => {
@@ -117,16 +144,16 @@ class FormContainer extends React.Component {
     revision.Revisions = this.state.baseEntity.Revisions;
     this.service.ADAPTER_IN(revision);
     selectedRevision.isOpened = true;
-    this.setState({
-      baseEntity: revision
-    });
     this.ON_CHANGE(revision);
+    this.setState({ baseEntity: revision });
+    this.success('Revision Loaded.');
   };
 
   take = async (entity, toUser) => {
     return await this.service.Take(entity, toUser).then(() => {
       entity.assignedTo = toUser.Value;
       entity.AssignationMade = false;
+      this.success('Assigned.');
     });
   };
 
@@ -135,13 +162,14 @@ class FormContainer extends React.Component {
     if (confirm(`Are you sure you want to remove it?`)) {
       return await this.service.Remove(entity).then(() => {
         this.AFTER_REMOVE(entity);
+        this.success('Removed.');
       });
     }
   };
 
   duplicate = async () => {
     return await this.service.Duplicate(this.state.baseEntity).then(() => {
-      console.log('duplicated');
+      this.success('Duplicated.');
     });
   };
 
@@ -149,8 +177,9 @@ class FormContainer extends React.Component {
     return await this.service
       .Checkout(this.state.baseEntity)
       .then(response => {
-        this.refreshForm(response);
-        console.log('checked out');
+        this.refreshForm();
+        // this.setState({ isDisabled: false });
+        this.success('Checked Out.');
       })
       .catch(() => {
         this.load(this.state.baseEntity.Id);
@@ -159,27 +188,31 @@ class FormContainer extends React.Component {
 
   cancelCheckout = async () => {
     return await this.service.CancelCheckout(this.state.baseEntity).then(response => {
-      this.refreshForm(response);
-      console.log('cancel checkout');
+      this.refreshForm();
+      // this.setState({ isDisabled: true });
+      this.success('Cancel Checked Out.');
     });
   };
 
   checkin = async event => {
     if (event) event.stopPropagation();
+    let { baseEntity } = this.state;
 
     let message = prompt(`Optional message to reference this update.`);
     if (message !== null) {
-      this.state.baseEntity.Entry_State = 1;
-      this.state.baseEntity.RevisionMessage = message;
-      return this.BEFORE_CHECKIN().then(() => {
-        return this.service.Checkin(this.state.baseEntity).then(response => {
-          this.load(response).then(() => {
-            this.formMode = null;
-            this.state.baseEntity.isDisabled = true;
-            console.log('revision created.');
+      baseEntity.Entry_State = 1;
+      baseEntity.RevisionMessage = message;
+      return this.BEFORE_CHECKIN(baseEntity)
+        .then((entity = baseEntity) => this.BEFORE_SAVE(entity))
+        .then((entity = baseEntity) => {
+          return this.service.Checkin(entity).then(response => {
+            this.refreshForm(response).then(() => {
+              this.formMode = null;
+              // this.setState({ isDisabled: true });
+              this.success('Checked In.');
+            });
           });
         });
-      });
     }
   };
 
@@ -187,8 +220,8 @@ class FormContainer extends React.Component {
     return await this.service
       .Finalize(this.state.baseEntity)
       .then(response => {
-        this.refreshForm(response);
-        console.log('finalized.');
+        this.load(response);
+        this.success('Finalized.');
       })
       .catch(() => {
         this.load(this.state.baseEntity.Id);
@@ -199,108 +232,120 @@ class FormContainer extends React.Component {
     return await this.service
       .Unfinalize(this.state.baseEntity)
       .then(response => {
-        this.refreshForm(response);
-        console.log('unfinalized.');
+        this.load(response);
+        this.success('Unfinalized.');
       })
       .catch(() => {
         this.load(this.state.baseEntity.Id);
       });
   };
 
-  onDialogOk = async () => {
-    await this.save();
-  };
+  onDialogOk = async () => await this.save();
 
   // Local Operations:============================================================
   handleInputChange = (event, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = event.target.value;
-    this.setState({ baseEntity });
     this.ON_CHANGE(baseEntity, field);
+    this.setState({ baseEntity });
   };
 
   handleCheckBoxChange = (event, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = event.target.checked;
-    this.setState({ baseEntity });
     this.ON_CHANGE(baseEntity, field);
+    this.setState({ baseEntity });
   };
 
   handleDateChange = (date, field) => {
     let baseEntity = this.state.baseEntity;
-    baseEntity[field] = date.toDate();
-    this.setState({ baseEntity });
+    baseEntity[field] = date && date.toDate ? date.toDate() : null;
     this.ON_CHANGE(baseEntity, field);
+    this.setState({ baseEntity });
   };
 
   handleRichText = (event, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = event.value;
-    this.setState({ baseEntity });
     this.ON_CHANGE(baseEntity, field);
+    this.setState({ baseEntity });
   };
 
   handleChipsChange = (value, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = value;
-    this.setState({ baseEntity });
     this.ON_CHANGE(baseEntity, field);
+    this.setState({ baseEntity });
   };
 
   handleAutocompleteChange = (value, field) => {
     let baseEntity = this.state.baseEntity;
     baseEntity[field] = value ? value.label : null;
-    this.setState({ baseEntity });
     this.ON_CHANGE(baseEntity, field);
+    this.setState({ baseEntity });
   };
 
-  getCurrentUser = () => {
-    return AuthService.auth.user;
+  getCurrentUser = () => (this.auth && this.auth.user) || {};
+
+  getCheckoutUser = entity => {
+    let baseEntity = entity || this.state.baseEntity;
+    if (baseEntity && baseEntity.CheckedoutBy) return baseEntity.CheckedoutBy;
+    return '';
   };
 
-  getCheckoutUser = () => {
-    if (this.state.baseEntity && this.state.baseEntity.CheckedoutBy) {
-      return this.state.baseEntity.CheckedoutBy;
-    }
-  };
-
-  _afterLoad = () => {
+  isCheckedOutByCurrentUser = entity => {
     let user = this.getCurrentUser();
-    if (
-      this.state.baseEntity &&
-      this.state.baseEntity.CheckedoutBy &&
-      user &&
-      user.UserName &&
-      this.state.baseEntity.CheckedoutBy.UserName.toLowerCase() == user.UserName.toLowerCase()
-    ) {
-      this.setState({
-        isDisabled: false
-      });
+    let checkedOutBy = this.getCheckoutUser(entity);
+    if (user.UserName && checkedOutBy && checkedOutBy.toLowerCase() == user.UserName.toLowerCase()) {
+      return true;
+    }
+    return false;
+  };
+
+  _afterLoad = baseEntity => {
+    console.log('_afrerLoad');
+    if (this.isCheckedOutByCurrentUser(baseEntity)) {
+      // debugger;
+      this.setState({ isDisabled: false });
     } else {
-      this.setState({
-        isDisabled: true
-      });
+      // debugger;
+      this.setState({ isDisabled: true });
     }
 
-    this.AFTER_LOAD(this.state.baseEntity);
+    this.AFTER_LOAD(baseEntity);
   };
 
   clear = () => {
-    this.setState({
-      baseEntity: {}
-    });
-    this.ON_CHANGE({});
+    const baseEntity = {};
+    this.ON_CHANGE(baseEntity);
+    this.setState({ baseEntity });
   };
 
   makeQueryParameters = fromObject => {
     let result = '?';
-    if (fromObject instanceof Object || typeof fromObject == 'object') {
+    if (fromObject instanceof Object || typeof fromObject == 'object')
       Object.getOwnPropertyNames(fromObject).forEach(prop => {
         result += `&${prop}=${fromObject[prop]}`;
       });
-    }
 
     return result;
+  };
+
+  navigateTo(href) {
+    return Router.push(href);
+  }
+
+  success = (message, autoHideDuration = 700) => {
+    this.props.enqueueSnackbar(message, { variant: 'success', autoHideDuration });
+  };
+  error = (message, autoHideDuration = 3000) => {
+    this.props.enqueueSnackbar(message, { variant: 'error', autoHideDuration });
+  };
+  info = (message, autoHideDuration = 700) => {
+    this.props.enqueueSnackbar(message, { variant: 'info', autoHideDuration });
+  };
+  message = (message, autoHideDuration = 700) => {
+    this.props.enqueueSnackbar(message, { autoHideDuration });
   };
 
   //Formatters:===================================================================
@@ -332,21 +377,23 @@ class FormContainer extends React.Component {
 
   AFTER_CREATE_AND_CHECKOUT = entity => {};
 
-  BEFORE_SAVE = entity => {};
+  BEFORE_SAVE = async entity => {};
 
-  AFTER_SAVE = entity => {};
+  AFTER_SAVE(entity) {}
 
   AFTER_REMOVE = entity => {};
 
-  BEFORE_CHECKIN = () => {};
+  BEFORE_CHECKIN = async () => {};
 
   ON_CHANGE = (data, field) => {
     this.props.onChange && this.props.onChange(data, field);
   };
 
   render() {
-    return <></>;
+    return null;
   }
 }
+
+FormContainer.contextType = GlobalContext;
 
 export default FormContainer;

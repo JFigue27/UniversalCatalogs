@@ -9,6 +9,7 @@ import CatalogTypeService from './catalogtype.service';
 ///start:slot:dependencies<<<
 import AdditionalFields from '../AdditionalField/additionalFields';
 import Select from '../../widgets/Select';
+import { withSnackbar } from 'notistack';
 ///end:slot:dependencies<<<
 
 const service = new CatalogTypeService();
@@ -26,11 +27,11 @@ class CatalogTypeForm extends FormContainer {
   componentDidMount() {
     console.log('Form did mount');
     this.load(this.props.data.Id);
-    ///start:slot:didMount<<<
+    ///start:slot:load<<<
     this.service.LoadEntities().then(parents => {
       this.setState({ parents });
     });
-    ///end:slot:didMount<<<
+    ///end:slot:load<<<
   }
 
   AFTER_LOAD = entity => {
@@ -89,6 +90,7 @@ class CatalogTypeForm extends FormContainer {
           <Select
             flat
             label='Parent Type'
+            labelProp='Name'
             value={this.state.baseEntity.ParentType}
             onChange={event => this.handleAutocompleteChange(event, 'ParentType')}
             options={this.state.parents}
@@ -104,4 +106,4 @@ class CatalogTypeForm extends FormContainer {
   }
 }
 
-export default withRouter(CatalogTypeForm);
+export default withSnackbar(withRouter(CatalogTypeForm));

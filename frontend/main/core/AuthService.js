@@ -29,7 +29,7 @@ export default class AuthService {
         user: userAuth
       };
       localStorage.setItem('auth', JSON.stringify(AuthService.auth));
-      AuthService.ON_LOGIN();
+      // AuthService.ON_LOGIN();
       return AuthService.auth;
     } catch (e) {
       console.log(e);

@@ -38,9 +38,9 @@ class AdditionalFieldsList extends ListContainer {
       baseList
     });
 
-    ///start:slot:didMount<<<
+    ///start:slot:load<<<
     this.AFTER_LOAD();
-    ///end:slot:didMount<<<
+    ///end:slot:load<<<
   }
 
   AFTER_LOAD = () => {

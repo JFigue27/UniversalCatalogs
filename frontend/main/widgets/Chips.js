@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Chip, NoSsr } from '@material-ui/core';
+import { Paper, Chip, NoSsr, Icon } from '@material-ui/core';
 import Select from './Select';
 
 export default class Chips extends React.Component {
@@ -83,21 +83,25 @@ export default class Chips extends React.Component {
   render() {
     const { onChange, placeholder, placement } = this.props;
     const { selected, allOptions } = this.state;
+    const { keyProp = 'Id', labelProp = 'Value' } = this.props;
     this.onChange = onChange;
 
     return (
       <>
         <NoSsr>
-          <Paper style={{ minHeight: 32, marginTop: 20 }} className='Chips' elevation={0}>
+          {/* <pre>{JSON.stringify(selected, null, 3)}</pre> */}
+          <Paper style={{ minHeight: 32, marginTop: 0 }} className='Chips' elevation={0}>
             {selected.map((item, index) => {
               return (
                 <Chip
-                  key={item.value}
-                  color='primary'
-                  variant='outlined'
+                  size='small'
+                  key={index}
+                  color='default'
+                  variant='default'
                   label={item.label}
-                  className='Person-Chip'
+                  className={`Person-Chip ${item.classes || ''}`}
                   onDelete={() => this.onRemove(index)}
+                  icon={item.icon && <Icon style={{ color: 'inherit', fontSize: '1.2em' }}>{item.icon}</Icon>}
                 />
               );
             })}
@@ -105,9 +109,11 @@ export default class Chips extends React.Component {
               options={(allOptions || []).filter(opt => !selected.some(s => s.value == opt.value))}
               onChange={this.handleSelectChange}
               placement={placement || 'top'}
-              label={placeholder || ''}
+              label={''}
               value={this.state.selectValue || ''}
-              style={{ padding: 5, marginBottom: 3 }}
+              style={{ width: 200, maxWidth: 200, display: 'inline-block' }}
+              keyProp={keyProp}
+              labelProp={labelProp}
             />
           </Paper>
         </NoSsr>

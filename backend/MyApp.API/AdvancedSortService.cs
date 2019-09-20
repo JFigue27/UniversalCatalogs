@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using ServiceStack.Text;
 using Reusable.Rest.Implementations.SS;
 
+///start:slot:imports<<<///end:slot:imports<<<
+
 namespace MyApp.API
 {
     // [Authenticate]
@@ -41,7 +43,8 @@ namespace MyApp.API
         #region Endpoints - Generic Write
         public object Post(CreateAdvancedSortInstance request)
         {
-            return WithDb(db => {
+            return WithDb(db =>
+            {
                 var entity = request.ConvertTo<AdvancedSort>();
                 return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
                 {
@@ -53,7 +56,8 @@ namespace MyApp.API
         public object Post(InsertAdvancedSort request)
         {
             var entity = request.ConvertTo<AdvancedSort>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Add(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -62,7 +66,8 @@ namespace MyApp.API
         public object Put(UpdateAdvancedSort request)
         {
             var entity = request.ConvertTo<AdvancedSort>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Update(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -70,7 +75,8 @@ namespace MyApp.API
         public object Delete(DeleteAdvancedSort request)
         {
             var entity = request.ConvertTo<AdvancedSort>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Remove(entity);
                 return new CommonResponse();
             });
@@ -79,11 +85,13 @@ namespace MyApp.API
 
         #region Endpoints - Specific
         
+        ///start:slot:endpoints<<<///end:slot:endpoints<<<
         #endregion
     }
 
     #region Specific
     
+    ///start:slot:endpointsRoutes<<<///end:slot:endpointsRoutes<<<
     #endregion
 
     #region Generic Read Only

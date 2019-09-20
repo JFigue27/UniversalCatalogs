@@ -41,11 +41,11 @@ class CatalogsList extends ListContainer {
   componentDidMount() {
     console.log('List did mount');
     this.load(this.props.router.query);
-    ///start:slot:didMount<<<
+    ///start:slot:load<<<
     catalogTypeService.GetSingleWhere('Name', this.props.router.query.name).then(response => {
       this.setState({ additionalFields: response.ConvertedFields, parentType: response.ParentType });
     });
-    ///end:slot:didMount<<<
+    ///end:slot:load<<<
   }
 
   AFTER_LOAD = () => {
@@ -95,7 +95,7 @@ class CatalogsList extends ListContainer {
     });
   };
   ///start:slot:js<<<
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.initFilterOptions(this.props.router.query.name);
     this.initSortOptions(this.props.router.query.name);
   }
@@ -154,7 +154,7 @@ class CatalogsList extends ListContainer {
                         </Grid>
                       </TableCell>
                       <TableCell>{item.Value}</TableCell>
-                      {parentType && <TableCell>{item.ParentValue}</TableCell>}
+                      {parentType && <TableCell>{item.Parent}</TableCell>}
                       <TableCell>{(item.Hidden || '').toString().toUpperCase()}</TableCell>
                       {additionalFields &&
                         additionalFields.map(field => <TableCell key={field.FieldName}>{item.ConvertedMeta[field.FieldName]}</TableCell>)}

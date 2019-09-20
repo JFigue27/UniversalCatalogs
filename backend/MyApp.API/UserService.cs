@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using ServiceStack.Text;
 using Reusable.Rest.Implementations.SS;
 
+///start:slot:imports<<<///end:slot:imports<<<
+
 namespace MyApp.API
 {
     // [Authenticate]
@@ -41,7 +43,8 @@ namespace MyApp.API
         #region Endpoints - Generic Write
         public object Post(CreateUserInstance request)
         {
-            return WithDb(db => {
+            return WithDb(db =>
+            {
                 var entity = request.ConvertTo<User>();
                 return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
                 {
@@ -53,7 +56,8 @@ namespace MyApp.API
         public object Post(InsertUser request)
         {
             var entity = request.ConvertTo<User>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Add(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -62,7 +66,8 @@ namespace MyApp.API
         public object Put(UpdateUser request)
         {
             var entity = request.ConvertTo<User>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Update(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -70,7 +75,8 @@ namespace MyApp.API
         public object Delete(DeleteUser request)
         {
             var entity = request.ConvertTo<User>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Remove(entity);
                 return new CommonResponse();
             });
@@ -81,7 +87,8 @@ namespace MyApp.API
         virtual public object Post(FinalizeUser request)
         {
             var entity = request.ConvertTo<User>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Finalize(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -90,7 +97,8 @@ namespace MyApp.API
         virtual public object Post(UnfinalizeUser request)
         {
             var entity = request.ConvertTo<User>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Unfinalize(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -99,7 +107,8 @@ namespace MyApp.API
         virtual public object Post(MakeUserRevision request)
         {
             var entity = request.ConvertTo<User>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.MakeRevision(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -108,7 +117,8 @@ namespace MyApp.API
         virtual public object Post(CheckoutUser request)
         {
             var entity = request.ConvertTo<User>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Checkout(entity.Id);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -117,7 +127,8 @@ namespace MyApp.API
         virtual public object Post(CancelCheckoutUser request)
         {
             var entity = request.ConvertTo<User>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.CancelCheckout(entity.Id);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -126,7 +137,8 @@ namespace MyApp.API
         virtual public object Post(CheckinUser request)
         {
             var entity = request.ConvertTo<User>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Checkin(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -135,7 +147,8 @@ namespace MyApp.API
         virtual public object Post(CreateAndCheckoutUser request)
         {
             var entity = request.ConvertTo<User>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.CreateAndCheckout(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -144,11 +157,13 @@ namespace MyApp.API
 
         #region Endpoints - Specific
         
+        ///start:slot:endpoints<<<///end:slot:endpoints<<<
         #endregion
     }
 
     #region Specific
     
+    ///start:slot:endpointsRoutes<<<///end:slot:endpointsRoutes<<<
     #endregion
 
     #region Generic Read Only
@@ -191,10 +206,10 @@ namespace MyApp.API
     [Route("/User/MakeRevision", "POST")]
     public class MakeUserRevision : User { }
 
-    [Route("/User/Checkout", "POST")]
+    [Route("/User/Checkout/{Id}", "POST")]
     public class CheckoutUser : User { }
 
-    [Route("/User/CancelCheckout", "POST")]
+    [Route("/User/CancelCheckout/{Id}", "POST")]
     public class CancelCheckoutUser : User { }
 
     [Route("/User/Checkin", "POST")]

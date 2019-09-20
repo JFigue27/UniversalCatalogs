@@ -1,8 +1,8 @@
 import App from '../components/App';
-import Materials from '../components/Material/materials';
+import Items from '../components/Item/items';
 
 export default () => (
   <App>
-    <Materials />
+    <Items />
   </App>
 );

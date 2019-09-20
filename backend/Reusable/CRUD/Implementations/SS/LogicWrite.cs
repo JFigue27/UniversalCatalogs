@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Reusable.CRUD.Implementations.SS
 {
-    public class LogicWrite<Entity> : ReadOnlyLogic<Entity>, ILogicWrite<Entity>, ILogicWriteAsync<Entity> where Entity : BaseEntity, new()
+    public class WriteLogic<Entity> : ReadOnlyLogic<Entity>, ILogicWrite<Entity>, ILogicWriteAsync<Entity> where Entity : BaseEntity, new()
     {
         #region HOOKS
         protected enum OPERATION_MODE { NONE, ADD, UPDATE };
@@ -37,6 +37,8 @@ namespace Reusable.CRUD.Implementations.SS
 
             OnAfterSaving(entity, OPERATION_MODE.ADD);
 
+            //AdapterOut(entity);
+
             CacheOnAdd(entity);
 
             return entity;
@@ -49,6 +51,8 @@ namespace Reusable.CRUD.Implementations.SS
             entity.Id = await Db.InsertAsync(entity, selectIdentity: true);
 
             OnAfterSaving(entity, OPERATION_MODE.ADD);
+
+            //AdapterOut(entity);
 
             CacheOnAdd(entity);
 
@@ -63,6 +67,8 @@ namespace Reusable.CRUD.Implementations.SS
 
             OnAfterSaving(entity, OPERATION_MODE.UPDATE);
 
+            //AdapterOut(entity);
+
             CacheOnUpdate(entity);
 
             return entity;
@@ -75,6 +81,8 @@ namespace Reusable.CRUD.Implementations.SS
             await Db.UpdateAsync(entity);
 
             OnAfterSaving(entity, OPERATION_MODE.UPDATE);
+
+            //AdapterOut(entity);
 
             CacheOnUpdate(entity);
 

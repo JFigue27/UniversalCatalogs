@@ -1,7 +1,0 @@
-name: Area
-fields:
-  Value as Area: string
-relationships:
-  oneToParent: []
-  oneToMany: []
-  manyToOne: []

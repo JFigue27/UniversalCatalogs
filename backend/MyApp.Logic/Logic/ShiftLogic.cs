@@ -16,20 +16,21 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-
+///start:slot:imports<<<///end:slot:imports<<<
 
 namespace MyApp.Logic
 {
-    public class ShiftLogic : LogicWrite<Shift>, ILogicWriteAsync<Shift>
+    public class ShiftLogic : WriteLogic<Shift>, ILogicWriteAsync<Shift>
     {
         
+        ///start:slot:init<<<///end:slot:init<<<
 
-        
+        ///start:slot:ctor<<<///end:slot:ctor<<<
 
         protected override Shift OnCreateInstance(Shift entity)
         {
             
-            
+            ///start:slot:createInstance<<<///end:slot:createInstance<<<
 
             return entity;
         }
@@ -37,7 +38,7 @@ namespace MyApp.Logic
         protected override SqlExpression<Shift> OnGetList(SqlExpression<Shift> query)
         {
             
-            
+            ///start:slot:listQuery<<<///end:slot:listQuery<<<
 
             return query;
         }
@@ -45,7 +46,7 @@ namespace MyApp.Logic
         protected override SqlExpression<Shift> OnGetSingle(SqlExpression<Shift> query)
         {
             
-            
+            ///start:slot:singleQuery<<<///end:slot:singleQuery<<<
 
             return query;
         }
@@ -53,34 +54,34 @@ namespace MyApp.Logic
         protected override void OnBeforeSaving(Shift entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            
+            ///start:slot:beforeSave<<<///end:slot:beforeSave<<<
         }
 
         protected override void OnAfterSaving(Shift entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            
+            ///start:slot:afterSave<<<///end:slot:afterSave<<<
         }
 
         protected override void OnBeforeRemoving(Shift entity)
         {
             
-            
+            ///start:slot:beforeRemove<<<///end:slot:beforeRemove<<<
         }
 
-        protected override IEnumerable<Shift> AdapterOut(params Shift[] entities)
+        protected override List<Shift> AdapterOut(params Shift[] entities)
         {
-            
+            ///start:slot:adapterOut<<<///end:slot:adapterOut<<<
 
             foreach (var item in entities)
             {
                 
             }
 
-            return entities;
+            return entities.ToList();
         }
 
         
-        
+        ///start:slot:logic<<<///end:slot:logic<<<
     }
 }

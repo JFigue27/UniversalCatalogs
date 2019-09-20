@@ -1,7 +1,0 @@
-name: Shift
-fields:
-  Value as Shift: string
-relationships:
-  oneToParent: []
-  oneToMany: []
-  manyToOne: []

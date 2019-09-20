@@ -16,7 +16,7 @@ namespace MyApp.Logic.Entities
         public CatalogType()
         {
             
-            
+            ///start:slot:ctor<<<///end:slot:ctor<<<
         }
 
         public string Name { get; set; }
@@ -24,5 +24,6 @@ namespace MyApp.Logic.Entities
         public string Fields { get; set; }
 
         
+        ///start:slot:properties<<<///end:slot:properties<<<
     }
 }

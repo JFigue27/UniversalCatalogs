@@ -1,7 +1,0 @@
-name: Material
-fields:
-  Value as Material: string
-relationships:
-  oneToParent: []
-  oneToMany: []
-  manyToOne: []

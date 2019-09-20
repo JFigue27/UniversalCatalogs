@@ -60,6 +60,13 @@ namespace Reusable.CRUD.Implementations.SS
             public int page { get; set; }
         }
 
+        public Exception GetOriginalException(Exception ex)
+        {
+            if (ex.InnerException == null) return ex;
+
+            return GetOriginalException(ex.InnerException);
+        }
+
         protected bool IsValidJSValue(string value)
         {
             if (string.IsNullOrWhiteSpace(value) || value == "null" || value == "undefined")
@@ -68,13 +75,6 @@ namespace Reusable.CRUD.Implementations.SS
             }
 
             return true;
-        }
-
-        public Exception GetOriginalException(Exception ex)
-        {
-            if (ex.InnerException == null) return ex;
-
-            return GetOriginalException(ex.InnerException);
         }
 
         protected bool IsValidParam(string param)

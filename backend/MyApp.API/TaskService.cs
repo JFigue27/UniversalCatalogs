@@ -1,33 +1,37 @@
-using Reusable.CRUD.Contract;
-using Reusable.CRUD.Entities;
-using Reusable.CRUD.Implementations.SS.Logic;
+using MyApp.Logic.Entities;
+using MyApp.Logic;
+using Reusable.Rest;
 using ServiceStack;
-using ServiceStack.Text;
+using ServiceStack.OrmLite;
+using System;
 using System.Threading.Tasks;
+using ServiceStack.Text;
+using Reusable.Rest.Implementations.SS;
+using Task = MyApp.Logic.Entities.Task;
+///start:slot:imports<<<///end:slot:imports<<<
 
-namespace Reusable.Rest.Implementations.SS
+namespace MyApp.API
 {
-    [Restrict(LocalhostOnly = true)]
     // [Authenticate]
-    public class RevisionService : BaseService<RevisionLogic>
+    public class TaskService : BaseService<TaskLogic>
     {
         #region Endpoints - Generic Read Only
-        public object Get(GetAllRevisions request)
+        public object Get(GetAllTasks request)
         {
             return WithDb(db => Logic.GetAll());
         }
 
-        public object Get(GetRevisionById request)
+        public object Get(GetTaskById request)
         {
             return WithDb(db => Logic.GetById(request.Id));
         }
 
-        public object Get(GetRevisionWhere request)
+        public object Get(GetTaskWhere request)
         {
             return WithDb(db => Logic.GetSingleWhere(request.Property, request.Value));
         }
 
-        public object Get(GetPagedRevisions request)
+        public object Get(GetPagedTasks request)
         {
             return WithDb(db => Logic.GetPaged(
                 request.Limit,
@@ -37,11 +41,11 @@ namespace Reusable.Rest.Implementations.SS
         #endregion
 
         #region Endpoints - Generic Write
-        public object Post(CreateRevisionInstance request)
+        public object Post(CreateTaskInstance request)
         {
             return WithDb(db =>
             {
-                var entity = request.ConvertTo<Revision>();
+                var entity = request.ConvertTo<Task>();
                 return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
                 {
                     ResultScope = () => JsConfig.With(new Config { IncludeNullValues = true })
@@ -49,9 +53,9 @@ namespace Reusable.Rest.Implementations.SS
             });
         }
 
-        public object Post(InsertRevision request)
+        public object Post(InsertTask request)
         {
-            var entity = request.ConvertTo<Revision>();
+            var entity = request.ConvertTo<Task>();
             return InTransaction(db =>
             {
                 Logic.Add(entity);
@@ -59,18 +63,18 @@ namespace Reusable.Rest.Implementations.SS
             });
         }
 
-        public object Put(UpdateRevision request)
+        public object Put(UpdateTask request)
         {
-            var entity = request.ConvertTo<Revision>();
+            var entity = request.ConvertTo<Task>();
             return InTransaction(db =>
             {
                 Logic.Update(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
         }
-        public object Delete(DeleteRevision request)
+        public object Delete(DeleteTask request)
         {
-            var entity = request.ConvertTo<Revision>();
+            var entity = request.ConvertTo<Task>();
             return InTransaction(db =>
             {
                 Logic.Remove(entity);
@@ -80,41 +84,43 @@ namespace Reusable.Rest.Implementations.SS
         #endregion
 
         #region Endpoints - Specific
+        
         ///start:slot:endpoints<<<///end:slot:endpoints<<<
         #endregion
     }
 
     #region Specific
+    
     ///start:slot:endpointsRoutes<<<///end:slot:endpointsRoutes<<<
     #endregion
 
     #region Generic Read Only
-    [Route("/Revision", "GET")]
-    public class GetAllRevisions : GetAll<Revision> { }
+    [Route("/Task", "GET")]
+    public class GetAllTasks : GetAll<Task> { }
 
-    [Route("/Revision/{Id}", "GET")]
-    public class GetRevisionById : GetSingleById<Revision> { }
+    [Route("/Task/{Id}", "GET")]
+    public class GetTaskById : GetSingleById<Task> { }
 
-    [Route("/Revision/GetSingleWhere", "GET")]
-    [Route("/Revision/GetSingleWhere/{Property}/{Value}", "GET")]
-    public class GetRevisionWhere : GetSingleWhere<Revision> { }
+    [Route("/Task/GetSingleWhere", "GET")]
+    [Route("/Task/GetSingleWhere/{Property}/{Value}", "GET")]
+    public class GetTaskWhere : GetSingleWhere<Task> { }
 
-    [Route("/Revision/GetPaged/{Limit}/{Page}", "GET")]
-    public class GetPagedRevisions : GetPaged<Revision> { }
+    [Route("/Task/GetPaged/{Limit}/{Page}", "GET")]
+    public class GetPagedTasks : GetPaged<Task> { }
     #endregion
 
     #region Generic Write
-    [Route("/Revision/CreateInstance", "POST")]
-    public class CreateRevisionInstance : Revision { }
+    [Route("/Task/CreateInstance", "POST")]
+    public class CreateTaskInstance : Task { }
 
-    [Route("/Revision", "POST")]
-    public class InsertRevision : Revision { }
+    [Route("/Task", "POST")]
+    public class InsertTask : Task { }
 
-    [Route("/Revision", "PUT")]
-    public class UpdateRevision : Revision { }
+    [Route("/Task", "PUT")]
+    public class UpdateTask : Task { }
 
-    [Route("/Revision", "DELETE")]
-    [Route("/Revision/{Id}", "DELETE")]
-    public class DeleteRevision : Revision { }
+    [Route("/Task", "DELETE")]
+    [Route("/Task/{Id}", "DELETE")]
+    public class DeleteTask : Task { }
     #endregion
 }

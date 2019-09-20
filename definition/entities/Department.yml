@@ -1,7 +1,0 @@
-name: Department
-fields:
-  Value as Department: string
-relationships:
-  oneToParent: []
-  oneToMany: []
-  manyToOne: []

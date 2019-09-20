@@ -32,6 +32,7 @@ namespace MyApp.Logic.Entities
         public int JobPosition { get; set; }
         public int SupervisedBy { get; set; }
 
+        
         ///start:slot:properties<<<///end:slot:properties<<<
     }
 }

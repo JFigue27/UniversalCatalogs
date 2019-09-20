@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Reusable.CRUD.Implementations.SS
 {
-    public class DocumentLogic<Entity> : LogicWrite<Entity>, IDocumentLogic<Entity>, IDocumentLogicAsync<Entity> where Entity : BaseDocument, new()
+    public class DocumentLogic<Entity> : WriteLogic<Entity>, IDocumentLogic<Entity>, IDocumentLogicAsync<Entity> where Entity : BaseDocument, new()
     {
         public RevisionLogic RevisionLogic { get; set; }
         public TrackLogic TrackLogic { get; set; }
@@ -51,7 +51,7 @@ namespace Reusable.CRUD.Implementations.SS
             var track = new Track
             {
                 CreatedAt = entity.CreatedAt,
-                Discriminator = entity.EntityName,
+                Discriminator = typeof(Entity).Name,
                 CreatedBy = Auth.UserName
             };
             TrackLogic.Add(track);
@@ -67,7 +67,7 @@ namespace Reusable.CRUD.Implementations.SS
             var track = new Track
             {
                 CreatedAt = entity.CreatedAt,
-                Discriminator = entity.EntityName,
+                Discriminator = typeof(Entity).Name,
                 CreatedBy = Auth.UserName
             };
             await TrackLogic.AddAsync(track);
@@ -86,7 +86,7 @@ namespace Reusable.CRUD.Implementations.SS
                 track = new Track
                 {
                     CreatedAt = entity.CreatedAt,
-                    Discriminator = entity.EntityName,
+                    Discriminator = typeof(Entity).Name,
                     CreatedBy = Auth.UserName
                 };
                 TrackLogic.Add(track);
@@ -110,7 +110,7 @@ namespace Reusable.CRUD.Implementations.SS
                 track = new Track
                 {
                     CreatedAt = entity.CreatedAt,
-                    Discriminator = entity.EntityName,
+                    Discriminator = typeof(Entity).Name,
                     CreatedBy = Auth.UserName
                 };
                 await TrackLogic.AddAsync(track);
@@ -130,7 +130,7 @@ namespace Reusable.CRUD.Implementations.SS
 
             #region Validation
             if (originalEntity == null)
-                throw new KnownError($"Document: [{entity.EntityName}] does not exist in database.");
+                throw new KnownError($"Document: [{typeof(Entity).Name}] does not exist in database.");
 
             if (originalEntity.DocumentStatus == "FINALIZED")
                 throw new KnownError("Document was already Finalized.");
@@ -150,7 +150,7 @@ namespace Reusable.CRUD.Implementations.SS
                 track = new Track
                 {
                     CreatedAt = entity.CreatedAt,
-                    Discriminator = entity.EntityName,
+                    Discriminator = typeof(Entity).Name,
                     CreatedBy = Auth.UserName
                 };
                 TrackLogic.Add(track);
@@ -167,6 +167,8 @@ namespace Reusable.CRUD.Implementations.SS
             #region Make Revision
             MakeRevision(entity);
             #endregion
+
+            AdapterOut(entity);
 
             #region Cache
             CacheOnUpdate(entity);
@@ -179,7 +181,7 @@ namespace Reusable.CRUD.Implementations.SS
 
             #region Validation
             if (originalEntity == null)
-                throw new KnownError("Document: [{0}] does not exist in database.".Fmt(entity.EntityName));
+                throw new KnownError("Document: [{0}] does not exist in database.".Fmt(typeof(Entity).Name));
 
             if (originalEntity.DocumentStatus == "FINALIZED")
                 throw new KnownError("Document was already Finalized.");
@@ -199,7 +201,7 @@ namespace Reusable.CRUD.Implementations.SS
                 track = new Track
                 {
                     CreatedAt = entity.CreatedAt,
-                    Discriminator = entity.EntityName,
+                    Discriminator = typeof(Entity).Name,
                     CreatedBy = Auth.UserName
                 };
                 await TrackLogic.AddAsync(track);
@@ -209,13 +211,15 @@ namespace Reusable.CRUD.Implementations.SS
             await TrackLogic.UpdateAsync(track);
             entity.TrackId = track.Id;
 
-            entity.RevisionMessage = "Finalized";
+            entity.RevisionMessage = "FINALIZED";
             await Db.SaveAsync(entity);
             #endregion
 
             #region Make Revision
             await MakeRevisionAsync(entity);
             #endregion
+
+            AdapterOut(entity);
 
             #region Cache
             CacheOnUpdate(entity);
@@ -228,10 +232,10 @@ namespace Reusable.CRUD.Implementations.SS
 
             #region Validation
             if (originalEntity == null)
-                throw new KnownError("Document: [{0}] does not exist in database.".Fmt(entity.EntityName));
+                throw new KnownError("Document: [{0}] does not exist in database.".Fmt(typeof(Entity).Name));
 
-            if (originalEntity.DocumentStatus != "Finalized")
-                throw new KnownError("Document was already UnFinalized.");
+            if (originalEntity.DocumentStatus != "FINALIZED")
+                throw new KnownError("Document was already Unfinalized.");
             #endregion
 
             #region OnFinalize Hook
@@ -248,7 +252,7 @@ namespace Reusable.CRUD.Implementations.SS
                 track = new Track
                 {
                     CreatedAt = entity.CreatedAt,
-                    Discriminator = entity.EntityName,
+                    Discriminator = typeof(Entity).Name,
                     CreatedBy = Auth.UserName
                 };
                 TrackLogic.Add(track);
@@ -266,6 +270,8 @@ namespace Reusable.CRUD.Implementations.SS
             MakeRevision(entity);
             #endregion
 
+            AdapterOut(entity);
+
             #region Cache
             CacheOnUpdate(entity);
             #endregion
@@ -277,9 +283,9 @@ namespace Reusable.CRUD.Implementations.SS
 
             #region Validation
             if (originalEntity == null)
-                throw new KnownError("Document: [{0}] does not exist in database.".Fmt(entity.EntityName));
+                throw new KnownError("Document: [{0}] does not exist in database.".Fmt(typeof(Entity).Name));
 
-            if (originalEntity.DocumentStatus != "Finalized")
+            if (originalEntity.DocumentStatus != "FINALIZED")
                 throw new KnownError("Document was already UnFinalized.");
             #endregion
 
@@ -297,7 +303,7 @@ namespace Reusable.CRUD.Implementations.SS
                 track = new Track
                 {
                     CreatedAt = entity.CreatedAt,
-                    Discriminator = entity.EntityName,
+                    Discriminator = typeof(Entity).Name,
                     CreatedBy = Auth.UserName
                 };
                 await TrackLogic.AddAsync(track);
@@ -314,6 +320,8 @@ namespace Reusable.CRUD.Implementations.SS
             #region Make Revision
             await MakeRevisionAsync(entity);
             #endregion
+
+            AdapterOut(entity);
 
             #region Cache
             CacheOnUpdate(entity);
@@ -330,11 +338,12 @@ namespace Reusable.CRUD.Implementations.SS
 
             var revision = new Revision
             {
-                ForeignType = entity.EntityName,
+                ForeignType = typeof(Entity).Name,
                 ForeignKey = entity.Id,
                 Value = clone.ToJson(),
                 RevisionMessage = entity.RevisionMessage,
-                CreatedAt = DateTimeOffset.Now
+                CreatedAt = DateTimeOffset.Now,
+                Discriminator = typeof(Entity).Name
             };
 
             RevisionLogic.Add(revision);
@@ -350,11 +359,12 @@ namespace Reusable.CRUD.Implementations.SS
 
             var revision = new Revision
             {
-                ForeignType = entity.EntityName,
+                ForeignType = typeof(Entity).Name,
                 ForeignKey = entity.Id,
                 Value = clone.ToJson(),
                 RevisionMessage = entity.RevisionMessage,
-                CreatedAt = DateTimeOffset.Now
+                CreatedAt = DateTimeOffset.Now,
+                Discriminator = typeof(Entity).Name
             };
 
             await RevisionLogic.AddAsync(revision);
@@ -378,46 +388,38 @@ namespace Reusable.CRUD.Implementations.SS
         {
             var document = GetById(id) as BaseDocument;
 
-            if (!Auth.IsAuthenticated)
-                throw new KnownError("User not authenticated.");
+            if (!string.IsNullOrWhiteSpace(document.CheckedoutBy)
+                && Auth.UserName != document.CheckedoutBy)
+                throw new KnownError($"This document is already Checked Out by: {document.CheckedoutBy}");
 
             if (document.CheckedoutBy == null)
             {
-                document.CheckedoutBy = Auth.UserName;
-                Db.UpdateOnly(document, only => only.CheckedoutBy);
-            }
-            else if (!string.IsNullOrWhiteSpace(document.CheckedoutBy)
-                && Auth.UserName != document.CheckedoutBy)
-            {
-                throw new KnownError($"This document is already Checked Out by: {document.CheckedoutBy}");
-            }
+                Db.UpdateOnly(() => new Entity { CheckedoutBy = Auth.UserName }, e => e.Id == id);
 
-            #region Cache
-            CacheOnUpdate(document as Entity);
-            #endregion
+                #region Cache
+                document.CheckedoutBy = Auth.UserName;
+                CacheOnUpdate(document as Entity);
+                #endregion
+            }
         }
 
         virtual public async Task CheckoutAsync(long id)
         {
             var document = await GetByIdAsync(id);
 
-            if (Auth.UserName == null)
-                throw new KnownError("User not authenticated.");
+            if (!string.IsNullOrWhiteSpace(document.CheckedoutBy)
+                && Auth.UserName != document.CheckedoutBy)
+                throw new KnownError("This document is already Checked Out by: {0}".Fmt(document.CheckedoutBy));
 
             if (document.CheckedoutBy == null)
             {
-                document.CheckedoutBy = Auth.UserName;
-                await Db.UpdateOnlyAsync(document, only => only.CheckedoutBy);
-            }
-            else if (!string.IsNullOrWhiteSpace(document.CheckedoutBy)
-                && Auth.UserName != document.CheckedoutBy)
-            {
-                throw new KnownError("This document is already Checked Out by: {0}".Fmt(document.CheckedoutBy));
-            }
+                await Db.UpdateOnlyAsync(new Entity { CheckedoutBy = Auth.UserName }, e => e.Id == id);
 
-            #region Cache
-            CacheOnUpdate(document);
-            #endregion
+                #region Cache
+                document.CheckedoutBy = Auth.UserName;
+                CacheOnUpdate(document);
+                #endregion
+            }
         }
 
         virtual public void CancelCheckout(long id)
@@ -429,10 +431,10 @@ namespace Reusable.CRUD.Implementations.SS
                 && !HasRoles("Admin"))
                 throw new KnownError($"Only User who Checked Out can \"Cancel Checked Out\": {document.CheckedoutBy}");
 
-            document.CheckedoutBy = null;
-            Db.UpdateOnly(document, only => only.CheckedoutBy);
+            Db.UpdateOnly(() => new Entity { CheckedoutBy = null }, e => e.Id == id);
 
             #region Cache
+            document.CheckedoutBy = null;
             CacheOnUpdate(document);
             #endregion
         }
@@ -445,10 +447,10 @@ namespace Reusable.CRUD.Implementations.SS
                 && !HasRoles("Admin"))
                 throw new KnownError($"Only User who Checked Out can \"Cancel Checked Out\": {document.CheckedoutBy}");
 
-            document.CheckedoutBy = null;
-            await Db.UpdateOnlyAsync(document, only => only.CheckedoutBy);
+            await Db.UpdateOnlyAsync(() => new Entity { CheckedoutBy = null }, e => e.Id == id);
 
             #region Cache
+            document.CheckedoutBy = null;
             CacheOnUpdate(document);
             #endregion
         }
@@ -456,21 +458,17 @@ namespace Reusable.CRUD.Implementations.SS
         virtual public void Checkin(Entity entity)
         {
             entity.CheckedoutBy = null;
-            Db.UpdateOnly(entity, only => only.CheckedoutBy);
-
-            #region Cache
-            CacheOnUpdate(entity);
-            #endregion
+            //Order is important here:
+            MakeRevision(entity);
+            Update(entity);
         }
 
-        virtual public async System.Threading.Tasks.Task CheckinAsync(Entity entity)
+        virtual public async Task CheckinAsync(Entity entity)
         {
             entity.CheckedoutBy = null;
-            await Db.UpdateOnlyAsync(entity, only => only.CheckedoutBy);
-
-            #region Cache
-            CacheOnUpdate(entity);
-            #endregion
+            //Order is important here:
+            await MakeRevisionAsync(entity);
+            await UpdateAsync(entity);
         }
 
         virtual public Entity CreateAndCheckout(Entity document)

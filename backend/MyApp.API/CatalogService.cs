@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using ServiceStack.Text;
 using Reusable.Rest.Implementations.SS;
 
+///start:slot:imports<<<///end:slot:imports<<<
+
 namespace MyApp.API
 {
     // [Authenticate]
@@ -41,7 +43,8 @@ namespace MyApp.API
         #region Endpoints - Generic Write
         public object Post(CreateCatalogInstance request)
         {
-            return WithDb(db => {
+            return WithDb(db =>
+            {
                 var entity = request.ConvertTo<Catalog>();
                 return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
                 {
@@ -53,7 +56,8 @@ namespace MyApp.API
         public object Post(InsertCatalog request)
         {
             var entity = request.ConvertTo<Catalog>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Add(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -62,7 +66,8 @@ namespace MyApp.API
         public object Put(UpdateCatalog request)
         {
             var entity = request.ConvertTo<Catalog>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Update(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
@@ -70,7 +75,8 @@ namespace MyApp.API
         public object Delete(DeleteCatalog request)
         {
             var entity = request.ConvertTo<Catalog>();
-            return InTransaction(db => {
+            return InTransaction(db =>
+            {
                 Logic.Remove(entity);
                 return new CommonResponse();
             });
@@ -78,12 +84,36 @@ namespace MyApp.API
         #endregion
 
         #region Endpoints - Specific
-        
+        [Route("/Catalog", "GET")]
+        [Route("/Catalog/{Limit}/{Page}", "GET")]
+        [Route("/Catalog/{ignore}", "GET")]
+        [Route("/Catalog/GetPaged/{Limit}/{Page}", "GET")]
+        public class GetPagedCustomCatalogs : GetPaged<Catalog> { }
+        public object Get(GetPagedCustomCatalogs request)
+        {
+            return WithDb(db => Logic.GetPaged(
+                request.Limit,
+                request.Page,
+                request.FilterGeneral));
+        }
+
+        [Route("/Catalog/OnlyValues/{Type}", "GET")]
+        public class GetOnlyValues
+        {
+            public string Type { get; set; }
+        }
+        public object Get(GetOnlyValues request)
+        {
+            return WithDb(db => Logic.GetOnlyValues(request.Type));
+        }
+
+        ///start:slot:endpoints<<<///end:slot:endpoints<<<
         #endregion
     }
 
     #region Specific
     
+    ///start:slot:endpointsRoutes<<<///end:slot:endpointsRoutes<<<
     #endregion
 
     #region Generic Read Only

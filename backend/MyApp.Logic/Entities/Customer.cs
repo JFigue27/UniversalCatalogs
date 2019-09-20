@@ -16,11 +16,12 @@ namespace MyApp.Logic.Entities
         public Customer()
         {
             
-            
+            ///start:slot:ctor<<<///end:slot:ctor<<<
         }
 
         public string Value { get; set; }
 
         
+        ///start:slot:properties<<<///end:slot:properties<<<
     }
 }

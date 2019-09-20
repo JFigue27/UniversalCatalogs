@@ -1,8 +1,8 @@
 import App from '../components/App';
-import Employees from '../components/Employee/employees';
+import Customers from '../components/Customer/customers';
 
 export default () => (
   <App>
-    <Employees />
+    <Customers />
   </App>
 );

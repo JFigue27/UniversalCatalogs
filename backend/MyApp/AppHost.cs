@@ -143,33 +143,23 @@ namespace MyApp
             #region App
             //container.Register(c => dbFactory.Open());
             //container.Register(c => c.Resolve<IDbConnectionFactory>().OpenDbConnection()).ReusedWithin(ReuseScope.Request);
-            container.RegisterAutoWiredType(typeof(ILogicReadOnly<>), ReuseScope.Request);
-            container.RegisterAutoWiredType(typeof(ILogicWrite<>), ReuseScope.Request);
-            container.RegisterAutoWiredType(typeof(IDocumentLogic<>), ReuseScope.Request);
-
             container.RegisterAutoWired<RevisionLogic>().ReusedWithin(ReuseScope.Request);
             container.RegisterAutoWired<TrackLogic>().ReusedWithin(ReuseScope.Request);
             container.Register<IEmailService>(i => new MailgunService()).ReusedWithin(ReuseScope.Request);
 
             //This App:
             ///start:generated:di<<<
+            container.RegisterAutoWired<ApprovalLogic>().ReusedWithin(ReuseScope.Request);
             container.RegisterAutoWired<EmailLogic>().ReusedWithin(ReuseScope.Request);
             container.RegisterAutoWired<UserLogic>().ReusedWithin(ReuseScope.Request);
             container.RegisterAutoWired<AdditionalFieldLogic>().ReusedWithin(ReuseScope.Request);
             container.RegisterAutoWired<AdvancedSortLogic>().ReusedWithin(ReuseScope.Request);
-            container.RegisterAutoWired<AreaLogic>().ReusedWithin(ReuseScope.Request);
             container.RegisterAutoWired<CatalogLogic>().ReusedWithin(ReuseScope.Request);
             container.RegisterAutoWired<CatalogTypeLogic>().ReusedWithin(ReuseScope.Request);
-            container.RegisterAutoWired<CustomerLogic>().ReusedWithin(ReuseScope.Request);
-            container.RegisterAutoWired<DepartmentLogic>().ReusedWithin(ReuseScope.Request);
-            container.RegisterAutoWired<EmployeeLogic>().ReusedWithin(ReuseScope.Request);
             container.RegisterAutoWired<FilterDataLogic>().ReusedWithin(ReuseScope.Request);
-            container.RegisterAutoWired<ItemLogic>().ReusedWithin(ReuseScope.Request);
-            container.RegisterAutoWired<MaterialLogic>().ReusedWithin(ReuseScope.Request);
-            container.RegisterAutoWired<ShiftLogic>().ReusedWithin(ReuseScope.Request);
             container.RegisterAutoWired<SortDataLogic>().ReusedWithin(ReuseScope.Request);
+            container.RegisterAutoWired<TaskLogic>().ReusedWithin(ReuseScope.Request);
             container.RegisterAutoWired<TokenLogic>().ReusedWithin(ReuseScope.Request);
-            container.RegisterAutoWired<WorkstationLogic>().ReusedWithin(ReuseScope.Request);
             ///end:generated:di<<<
             #endregion
         }

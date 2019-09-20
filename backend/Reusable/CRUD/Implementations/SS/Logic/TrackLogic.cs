@@ -4,7 +4,7 @@ using ServiceStack.OrmLite;
 
 namespace Reusable.CRUD.Implementations.SS.Logic
 {
-    public class TrackLogic : LogicWrite<Track>
+    public class TrackLogic : WriteLogic<Track>
     {
         #region Overrides
         #endregion

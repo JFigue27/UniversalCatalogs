@@ -15,11 +15,6 @@ import { GlobalContext } from './globals-context';
 class App extends React.Component {
   pages = [
     ///start:slot:pages<<<
-    { href: '/areas', label: 'Areas' },
-    { href: '/materials', label: 'Materials' },
-    { href: '/workstations', label: 'Workstations' },
-    { href: '/employees', label: 'Employees' },
-    { href: '/shifts', label: 'Shifts' }
     ///end:slot:pages<<<
   ];
 
@@ -30,7 +25,7 @@ class App extends React.Component {
     right: false,
     auth: true,
     anchorEl: null,
-    currentTab: 0,
+    currentTab: false,
     loginOpen: false,
     loading: true,
     globals: {}
@@ -62,7 +57,7 @@ class App extends React.Component {
     this.setState({
       loading: false,
       auth: AuthService.auth,
-      currentTab: findRoute,
+      currentTab: findRoute > -1 ? findRoute : false,
       globals: { auth: AuthService.auth }
     });
   }
@@ -124,18 +119,15 @@ class App extends React.Component {
         <Head>
           <title>Universal Catalogs</title>
           <meta charSet='utf-8' />
-          <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no' />
-          <link rel='stylesheet' href='/static/styles/bootstrap.css' />
+          <meta name='viewport' content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+          <meta name='format-detection' content='telephone=no' />
+          <meta name='msapplication-tap-highlight' content='no' />
+          <meta name='apple-mobile-web-app-capable' content='yes' />
+          <meta name='apple-mobile-web-app-status-bar-style' content='black' />
+
           <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:300,400,500' />
           <link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons' />
           <link rel='icon' type='image/x-icon' href='/static/favicon.ico' />
-          <style>
-            {`
-              body {
-                font-family: 'Roboto';
-              }
-              `}
-          </style>
         </Head>
         <Dialog open={this.state.loginOpen} onClose={this.closeLoginDialog} fullScreen actionsOff>
           {() => <Login onCloseLogin={this.closeLoginDialog} />}
@@ -144,21 +136,21 @@ class App extends React.Component {
           <AppBar position='fixed' className='MainAppBar app-nav'>
             <Toolbar>
               {/* <IconButton color='inherit' onClick={this.toggleDrawer('right', true)}>
-                <Icon>menu</Icon>
-              </IconButton> */}
-              <Typography>
-                <img src='/static/images/Molex_White.png' alt='Molex Logo' style={{ width: 100 }} />
+              <Icon>menu</Icon>
+            </IconButton> */}
+              <Typography variant='h6' color='inherit'>
+                Universal Catalogs
               </Typography>
               <Grid item xs />
 
-              <Tabs variant='standard' value={this.state.currentTab} onChange={this.handleTabsChange}>
-                {this.pages.map(page => {
-                  return <LinkTab key={page.label} label={page.label} href={page.href} />;
+              <Tabs variant='scrollable' value={this.state.currentTab} onChange={this.handleTabsChange}>
+                {this.pages.map((page, index) => {
+                  return <LinkTab key={index} label={page.label} href={page.href} />;
                 })}
               </Tabs>
               <Button color='inherit' className={classes.button} onClick={this.handleMenu}>
                 <Icon style={{ marginRight: 5 }}>account_circle</Icon>
-                {auth && auth.user && (auth.user.DisplayName || auth.user.UserName)}
+                {auth && auth.user && auth.user.UserName}
               </Button>
               <Menu
                 id='menu-appbar'
@@ -180,18 +172,15 @@ class App extends React.Component {
             </Toolbar>
           </AppBar>
         )}
-        <Drawer anchor='left' open={this.state.right} onClose={this.toggleDrawer('right', false)}>
+        {/* <Drawer anchor='left' open={this.state.right} onClose={this.toggleDrawer('right', false)}>
           <div tabIndex={0} role='button' onClick={this.toggleDrawer('right', false)} onKeyDown={this.toggleDrawer('right', false)}>
             <div style={{ width: 200 }}>Content</div>
           </div>
-        </Drawer>
-        <SnackbarProvider autoHideDuration={1500}>
+        </Drawer> */}
+        <SnackbarProvider autoHideDuration={700} anchorOrigin={{ vertical: 'top', horizontal: 'right' }} maxSnack={4}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <GlobalContext.Provider value={this.state.globals}>
-              <Grid container direction='column' item xs={12} style={{ padding: 20 }}>
-                <Typography variant='h6' color='inherit'>
-                  Universal Catalogs
-                </Typography>
+              <Grid container direction='column' item xs={12} style={{ paddingTop: '2%' }}>
                 {this.props.children}
               </Grid>
             </GlobalContext.Provider>

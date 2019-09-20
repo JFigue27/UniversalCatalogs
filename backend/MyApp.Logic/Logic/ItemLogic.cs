@@ -16,20 +16,21 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-
+///start:slot:imports<<<///end:slot:imports<<<
 
 namespace MyApp.Logic
 {
-    public class ItemLogic : LogicWrite<Item>, ILogicWriteAsync<Item>
+    public class ItemLogic : WriteLogic<Item>, ILogicWriteAsync<Item>
     {
         
+        ///start:slot:init<<<///end:slot:init<<<
 
-        
+        ///start:slot:ctor<<<///end:slot:ctor<<<
 
         protected override Item OnCreateInstance(Item entity)
         {
             
-            
+            ///start:slot:createInstance<<<///end:slot:createInstance<<<
 
             return entity;
         }
@@ -37,7 +38,7 @@ namespace MyApp.Logic
         protected override SqlExpression<Item> OnGetList(SqlExpression<Item> query)
         {
             
-            
+            ///start:slot:listQuery<<<///end:slot:listQuery<<<
 
             return query;
         }
@@ -45,7 +46,7 @@ namespace MyApp.Logic
         protected override SqlExpression<Item> OnGetSingle(SqlExpression<Item> query)
         {
             
-            
+            ///start:slot:singleQuery<<<///end:slot:singleQuery<<<
 
             return query;
         }
@@ -53,34 +54,34 @@ namespace MyApp.Logic
         protected override void OnBeforeSaving(Item entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            
+            ///start:slot:beforeSave<<<///end:slot:beforeSave<<<
         }
 
         protected override void OnAfterSaving(Item entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
             
-            
+            ///start:slot:afterSave<<<///end:slot:afterSave<<<
         }
 
         protected override void OnBeforeRemoving(Item entity)
         {
             
-            
+            ///start:slot:beforeRemove<<<///end:slot:beforeRemove<<<
         }
 
-        protected override IEnumerable<Item> AdapterOut(params Item[] entities)
+        protected override List<Item> AdapterOut(params Item[] entities)
         {
-            
+            ///start:slot:adapterOut<<<///end:slot:adapterOut<<<
 
             foreach (var item in entities)
             {
                 
             }
 
-            return entities;
+            return entities.ToList();
         }
 
         
-        
+        ///start:slot:logic<<<///end:slot:logic<<<
     }
 }

@@ -17,7 +17,7 @@ namespace MyApp.Database.Migrations
 
         protected override void Seed(EFContext context)
         {
-            
+            ///start:slot:seed<<<///end:slot:seed<<<
         }
     }
 }

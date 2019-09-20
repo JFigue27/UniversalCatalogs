@@ -18,23 +18,17 @@ namespace MyApp.Database
 
         #region App
         ///start:generated:dbsets<<<
+        public virtual DbSet<Approval> Approvals { get; set; }
         public virtual DbSet<Email> Emails { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<AdditionalField> AdditionalFields { get; set; }
         public virtual DbSet<AdvancedSort> AdvancedSorts { get; set; }
-        public virtual DbSet<Area> Areas { get; set; }
         public virtual DbSet<Catalog> Catalogs { get; set; }
         public virtual DbSet<CatalogType> CatalogTypes { get; set; }
-        public virtual DbSet<Customer> Customers { get; set; }
-        public virtual DbSet<Department> Departments { get; set; }
-        public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<FilterData> FilterDatas { get; set; }
-        public virtual DbSet<Item> Items { get; set; }
-        public virtual DbSet<Material> Materials { get; set; }
-        public virtual DbSet<Shift> Shifts { get; set; }
         public virtual DbSet<SortData> SortDatas { get; set; }
+        public virtual DbSet<Task> Tasks { get; set; }
         public virtual DbSet<Token> Tokens { get; set; }
-        public virtual DbSet<Workstation> Workstations { get; set; }
         ///end:generated:dbsets<<<
         #endregion
 
@@ -49,7 +43,7 @@ namespace MyApp.Database
             modelBuilder.Ignore<AdditionalField>();
             modelBuilder.Ignore<Contact>();
 
-            
+            ///start:slot:model<<<///end:slot:model<<<
         }
     }
 }

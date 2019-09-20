@@ -16,7 +16,7 @@ namespace MyApp.Logic.Entities
         public AdditionalField()
         {
             
-            
+            ///start:slot:ctor<<<///end:slot:ctor<<<
         }
 
         public string FieldName { get; set; }
@@ -24,5 +24,6 @@ namespace MyApp.Logic.Entities
         public object Value { get; set; }
 
         
+        ///start:slot:properties<<<///end:slot:properties<<<
     }
 }
