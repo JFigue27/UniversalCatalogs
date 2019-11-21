@@ -3,7 +3,6 @@ using Reusable.Rest;
 using ServiceStack.Auth;
 using ServiceStack.Web;
 using System.Data;
-
 namespace Reusable.CRUD.Contract
 {
     public interface ILogic

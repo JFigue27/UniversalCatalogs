@@ -16,7 +16,6 @@ namespace MyApp.Logic.Entities
         public Task()
         {
             CreatedAt = DateTimeOffset.Now;
-            ///start:slot:ctor<<<///end:slot:ctor<<<
         }
 
         public string Category { get; set; }
@@ -37,6 +36,5 @@ namespace MyApp.Logic.Entities
         public bool IsCanceled { get; set; }
 
         
-        ///start:slot:properties<<<///end:slot:properties<<<
     }
 }

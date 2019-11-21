@@ -33,10 +33,15 @@ namespace MyApp.API
 
         public object Get(GetPagedFilterDatas request)
         {
+            var query = AutoQuery.CreateQuery(request, Request);
+
             return WithDb(db => Logic.GetPaged(
                 request.Limit,
                 request.Page,
-                request.FilterGeneral));
+                request.FilterGeneral,
+                query,
+                requiresKeysInJsons: request.RequiresKeysInJsons
+                ));
         }
         #endregion
 
@@ -81,6 +86,15 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdFilterData request)
+        {
+            var entity = request.ConvertTo<FilterData>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Specific
@@ -106,7 +120,14 @@ namespace MyApp.API
     public class GetFilterDataWhere : GetSingleWhere<FilterData> { }
 
     [Route("/FilterData/GetPaged/{Limit}/{Page}", "GET")]
-    public class GetPagedFilterDatas : GetPaged<FilterData> { }
+    public class GetPagedFilterDatas : QueryDb<FilterData> {
+        public string FilterGeneral { get; set; }
+        //public long? FilterUser { get; set; }
+        public int Limit { get; set; }
+        public int Page { get; set; }
+
+        public bool RequiresKeysInJsons { get; set; }
+    }
     #endregion
 
     #region Generic Write
@@ -120,7 +141,9 @@ namespace MyApp.API
     public class UpdateFilterData : FilterData { }
 
     [Route("/FilterData", "DELETE")]
-    [Route("/FilterData/{Id}", "DELETE")]
     public class DeleteFilterData : FilterData { }
+
+    [Route("/FilterData/{Id}", "DELETE")]
+    public class DeleteByIdFilterData : FilterData { }
     #endregion
 }

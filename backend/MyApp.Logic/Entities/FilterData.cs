@@ -16,7 +16,6 @@ namespace MyApp.Logic.Entities
         public FilterData()
         {
             
-            ///start:slot:ctor<<<///end:slot:ctor<<<
         }
 
         public string Key { get; set; }
@@ -24,6 +23,5 @@ namespace MyApp.Logic.Entities
         public long AdvancedSortId { get; set; }
 
         
-        ///start:slot:properties<<<///end:slot:properties<<<
     }
 }

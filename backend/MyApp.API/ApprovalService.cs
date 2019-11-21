@@ -33,10 +33,15 @@ namespace MyApp.API
 
         public object Get(GetPagedApprovals request)
         {
+            var query = AutoQuery.CreateQuery(request, Request);
+
             return WithDb(db => Logic.GetPaged(
                 request.Limit,
                 request.Page,
-                request.FilterGeneral));
+                request.FilterGeneral,
+                query,
+                requiresKeysInJsons: request.RequiresKeysInJsons
+                ));
         }
         #endregion
 
@@ -78,6 +83,15 @@ namespace MyApp.API
             return InTransaction(db =>
             {
                 Logic.Remove(entity);
+                return new CommonResponse();
+            });
+        }
+        public object Delete(DeleteByIdApproval request)
+        {
+            var entity = request.ConvertTo<Approval>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
                 return new CommonResponse();
             });
         }
@@ -178,7 +192,14 @@ namespace MyApp.API
     public class GetApprovalWhere : GetSingleWhere<Approval> { }
 
     [Route("/Approval/GetPaged/{Limit}/{Page}", "GET")]
-    public class GetPagedApprovals : GetPaged<Approval> { }
+    public class GetPagedApprovals : QueryDb<Approval> {
+        public string FilterGeneral { get; set; }
+        //public long? FilterUser { get; set; }
+        public int Limit { get; set; }
+        public int Page { get; set; }
+
+        public bool RequiresKeysInJsons { get; set; }
+    }
     #endregion
 
     #region Generic Write
@@ -192,8 +213,10 @@ namespace MyApp.API
     public class UpdateApproval : Approval { }
 
     [Route("/Approval", "DELETE")]
-    [Route("/Approval/{Id}", "DELETE")]
     public class DeleteApproval : Approval { }
+
+    [Route("/Approval/{Id}", "DELETE")]
+    public class DeleteByIdApproval : Approval { }
     #endregion
 
     #region Generic Documents

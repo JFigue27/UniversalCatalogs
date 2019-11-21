@@ -9,14 +9,17 @@ using Reusable.Rest;
 using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.OrmLite;
+using ServiceStack.Text;
 using ServiceStack.Web;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
 ///start:slot:imports<<<///end:slot:imports<<<
+
 
 namespace MyApp.Logic
 {
@@ -40,7 +43,7 @@ namespace MyApp.Logic
             
             ///start:slot:listQuery<<<///end:slot:listQuery<<<
 
-            return query;
+            return base.OnGetList(query);
         }
 
         protected override SqlExpression<CatalogType> OnGetSingle(SqlExpression<CatalogType> query)
@@ -48,31 +51,18 @@ namespace MyApp.Logic
             
             ///start:slot:singleQuery<<<///end:slot:singleQuery<<<
 
-            return query;
+            return base.OnGetSingle(query);
         }
 
         protected override void OnBeforeSaving(CatalogType entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
-            if (string.IsNullOrWhiteSpace(entity.Name)) throw new KnownError("Invalid Name.");
-
-            if (mode == OPERATION_MODE.UPDATE)
-            {
-                var original = GetById(entity.Id);
-                if (original == null) throw new KnownError("Error. Entity no longer exists.");
-
-                if (original.Name != entity.Name)
-                {
-                    Db.Update<Catalog>(new { CatalogType = entity.Name }, e => e.CatalogType == original.Name);
-                    Db.Update<CatalogType>(new { ParentType = entity.Name }, e => e.ParentType == original.Name);
-                }
-            }
-
+            
             ///start:slot:beforeSave<<<///end:slot:beforeSave<<<
         }
 
         protected override void OnAfterSaving(CatalogType entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
         {
-            Cache.FlushAll();
+            
             ///start:slot:afterSave<<<///end:slot:afterSave<<<
         }
 
@@ -92,6 +82,16 @@ namespace MyApp.Logic
             }
 
             return entities.ToList();
+        }
+
+        protected override void OnFinalize(CatalogType entity)
+        {
+            ///start:slot:finalize<<<///end:slot:finalize<<<
+        }
+
+        protected override void OnUnfinalize(CatalogType entity)
+        {
+            ///start:slot:unfinalize<<<///end:slot:unfinalize<<<
         }
 
         

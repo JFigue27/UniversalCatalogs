@@ -9,26 +9,23 @@ using Reusable.Rest;
 using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.OrmLite;
+using ServiceStack.Text;
 using ServiceStack.Web;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Task = MyApp.Logic.Entities.Task;
+
 ///start:slot:imports<<<///end:slot:imports<<<
+
 
 namespace MyApp.Logic
 {
     public class TaskLogic : WriteLogic<Task>, ILogicWriteAsync<Task>
     {
-        public UserLogic UserLogic { get; set; }
-        public override void Init(IDbConnection db, IAuthSession auth, IRequest request)
-        {
-            base.Init(db, auth, request);
-            UserLogic.Init(db, auth, request);
-        }
-
+        
         ///start:slot:init<<<///end:slot:init<<<
 
         ///start:slot:ctor<<<///end:slot:ctor<<<
@@ -58,7 +55,7 @@ namespace MyApp.Logic
                     var filterStatus = advancedSort.Filtering.FirstOrDefault(e => e.Key == "Status");
                     if (filterStatus != null && !string.IsNullOrWhiteSpace(filterStatus.Value))
                     {
-                        var list = filterStatus.Value.FromJson<List<Catalog>>();
+                        var list = filterStatus.Value.FromJson<List<BaseCatalog>>();
                         if (list.Count > 0)
                         {
                             query.Where(task => Db.Exists(Db.From<AdvancedSort, FilterData>((a, f) => a.Id == f.AdvancedSortId)
@@ -71,7 +68,7 @@ namespace MyApp.Logic
                     var filterCategory = advancedSort.Filtering.FirstOrDefault(e => e.Key == "Category");
                     if (filterCategory != null && !string.IsNullOrWhiteSpace(filterCategory.Value))
                     {
-                        var list = filterCategory.Value.FromJson<List<Catalog>>();
+                        var list = filterCategory.Value.FromJson<List<BaseCatalog>>();
                         if (list.Count > 0)
                         {
                             query.Where(task => Db.Exists(Db.From<AdvancedSort, FilterData>((a, f) => a.Id == f.AdvancedSortId)
@@ -84,7 +81,7 @@ namespace MyApp.Logic
                     var filterPriority = advancedSort.Filtering.FirstOrDefault(e => e.Key == "Priority");
                     if (filterPriority != null && !string.IsNullOrWhiteSpace(filterPriority.Value))
                     {
-                        var list = filterPriority.Value.FromJson<List<Catalog>>();
+                        var list = filterPriority.Value.FromJson<List<BaseCatalog>>();
                         if (list.Count > 0)
                         {
                             query.Where(task => Db.Exists(Db.From<AdvancedSort, FilterData>((a, f) => a.Id == f.AdvancedSortId)
@@ -97,7 +94,7 @@ namespace MyApp.Logic
                     var filterCreatedBy = advancedSort.Filtering.FirstOrDefault(e => e.Key == "CreatedBy");
                     if (filterCreatedBy != null && !string.IsNullOrWhiteSpace(filterCreatedBy.Value))
                     {
-                        var list = filterCreatedBy.Value.FromJson<List<Catalog>>();
+                        var list = filterCreatedBy.Value.FromJson<List<BaseCatalog>>();
                         if (list.Count > 0)
                         {
                             query.Where(task => Db.Exists(Db.From<AdvancedSort, FilterData>((a, f) => a.Id == f.AdvancedSortId)
@@ -110,7 +107,7 @@ namespace MyApp.Logic
                     var filterAssignedTo = advancedSort.Filtering.FirstOrDefault(e => e.Key == "AssignedTo");
                     if (filterAssignedTo != null && !string.IsNullOrWhiteSpace(filterAssignedTo.Value))
                     {
-                        var list = filterAssignedTo.Value.FromJson<List<Catalog>>();
+                        var list = filterAssignedTo.Value.FromJson<List<BaseCatalog>>();
                         if (list.Count > 0)
                         {
                             query.Where(task => Db.Exists(Db.From<AdvancedSort, FilterData>((a, f) => a.Id == f.AdvancedSortId)
@@ -123,7 +120,7 @@ namespace MyApp.Logic
                     var filterClosedBy = advancedSort.Filtering.FirstOrDefault(e => e.Key == "ClosedBy");
                     if (filterClosedBy != null && !string.IsNullOrWhiteSpace(filterClosedBy.Value))
                     {
-                        var list = filterClosedBy.Value.FromJson<List<Catalog>>();
+                        var list = filterClosedBy.Value.FromJson<List<BaseCatalog>>();
                         if (list.Count > 0)
                         {
                             query.Where(task => Db.Exists(Db.From<AdvancedSort, FilterData>((a, f) => a.Id == f.AdvancedSortId)
@@ -148,7 +145,7 @@ namespace MyApp.Logic
 
             ///start:slot:listQuery<<<///end:slot:listQuery<<<
 
-            return query;
+            return base.OnGetList(query);
         }
 
         protected override SqlExpression<Task> OnGetSingle(SqlExpression<Task> query)
@@ -156,7 +153,7 @@ namespace MyApp.Logic
             
             ///start:slot:singleQuery<<<///end:slot:singleQuery<<<
 
-            return query;
+            return base.OnGetSingle(query);
         }
 
         protected override void OnBeforeSaving(Task entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
@@ -187,6 +184,16 @@ namespace MyApp.Logic
             }
 
             return entities.ToList();
+        }
+
+        protected override void OnFinalize(Task entity)
+        {
+            ///start:slot:finalize<<<///end:slot:finalize<<<
+        }
+
+        protected override void OnUnfinalize(Task entity)
+        {
+            ///start:slot:unfinalize<<<///end:slot:unfinalize<<<
         }
 
         private SqlExpression<Task> OrderBy(SqlExpression<Task> query, SortData sort)
@@ -406,11 +413,11 @@ namespace MyApp.Logic
             if (task == null)
             {
                 throw new KnownError("Task not found.");
-                template.ClosedAt = DateTimeOffset.Now;
-                template.ClosedBy = Auth.UserName;
+                // template.ClosedAt = DateTimeOffset.Now;
+                // template.ClosedBy = Auth.UserName;
                 //Missing other foreign fields.
 
-                Add(template);
+                // Add(template);
             }
             else
             {

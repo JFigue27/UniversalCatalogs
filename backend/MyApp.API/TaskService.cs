@@ -7,7 +7,7 @@ using System;
 using System.Threading.Tasks;
 using ServiceStack.Text;
 using Reusable.Rest.Implementations.SS;
-using Task = MyApp.Logic.Entities.Task;
+
 ///start:slot:imports<<<///end:slot:imports<<<
 
 namespace MyApp.API
@@ -33,10 +33,15 @@ namespace MyApp.API
 
         public object Get(GetPagedTasks request)
         {
+            var query = AutoQuery.CreateQuery(request, Request);
+
             return WithDb(db => Logic.GetPaged(
                 request.Limit,
                 request.Page,
-                request.FilterGeneral));
+                request.FilterGeneral,
+                query,
+                requiresKeysInJsons: request.RequiresKeysInJsons
+                ));
         }
         #endregion
 
@@ -81,6 +86,15 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdTask request)
+        {
+            var entity = request.ConvertTo<Task>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Specific
@@ -106,7 +120,14 @@ namespace MyApp.API
     public class GetTaskWhere : GetSingleWhere<Task> { }
 
     [Route("/Task/GetPaged/{Limit}/{Page}", "GET")]
-    public class GetPagedTasks : GetPaged<Task> { }
+    public class GetPagedTasks : QueryDb<Task> {
+        public string FilterGeneral { get; set; }
+        //public long? FilterUser { get; set; }
+        public int Limit { get; set; }
+        public int Page { get; set; }
+
+        public bool RequiresKeysInJsons { get; set; }
+    }
     #endregion
 
     #region Generic Write
@@ -120,7 +141,9 @@ namespace MyApp.API
     public class UpdateTask : Task { }
 
     [Route("/Task", "DELETE")]
-    [Route("/Task/{Id}", "DELETE")]
     public class DeleteTask : Task { }
+
+    [Route("/Task/{Id}", "DELETE")]
+    public class DeleteByIdTask : Task { }
     #endregion
 }

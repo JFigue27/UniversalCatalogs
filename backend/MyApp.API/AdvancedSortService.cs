@@ -33,10 +33,15 @@ namespace MyApp.API
 
         public object Get(GetPagedAdvancedSorts request)
         {
+            var query = AutoQuery.CreateQuery(request, Request);
+
             return WithDb(db => Logic.GetPaged(
                 request.Limit,
                 request.Page,
-                request.FilterGeneral));
+                request.FilterGeneral,
+                query,
+                requiresKeysInJsons: request.RequiresKeysInJsons
+                ));
         }
         #endregion
 
@@ -81,6 +86,15 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdAdvancedSort request)
+        {
+            var entity = request.ConvertTo<AdvancedSort>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Specific
@@ -106,7 +120,14 @@ namespace MyApp.API
     public class GetAdvancedSortWhere : GetSingleWhere<AdvancedSort> { }
 
     [Route("/AdvancedSort/GetPaged/{Limit}/{Page}", "GET")]
-    public class GetPagedAdvancedSorts : GetPaged<AdvancedSort> { }
+    public class GetPagedAdvancedSorts : QueryDb<AdvancedSort> {
+        public string FilterGeneral { get; set; }
+        //public long? FilterUser { get; set; }
+        public int Limit { get; set; }
+        public int Page { get; set; }
+
+        public bool RequiresKeysInJsons { get; set; }
+    }
     #endregion
 
     #region Generic Write
@@ -120,7 +141,9 @@ namespace MyApp.API
     public class UpdateAdvancedSort : AdvancedSort { }
 
     [Route("/AdvancedSort", "DELETE")]
-    [Route("/AdvancedSort/{Id}", "DELETE")]
     public class DeleteAdvancedSort : AdvancedSort { }
+
+    [Route("/AdvancedSort/{Id}", "DELETE")]
+    public class DeleteByIdAdvancedSort : AdvancedSort { }
     #endregion
 }

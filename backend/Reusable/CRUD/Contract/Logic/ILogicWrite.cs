@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-
 namespace Reusable.CRUD.Contract
 {
     public interface ILogicWrite<Entity> : ILogicReadOnly<Entity> where Entity : class
@@ -17,7 +16,6 @@ namespace Reusable.CRUD.Contract
         //CommonResponse SetPropertyValue(Entity entity, string sProperty, string value);
         //CommonResponse GetAvailableFor<ForEntity>(long id) where ForEntity : BaseEntity;
     }
-
     public interface ILogicWriteAsync<Entity> : ILogicReadOnlyAsync<Entity> where Entity : class
     {
         Task<Entity> AddAsync(Entity entity);

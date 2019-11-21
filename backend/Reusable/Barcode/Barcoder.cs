@@ -2,7 +2,6 @@ using Spire.Barcode;
 using System;
 using System.Drawing;
 using System.IO;
-
 namespace Reusable.Barcode
 {
     public static class Barcoder
@@ -33,7 +32,6 @@ namespace Reusable.Barcode
                         Y = 17
                     }
                 });
-
                 //I will crop at frontend (so, using barcode instead of cropped)
                 return Convert.ToBase64String(ConvertBitMapToByteArray(barcode));
             }
@@ -41,12 +39,10 @@ namespace Reusable.Barcode
             {
                 return "";
             }
-
         }
         private static byte[] ConvertBitMapToByteArray(Image image)
         {
             byte[] result = null;
-
             if (image != null)
             {
                 using (MemoryStream stream = new MemoryStream())
@@ -55,10 +51,8 @@ namespace Reusable.Barcode
                     result = stream.ToArray();
                 }
             }
-
             return result;
         }
-
         //Crop Image
         public static Image CropAtRect(this Image b, Rectangle r)
         {

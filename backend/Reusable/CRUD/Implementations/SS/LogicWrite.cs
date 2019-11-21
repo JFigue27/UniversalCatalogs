@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Reusable.CRUD.Implementations.SS
 {
-    public class WriteLogic<Entity> : ReadOnlyLogic<Entity>, ILogicWrite<Entity>, ILogicWriteAsync<Entity> where Entity : BaseEntity, new()
+    public class WriteLogic<Entity> : ReadOnlyLogic<Entity>, ILogicWrite<Entity>, ILogicWriteAsync<Entity> where Entity : class, IEntity, new()
     {
         #region HOOKS
         protected enum OPERATION_MODE { NONE, ADD, UPDATE };

@@ -6,5 +6,6 @@ namespace Reusable.CRUD.Contract
     {
         long Id { get; set; }
         string EntityName { get; }
+        byte[] RowVersion { get; set; }
     }
 }

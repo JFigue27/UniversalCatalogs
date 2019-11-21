@@ -17,7 +17,6 @@ namespace MyApp.Logic.Entities
         {
             RequestedDate = DateTimeOffset.Now;
             Tasks = new List<Task>();
-            ///start:slot:ctor<<<///end:slot:ctor<<<
         }
 
         public DateTimeOffset RequestedDate { get; set; }
@@ -57,6 +56,5 @@ namespace MyApp.Logic.Entities
             set { Subscribers = value.ToJson(); }
         }
 
-        ///start:slot:properties<<<///end:slot:properties<<<
     }
 }

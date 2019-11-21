@@ -91,6 +91,9 @@ namespace Reusable.CRUD.Implementations.SS
                 "parentKey",
                 "parentField",
                 "filterUser",
+                "RequiresKeysInJsons",
+                "OrderBy",
+                "OrderByDesc",
                 null
             }.Contains(param))
                 return false;

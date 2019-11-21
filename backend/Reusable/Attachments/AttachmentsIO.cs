@@ -240,5 +240,15 @@ namespace Reusable.Attachments
 
             return targetFolder;
         }
+
+        public static string GetPath(Attachment attachment)
+        {
+            var baseAttachmentsPath = ConfigurationManager.AppSettings[attachment.AttachmentKind];
+
+            if (bool.TryParse(ConfigurationManager.AppSettings["UseAttachmentsRelativePath"], out bool UseAttachmentsRelativePath) && UseAttachmentsRelativePath)
+                return "~/".MapHostAbsolutePath() + baseAttachmentsPath + @"/" + attachment.Directory + @"/" + attachment.FileName;
+            else
+                return baseAttachmentsPath + @"\" + attachment.Directory + @"\" + attachment.FileName;
+        }
     }
 }

@@ -16,7 +16,6 @@ namespace MyApp.Logic.Entities
         public Token()
         {
             CreatedAt = DateTimeOffset.Now;
-            ///start:slot:ctor<<<///end:slot:ctor<<<
         }
 
         public DateTimeOffset CreatedAt { get; set; }
@@ -26,6 +25,5 @@ namespace MyApp.Logic.Entities
         public long ForeignKey { get; set; }
 
         
-        ///start:slot:properties<<<///end:slot:properties<<<
     }
 }

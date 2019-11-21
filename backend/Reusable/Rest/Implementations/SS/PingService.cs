@@ -1,5 +1,4 @@
 using ServiceStack;
-
 namespace Reusable.Rest.Implementations.SS
 {
     public class PingService : Service
@@ -9,7 +8,6 @@ namespace Reusable.Rest.Implementations.SS
             return new { Result = "System up and running!" };
         }
     }
-
     [Route("/Ping")]
     public class Ping { }
 }

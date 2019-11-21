@@ -18,13 +18,12 @@ namespace MyApp.Database
 
         #region App
         ///start:generated:dbsets<<<
+        public virtual DbSet<Activity> Activitys { get; set; }
         public virtual DbSet<Approval> Approvals { get; set; }
         public virtual DbSet<Email> Emails { get; set; }
-        public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<AdditionalField> AdditionalFields { get; set; }
         public virtual DbSet<AdvancedSort> AdvancedSorts { get; set; }
-        public virtual DbSet<Catalog> Catalogs { get; set; }
         public virtual DbSet<CatalogType> CatalogTypes { get; set; }
+        public virtual DbSet<CatalogTypeField> CatalogTypeFields { get; set; }
         public virtual DbSet<FilterData> FilterDatas { get; set; }
         public virtual DbSet<SortData> SortDatas { get; set; }
         public virtual DbSet<Task> Tasks { get; set; }
@@ -33,8 +32,9 @@ namespace MyApp.Database
         #endregion
 
         #region Reusable
+        public virtual DbSet<Catalog> Catalogs { get; set; }
+        public virtual DbSet<CatalogType> CatalogTypes { get; set; }
         public virtual DbSet<Revision> Revisions { get; set; }
-        public virtual DbSet<Track> Tracks { get; set; }
         #endregion
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

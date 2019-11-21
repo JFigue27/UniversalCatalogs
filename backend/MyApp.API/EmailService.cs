@@ -33,10 +33,15 @@ namespace MyApp.API
 
         public object Get(GetPagedEmails request)
         {
+            var query = AutoQuery.CreateQuery(request, Request);
+
             return WithDb(db => Logic.GetPaged(
                 request.Limit,
                 request.Page,
-                request.FilterGeneral));
+                request.FilterGeneral,
+                query,
+                requiresKeysInJsons: request.RequiresKeysInJsons
+                ));
         }
         #endregion
 
@@ -78,6 +83,15 @@ namespace MyApp.API
             return InTransaction(db =>
             {
                 Logic.Remove(entity);
+                return new CommonResponse();
+            });
+        }
+        public object Delete(DeleteByIdEmail request)
+        {
+            var entity = request.ConvertTo<Email>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
                 return new CommonResponse();
             });
         }
@@ -178,7 +192,14 @@ namespace MyApp.API
     public class GetEmailWhere : GetSingleWhere<Email> { }
 
     [Route("/Email/GetPaged/{Limit}/{Page}", "GET")]
-    public class GetPagedEmails : GetPaged<Email> { }
+    public class GetPagedEmails : QueryDb<Email> {
+        public string FilterGeneral { get; set; }
+        //public long? FilterUser { get; set; }
+        public int Limit { get; set; }
+        public int Page { get; set; }
+
+        public bool RequiresKeysInJsons { get; set; }
+    }
     #endregion
 
     #region Generic Write
@@ -192,8 +213,10 @@ namespace MyApp.API
     public class UpdateEmail : Email { }
 
     [Route("/Email", "DELETE")]
-    [Route("/Email/{Id}", "DELETE")]
     public class DeleteEmail : Email { }
+
+    [Route("/Email/{Id}", "DELETE")]
+    public class DeleteByIdEmail : Email { }
     #endregion
 
     #region Generic Documents

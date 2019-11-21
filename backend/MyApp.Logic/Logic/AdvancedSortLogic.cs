@@ -9,14 +9,17 @@ using Reusable.Rest;
 using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.OrmLite;
+using ServiceStack.Text;
 using ServiceStack.Web;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
 ///start:slot:imports<<<///end:slot:imports<<<
+
 
 namespace MyApp.Logic
 {
@@ -42,7 +45,7 @@ namespace MyApp.Logic
 
             ///start:slot:listQuery<<<///end:slot:listQuery<<<
 
-            return query;
+            return base.OnGetList(query);
         }
 
         protected override SqlExpression<AdvancedSort> OnGetSingle(SqlExpression<AdvancedSort> query)
@@ -50,7 +53,7 @@ namespace MyApp.Logic
             query.Where(e => e.UserName == Auth.UserName);
             ///start:slot:singleQuery<<<///end:slot:singleQuery<<<
 
-            return query;
+            return base.OnGetSingle(query);
         }
 
         protected override void OnBeforeSaving(AdvancedSort entity, OPERATION_MODE mode = OPERATION_MODE.NONE)
@@ -117,6 +120,16 @@ namespace MyApp.Logic
             }
 
             return entities.ToList();
+        }
+
+        protected override void OnFinalize(AdvancedSort entity)
+        {
+            ///start:slot:finalize<<<///end:slot:finalize<<<
+        }
+
+        protected override void OnUnfinalize(AdvancedSort entity)
+        {
+            ///start:slot:unfinalize<<<///end:slot:unfinalize<<<
         }
 
         

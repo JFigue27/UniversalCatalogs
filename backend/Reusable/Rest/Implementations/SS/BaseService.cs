@@ -12,6 +12,7 @@ namespace Reusable.Rest.Implementations.SS
     {
         public IDbConnectionFactory DbConnectionFactory { get; set; }
         public TLogic Logic { get; set; }
+        public IAutoQueryDb AutoQuery { get; set; }
 
         protected async Task<object> WithDbAsync(Func<IDbConnection, Task<object>> operation)
         {

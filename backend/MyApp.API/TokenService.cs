@@ -33,10 +33,15 @@ namespace MyApp.API
 
         public object Get(GetPagedTokens request)
         {
+            var query = AutoQuery.CreateQuery(request, Request);
+
             return WithDb(db => Logic.GetPaged(
                 request.Limit,
                 request.Page,
-                request.FilterGeneral));
+                request.FilterGeneral,
+                query,
+                requiresKeysInJsons: request.RequiresKeysInJsons
+                ));
         }
         #endregion
 
@@ -81,6 +86,15 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdToken request)
+        {
+            var entity = request.ConvertTo<Token>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Specific
@@ -106,7 +120,14 @@ namespace MyApp.API
     public class GetTokenWhere : GetSingleWhere<Token> { }
 
     [Route("/Token/GetPaged/{Limit}/{Page}", "GET")]
-    public class GetPagedTokens : GetPaged<Token> { }
+    public class GetPagedTokens : QueryDb<Token> {
+        public string FilterGeneral { get; set; }
+        //public long? FilterUser { get; set; }
+        public int Limit { get; set; }
+        public int Page { get; set; }
+
+        public bool RequiresKeysInJsons { get; set; }
+    }
     #endregion
 
     #region Generic Write
@@ -120,7 +141,9 @@ namespace MyApp.API
     public class UpdateToken : Token { }
 
     [Route("/Token", "DELETE")]
-    [Route("/Token/{Id}", "DELETE")]
     public class DeleteToken : Token { }
+
+    [Route("/Token/{Id}", "DELETE")]
+    public class DeleteByIdToken : Token { }
     #endregion
 }

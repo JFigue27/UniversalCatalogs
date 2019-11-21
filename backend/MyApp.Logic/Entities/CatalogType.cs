@@ -16,14 +16,13 @@ namespace MyApp.Logic.Entities
         public CatalogType()
         {
             
-            ///start:slot:ctor<<<///end:slot:ctor<<<
         }
 
         public string Name { get; set; }
-        public string ParentType { get; set; }
-        public string Fields { get; set; }
+        
+        [Reference]
+        public List<CatalogTypeField> CatalogTypeFields { get; set; }
 
         
-        ///start:slot:properties<<<///end:slot:properties<<<
     }
 }

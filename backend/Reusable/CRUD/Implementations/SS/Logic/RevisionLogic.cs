@@ -11,28 +11,19 @@ using ServiceStack.Web;
 
 namespace Reusable.CRUD.Implementations.SS.Logic
 {
+    //Cannot inherit from DocumentLogic because causes a circular reference
     public class RevisionLogic : WriteLogic<Revision>
     {
-        public TrackLogic TrackLogic { get; set; }
         public override void Init(IDbConnection db, IAuthSession auth, IRequest request)
         {
             base.Init(db, auth, request);
-            TrackLogic.Init(db, auth, request);
         }
 
         #region Overrides
         public override Revision Add(Revision entity)
         {
             entity.CreatedAt = DateTimeOffset.Now;
-
-            var track = new Track
-            {
-                CreatedAt = entity.CreatedAt,
-                Discriminator = "Revision",
-                CreatedBy = Auth.UserName
-            };
-            TrackLogic.Add(track);
-            entity.TrackId = track.Id;
+            entity.CreatedBy = Auth.UserName;
 
             return base.Add(entity);
         }
@@ -40,15 +31,7 @@ namespace Reusable.CRUD.Implementations.SS.Logic
         public override async Task<Revision> AddAsync(Revision entity)
         {
             entity.CreatedAt = DateTimeOffset.Now;
-
-            var track = new Track
-            {
-                CreatedAt = entity.CreatedAt,
-                Discriminator = "Revision",
-                CreatedBy = Auth.UserName
-            };
-            await TrackLogic.AddAsync(track);
-            entity.TrackId = track.Id;
+            entity.CreatedBy = Auth.UserName;
 
             return await base.AddAsync(entity);
         }

@@ -1,5 +1,4 @@
 using System;
-
 namespace MyApp
 {
     public class Global : System.Web.HttpApplication

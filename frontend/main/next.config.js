@@ -7,11 +7,13 @@ module.exports = withBundleAnalyzer(
   withFonts(
     withSass({
       target: 'serverless',
-      // assetPrefix: isProd ? 'http://apps.capsonic.com/UniversalCatalogs/main' : '',
+      // assetPrefix: isProd ? 'http://jucvwdoccnl01/UniversalCatalogs/main' : '',
       // exportPathMap: function() {
       //   return {
       //     '/': { page: '/' },
-      //     '/items': { page: '/items' }
+      //     '/catalog-type': { page: '/catalog-type' },
+      //     '/catalog': { page: '/catalog' },
+      //     '/catalogs': { page: '/catalogs' }
       //   };
       // },
       analyzeServer: ['server', 'both'].includes(process.env.BUNDLE_ANALYZE),

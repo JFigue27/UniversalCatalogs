@@ -9,9 +9,11 @@ using Reusable.Rest;
 using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.OrmLite;
+using ServiceStack.Text;
 using ServiceStack.Web;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -96,7 +98,7 @@ namespace MyApp.Logic
             return entities.ToList();
         }
 
-        public List<string> GetOnlyValues(string catalogType)
+        public List<string> GetOnlyValues(string catalogType, SqlExpression<Catalog> query = null)
         {
             var allEntries = GetAll().Where(e => e.CatalogType == catalogType);
             return allEntries.Select(e => e.Value).ToList();

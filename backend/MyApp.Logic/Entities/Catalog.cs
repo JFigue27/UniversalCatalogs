@@ -23,6 +23,7 @@ namespace MyApp.Logic.Entities
         public string CatalogType { get; set; }
         public bool Hidden { get; set; }
         public string Parent { get; set; }
+        [IsJson]
         public string Meta { get; set; }
 
         

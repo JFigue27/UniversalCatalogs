@@ -33,10 +33,15 @@ namespace MyApp.API
 
         public object Get(GetPagedCatalogTypes request)
         {
+            var query = AutoQuery.CreateQuery(request, Request);
+
             return WithDb(db => Logic.GetPaged(
                 request.Limit,
                 request.Page,
-                request.FilterGeneral));
+                request.FilterGeneral,
+                query,
+                requiresKeysInJsons: request.RequiresKeysInJsons
+                ));
         }
         #endregion
 
@@ -81,6 +86,15 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdCatalogType request)
+        {
+            var entity = request.ConvertTo<CatalogType>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Specific
@@ -106,7 +120,14 @@ namespace MyApp.API
     public class GetCatalogTypeWhere : GetSingleWhere<CatalogType> { }
 
     [Route("/CatalogType/GetPaged/{Limit}/{Page}", "GET")]
-    public class GetPagedCatalogTypes : GetPaged<CatalogType> { }
+    public class GetPagedCatalogTypes : QueryDb<CatalogType> {
+        public string FilterGeneral { get; set; }
+        //public long? FilterUser { get; set; }
+        public int Limit { get; set; }
+        public int Page { get; set; }
+
+        public bool RequiresKeysInJsons { get; set; }
+    }
     #endregion
 
     #region Generic Write
@@ -120,7 +141,9 @@ namespace MyApp.API
     public class UpdateCatalogType : CatalogType { }
 
     [Route("/CatalogType", "DELETE")]
-    [Route("/CatalogType/{Id}", "DELETE")]
     public class DeleteCatalogType : CatalogType { }
+
+    [Route("/CatalogType/{Id}", "DELETE")]
+    public class DeleteByIdCatalogType : CatalogType { }
     #endregion
 }

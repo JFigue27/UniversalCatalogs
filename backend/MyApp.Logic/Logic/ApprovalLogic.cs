@@ -9,9 +9,11 @@ using Reusable.Rest;
 using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.OrmLite;
+using ServiceStack.Text;
 using ServiceStack.Web;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,10 +26,10 @@ namespace MyApp.Logic
     public class ApprovalLogic : DocumentLogic<Approval>, IDocumentLogicAsync<Approval>
     {
         public TaskLogic TaskLogic { get; set; }
-        public override void Init(IDbConnection db, IAuthSession auth, IRequest request)
+        public override void Init(IDbConnection db, IAuthSession auth, IRequest request, IAppSettings appSettings)
         {
-            base.Init(db, auth, request);
-            TaskLogic.Init(db, auth, request);
+            base.Init(db, auth, request, appSettings);
+            TaskLogic.Init(db, auth, request, appSettings);
         }
 
         ///start:slot:init<<<///end:slot:init<<<
@@ -199,7 +201,7 @@ namespace MyApp.Logic
             var approval = GetById(approvalId);
 
             if (approval == null)
-                throw new KnownError("Approval does not exists.");
+                throw new KnownError("Approval does not exist.");
 
             if (!HasRoles("Admin"))
                 if (approval.ApproversList == null
@@ -282,7 +284,7 @@ namespace MyApp.Logic
         {
             var approval = GetById(approvalId);
 
-            if (approval == null) throw new KnownError("Approval does not exists.");
+            if (approval == null) throw new KnownError("Approval does not exist.");
 
             TaskLogic.CancelAllFromForeign(approval, "Approval", "Approvals");
 
