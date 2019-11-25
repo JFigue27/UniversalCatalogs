@@ -17,7 +17,16 @@ namespace MyApp.Database.Migrations
 
         protected override void Seed(EFContext context)
         {
+            var defaultCatalogs = new List<string>();
+
             ///start:slot:seed<<<///end:slot:seed<<<
+
+            foreach (var catalog in defaultCatalogs)
+            {
+                var found = context.CatalogTypes.FirstOrDefault(e => e.Name == catalog);
+                if (found == null)
+                    context.CatalogTypes.Add(new CatalogType { Name = catalog });
+            }
         }
     }
 }

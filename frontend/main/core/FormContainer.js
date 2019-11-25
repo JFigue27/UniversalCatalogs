@@ -23,6 +23,8 @@ class FormContainer extends React.Component {
 
   UNSAFE_componentWillMount() {
     this.auth = this.context.auth;
+    const { dialog } = this.props;
+    if (dialog) dialog.onOk = this.onDialogOk;
   }
 
   componentDidUpdate() {
@@ -92,7 +94,7 @@ class FormContainer extends React.Component {
     }
   };
 
-  createInstance = async (event, predefined) => {
+  createInstance = async predefined => {
     // let theArguments = Array.prototype.slice.call(arguments);
     return await this.service.CreateInstance(predefined).then(instance => {
       // theArguments.unshift(instance);
@@ -116,15 +118,20 @@ class FormContainer extends React.Component {
     }
   };
 
-  save = () => {
-    return this.BEFORE_SAVE(this.state.baseEntity)
-      .then((entity = this.state.baseEntity) => {
+  save = (entity = this.state.baseEntity) => {
+    return this.BEFORE_SAVE(entity)
+      .then(entity => {
+        if (entity.api_Attachments) return entity.api_Attachments.uploadFiles();
+        else return entity;
+      })
+      .then(entity => {
         return this.service.Save(entity).then(baseEntity => {
           baseEntity.isOpened = true;
           this.AFTER_SAVE(baseEntity);
           this.ON_CHANGE(baseEntity);
           this.setState({ baseEntity });
           this.success('Saved.');
+          return baseEntity;
         });
       })
       .catch(error => {
@@ -133,6 +140,21 @@ class FormContainer extends React.Component {
         this.error(sError);
         // alert(sError);
       });
+  };
+
+  onAttachmentsChange = (files, listBind, folderBind, targetFolder) => {
+    let { baseEntity } = this.state;
+    if (files && listBind) {
+      baseEntity[listBind] = [...files];
+    }
+
+    if (targetFolder && folderBind) {
+      baseEntity[folderBind] = baseEntity[folderBind] || targetFolder;
+    }
+
+    this.setState({ baseEntity });
+
+    return baseEntity;
   };
 
   loadRevision = selectedRevision => {
@@ -204,6 +226,10 @@ class FormContainer extends React.Component {
       baseEntity.RevisionMessage = message;
       return this.BEFORE_CHECKIN(baseEntity)
         .then((entity = baseEntity) => this.BEFORE_SAVE(entity))
+        .then(entity => {
+          if (entity.api_Attachments) return entity.api_Attachments.uploadFiles();
+          return entity;
+        })
         .then((entity = baseEntity) => {
           return this.service.Checkin(entity).then(response => {
             this.refreshForm(response).then(() => {
@@ -241,6 +267,21 @@ class FormContainer extends React.Component {
   };
 
   onDialogOk = async () => await this.save();
+
+  openDialog = (propId, data) => {
+    let d = true;
+    if (data) d = { ...data };
+    this.setState({
+      [propId]: d
+    });
+  };
+
+  closeDialog = (propId, feedback) => {
+    this.setState({
+      [propId]: false
+    });
+    this.ON_DIALOG_CLOSE(propId, feedback);
+  };
 
   // Local Operations:============================================================
   handleInputChange = (event, field) => {
@@ -285,6 +326,15 @@ class FormContainer extends React.Component {
     this.setState({ baseEntity });
   };
 
+  handleAttachmentsChange = (files, listBind, folder) => {
+    let { baseEntity } = this.state;
+    if (files && listBind) baseEntity[listBind] = [...files];
+    if (folder) baseEntity.AttachmentsFolder = baseEntity.AttachmentsFolder || folder;
+    this.ON_CHANGE(baseEntity, listBind, folder);
+    this.setState({ baseEntity });
+    return baseEntity;
+  };
+
   getCurrentUser = () => (this.auth && this.auth.user) || {};
 
   getCheckoutUser = entity => {
@@ -305,10 +355,8 @@ class FormContainer extends React.Component {
   _afterLoad = baseEntity => {
     console.log('_afrerLoad');
     if (this.isCheckedOutByCurrentUser(baseEntity)) {
-      // debugger;
       this.setState({ isDisabled: false });
     } else {
-      // debugger;
       this.setState({ isDisabled: true });
     }
 
@@ -333,6 +381,16 @@ class FormContainer extends React.Component {
 
   navigateTo(href) {
     return Router.push(href);
+  }
+
+  getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)', 'i'),
+      results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
   }
 
   success = (message, autoHideDuration = 700) => {
@@ -365,6 +423,17 @@ class FormContainer extends React.Component {
     if (this.service) return this.service.formatCurrency(number, decimals);
   };
 
+  //Local Storage:================================================================
+  storageSet = (key, value) => {
+    localStorage.setItem(key, JSON.stringify(value));
+  };
+
+  storageGet = key => {
+    let item = localStorage.getItem(key);
+    if (item) return JSON.parse(item);
+    return null;
+  };
+
   // Events:======================================================================
   on_input_change = item => {
     item.Entry_State = 1;
@@ -377,9 +446,12 @@ class FormContainer extends React.Component {
 
   AFTER_CREATE_AND_CHECKOUT = entity => {};
 
-  BEFORE_SAVE = async entity => {};
+  BEFORE_SAVE = async entity => entity;
 
-  AFTER_SAVE(entity) {}
+  AFTER_SAVE(entity) {
+    const { dialog } = this.props;
+    if (dialog) dialog.close('ok');
+  }
 
   AFTER_REMOVE = entity => {};
 
@@ -387,6 +459,11 @@ class FormContainer extends React.Component {
 
   ON_CHANGE = (data, field) => {
     this.props.onChange && this.props.onChange(data, field);
+  };
+
+  ON_DIALOG_CLOSE = (dialogId, feedback) => {
+    if (this.refresh) this.refresh();
+    console.log(dialogId, feedback);
   };
 
   render() {

@@ -47,7 +47,7 @@ const ControlledExpansionPanels = props => {
         >
           {props.panel}
         </ExpansionPanelSummary>
-        <ExpansionPanelDetails style={{ background: '#f7f5f6' }}>{props.children}</ExpansionPanelDetails>
+        <ExpansionPanelDetails style={{ background: '#f7f5f6' }}>{expanded && props.children}</ExpansionPanelDetails>
       </ExpansionPanel>
     </div>
   );

@@ -5,6 +5,10 @@ import Dropzone from 'react-dropzone';
 import AppConfig from '../core/AppConfig';
 import AuthService from '../core/AuthService';
 
+const activeStyle = {
+  borderColor: '#2196f3'
+};
+
 const Request = async (method, endpoint, data, BaseURL) => {
   if (AuthService.auth == null) AuthService.fillAuthData();
   if (!AuthService.auth || !AuthService.auth.user) throw 'User not signed in.';
@@ -100,7 +104,7 @@ class Attachments extends Component {
   };
 
   uploadFiles = async () => {
-    const { owner, listBind = 'Attachments', onChange } = this.props;
+    const { owner, listBind = 'Attachments', folderBind = 'AttachmentsFolder', onChange } = this.props;
     let { files } = this.state;
 
     this.setState({ uploading: true });
@@ -114,7 +118,7 @@ class Attachments extends Component {
       files = [...this.state.files];
       let { targetFolder } = this.state;
 
-      if (onChange) return onChange(files, listBind, targetFolder);
+      if (onChange) return onChange(files, listBind, folderBind, targetFolder);
 
       return owner;
     } catch (e) {
@@ -154,7 +158,10 @@ class Attachments extends Component {
       .catch(() => (file.status = 'error'));
   };
 
-  openDialog = () => this.el.current.open && this.el.current.open();
+  openDialog = () => {
+    let { readOnly } = this.props;
+    !readOnly && this.el.current.open && this.el.current.open();
+  };
 
   removeFile = (file, index) => {
     const { listBind = 'Attachments', onChange } = this.props;
@@ -191,12 +198,19 @@ class Attachments extends Component {
   };
 
   render() {
-    console.log('Render Attachments');
-
     let { files } = this.state;
-    let { owner = {}, kind = '', onChange, afterDelete, listBind, folderBind = 'AttachmentsFolder', printMode, readOnly } = this.props;
+    let {
+      owner = {},
+      kind = '',
+      onChange,
+      afterDelete,
+      listBind = 'Attachments',
+      folderBind = 'AttachmentsFolder',
+      printMode,
+      readOnly
+    } = this.props;
 
-    const api = listBind ? 'api_' + listBind : 'api_attachments';
+    const api = 'api_' + listBind;
     owner[api] = {};
     owner[api].uploadFiles = this.uploadFiles;
 
@@ -205,9 +219,26 @@ class Attachments extends Component {
     return (
       <>
         {/* <pre>{JSON.stringify(this.state.targetFolder, null, 3)}</pre> */}
-        <Dropzone ref={this.el} multiple onDrop={this.onFilesAdded} noClick>
+        <Dropzone
+          ref={this.el}
+          multiple
+          onDrop={this.onFilesAdded}
+          noClick
+          onDragEnter={() => this.setState({ border: 'blue' })}
+          onDragLeave={() => this.setState({ border: '#e0e0e0' })}
+          onDropAccepted={() => this.setState({ border: '#e0e0e0' })}
+          onDropRejected={() => this.setState({ border: '#e0e0e0' })}
+        >
           {({ getRootProps, getInputProps }) => (
-            <Grid container direction='column' {...getRootProps()} className='Attachments well' onDoubleClick={this.openDialog}>
+            <Grid
+              container
+              direction='column'
+              {...getRootProps()}
+              className='Attachments'
+              style={{ borderColor: this.state.border }}
+              tabIndex={-1}
+              onDoubleClick={this.openDialog}
+            >
               <input {...getInputProps()} style={{ display: 'none' }} />
               {files.map((file, index) => {
                 return (

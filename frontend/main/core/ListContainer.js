@@ -54,6 +54,15 @@ class ListContainer extends FormContainer {
     this.debouncedRefresh();
   };
 
+  clearInput = filterGeneral => {
+    const { filterOptions } = this.state;
+    filterOptions[filterGeneral] = '';
+    this.setState({ filterOptions });
+    this.ON_FILTER_CHANGE(filterOptions, filterGeneral);
+    this.persistFilter(filterOptions);
+    this.debouncedRefresh();
+  };
+
   bindFilterInputNoRefresh = event => {
     const { filterOptions } = this.state;
     filterOptions[event.target.name] = event.target.value;
@@ -163,9 +172,11 @@ class ListContainer extends FormContainer {
       .then(response => {
         let baseList = response.Result;
 
-        filterOptions.itemsCount = response.AdditionalData.total_filtered_items;
-        filterOptions.totalItems = response.AdditionalData.total_items;
-        filterOptions.page = response.AdditionalData.page || page;
+        if (response.AdditionalData) {
+          filterOptions.itemsCount = response.AdditionalData.total_filtered_items;
+          filterOptions.totalItems = response.AdditionalData.total_items;
+          filterOptions.page = response.AdditionalData.page || page;
+        }
 
         this.persistFilter(filterOptions);
         this.persistSort();
@@ -219,7 +230,7 @@ class ListContainer extends FormContainer {
     else return this.updateList();
   };
 
-  createInstance = (event, item) => {
+  createInstance = item => {
     this.setState({ isLoading: true });
     // let theArguments = Array.prototype.slice.call(arguments);
     this.service.CreateInstance(item).then(oInstance => {
@@ -247,6 +258,7 @@ class ListContainer extends FormContainer {
         this.setState({ isLoading: true });
         await this.service.RemoveById(item.Id);
         this.AFTER_REMOVE(item);
+        await this.refresh();
       } finally {
         this.setState({ isLoading: false });
       }
@@ -271,10 +283,6 @@ class ListContainer extends FormContainer {
   };
 
   removeSelected = () => {
-    throw 'Not Implemented';
-  };
-
-  save = () => {
     throw 'Not Implemented';
   };
 
@@ -483,7 +491,9 @@ class ListContainer extends FormContainer {
 
   AFTER_CREATE_AND_CHECKOUT = entity => {};
 
-  AFTER_REMOVE = () => {};
+  AFTER_REMOVE(entity) {
+    this.refresh();
+  }
 
   ON_FILTER_CHANGE(filterOptions, field) {}
 

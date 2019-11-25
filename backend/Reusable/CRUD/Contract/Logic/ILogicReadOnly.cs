@@ -11,7 +11,7 @@ namespace Reusable.CRUD.Contract
     {
         List<Entity> GetAll();
         Entity GetById(long Id);
-        CommonResponse GetPaged(int perPage, int page, string filterGeneral, SqlExpression<Entity> query = null, string cacheKey = null);
+        CommonResponse GetPaged(int perPage, int page, string filterGeneral, SqlExpression<Entity> query = null, string cacheKey = null, bool requiresKeysInJson = false);
         Entity GetSingleWhere(string Property, object Value, SqlExpression<Entity> query = null, string cacheKey = null);
 
         Exception GetOriginalException(Exception ex);
@@ -28,7 +28,7 @@ namespace Reusable.CRUD.Contract
     {
         Task<List<Entity>> GetAllAsync();
         Task<Entity> GetByIdAsync(long id);
-        Task<CommonResponse> GetPagedAsync(int perPage, int page, string filterGeneral, SqlExpression<Entity> query = null, string cacheKey = null);
+        Task<CommonResponse> GetPagedAsync(int perPage, int page, string filterGeneral, SqlExpression<Entity> query = null, string cacheKey = null, bool requiresKeysInJson = false);
         Task<Entity> GetSingleWhereAsync(string Property, object Value, SqlExpression<Entity> query = null, string cacheKey = null);
     }
 }

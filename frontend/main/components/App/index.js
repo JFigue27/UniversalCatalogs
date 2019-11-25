@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { withRouter } from 'next/router';
 import { Drawer, AppBar, Toolbar, IconButton, Typography, Menu, MenuItem, Grid, Tabs, Tab } from '@material-ui/core';
-import { Button, Icon, Fab } from '@material-ui/core';
+import { Button, Icon, Fab, ButtonBase } from '@material-ui/core';
 import Dialog from '../../widgets/Dialog';
 import AuthService from '../../core/AuthService';
 import Login from '../../widgets/Login';
@@ -112,7 +112,7 @@ class App extends React.Component {
           {`
             body {
               margin: 0;
-              padding-top: ${fullscreen ? 0 : '50px 0'};
+              padding-top: ${fullscreen ? 0 : '50px'};
             }
           `}
         </style>
@@ -138,10 +138,12 @@ class App extends React.Component {
               {/* <IconButton color='inherit' onClick={this.toggleDrawer('right', true)}>
               <Icon>menu</Icon>
             </IconButton> */}
-              <Link href='/'>
-                <Typography>
-                  <img src='/static/images/Molex_White.png' alt='Molex Logo' style={{ width: 100 }} />
-                </Typography>
+              <Link href={'/'}>
+                <ButtonBase>
+                  <Typography variant='h6' color='inherit'>
+                    Universal Catalogs
+                  </Typography>
+                </ButtonBase>
               </Link>
               <Grid item xs />
 
@@ -183,9 +185,6 @@ class App extends React.Component {
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <GlobalContext.Provider value={this.state.globals}>
               <Grid container direction='column' item xs={12} style={{ paddingTop: '2%' }}>
-                <Typography variant='h6' color='inherit' style={{ paddingLeft: 15 }}>
-                  Universal Catalogs
-                </Typography>
                 {this.props.children}
               </Grid>
             </GlobalContext.Provider>

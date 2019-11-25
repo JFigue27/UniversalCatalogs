@@ -2,7 +2,7 @@ using ServiceStack;
 
 namespace Reusable.Rest.Implementations.SS
 {
-    [Restrict(LocalhostOnly = true)]
+    //[Restrict(LocalhostOnly = true)]
     public class CacheService : Service,
         IGet<FlushAll>
     {

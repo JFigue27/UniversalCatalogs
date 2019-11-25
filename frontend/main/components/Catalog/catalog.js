@@ -72,8 +72,10 @@ class CatalogForm extends FormContainer {
     const { dialog } = this.props;
     if (dialog) dialog.onOk = this.onDialogOk;
 
+    const { isLoading, isDisabled, baseEntity } = this.state;
+
     const { additionalFields } = this.props;
-    const { ConvertedMeta } = this.state.baseEntity;
+    const { ConvertedMeta } = baseEntity;
 
     return (
       <NoSsr>
@@ -81,7 +83,7 @@ class CatalogForm extends FormContainer {
           <TextField
             type='text'
             label='Type'
-            value={this.state.baseEntity.CatalogType || ''}
+            value={baseEntity.CatalogType || ''}
             style={{ textAlign: 'left' }}
             margin='normal'
             disabled
@@ -91,7 +93,7 @@ class CatalogForm extends FormContainer {
           <TextField
             type='text'
             label='Value'
-            value={this.state.baseEntity.Value || ''}
+            value={baseEntity.Value || ''}
             onChange={event => this.handleInputChange(event, 'Value')}
             style={{ textAlign: 'left' }}
             margin='normal'
@@ -101,8 +103,9 @@ class CatalogForm extends FormContainer {
           {this.props.parentType && (
             <Select
               flat
+              label='Parent'
               options={this.state.parents}
-              value={this.state.baseEntity.Parent}
+              value={baseEntity.Parent}
               onChange={event => this.handleAutocompleteChange(event, 'Parent')}
               style={{ marginTop: 20 }}
             />
@@ -113,8 +116,8 @@ class CatalogForm extends FormContainer {
               <Checkbox
                 color='primary'
                 onChange={event => this.handleCheckBoxChange(event, 'Hidden')}
-                checked={this.state.baseEntity.Hidden == 1}
-                value={this.state.baseEntity.Hidden}
+                checked={baseEntity.Hidden == 1}
+                value={baseEntity.Hidden}
               />
             }
             label='Hidden'
@@ -127,22 +130,42 @@ class CatalogForm extends FormContainer {
             </Typography>
           )}
           {additionalFields &&
-            additionalFields.map(field => (
-              <TextField
-                key={field.FieldName}
-                type={field.FieldType}
-                label={field.FieldName}
-                value={ConvertedMeta[field.FieldName] || ''}
-                onChange={event => {
-                  let { baseEntity } = this.state;
-                  baseEntity.ConvertedMeta[field.FieldName] = event.target.value;
-                  this.setState({ baseEntity });
-                }}
-                InputLabelProps={{ shrink: true }}
-                margin='normal'
-                fullWidth
-              />
-            ))}
+            additionalFields.map(field => {
+              switch (field.FieldType.toLowerCase()) {
+                case 'checkbox':
+                  return (
+                    <FormControlLabel
+                      key={field.FieldName}
+                      value={ConvertedMeta[field.FieldName] || ''}
+                      control={<Checkbox color='primary' checked={ConvertedMeta[field.FieldName] || false} />}
+                      label={field.FieldName}
+                      labelPlacement='right'
+                      onChange={event => {
+                        ConvertedMeta[field.FieldName] = event.target.checked;
+                        this.setState({ baseEntity });
+                      }}
+                    />
+                  );
+                default:
+                  return (
+                    <TextField
+                      key={field.FieldName}
+                      type={field.FieldType}
+                      label={field.FieldName}
+                      value={ConvertedMeta[field.FieldName] || ''}
+                      onChange={event => {
+                        ConvertedMeta[field.FieldName] = event.target.value;
+                        this.setState({ baseEntity });
+                      }}
+                      InputLabelProps={{ shrink: true }}
+                      margin='normal'
+                      fullWidth
+                    />
+                  );
+              }
+            })}
+          {/* <pre>{JSON.stringify(baseEntity, null, 3)}</pre> */}
+          {/* <pre>{JSON.stringify(additionalFields, null, 3)}</pre> */}
           <div style={{ height: 200 }} />
         </Container>
       </NoSsr>

@@ -81,6 +81,15 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdAdvancedSort request)
+        {
+            var entity = request.ConvertTo<AdvancedSort>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Specific
@@ -120,7 +129,9 @@ namespace MyApp.API
     public class UpdateAdvancedSort : AdvancedSort { }
 
     [Route("/AdvancedSort", "DELETE")]
-    [Route("/AdvancedSort/{Id}", "DELETE")]
     public class DeleteAdvancedSort : AdvancedSort { }
+
+    [Route("/AdvancedSort/{Id}", "DELETE")]
+    public class DeleteByIdAdvancedSort : AdvancedSort { }
     #endregion
 }

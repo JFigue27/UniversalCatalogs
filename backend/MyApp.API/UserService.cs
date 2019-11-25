@@ -81,6 +81,15 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdUser request)
+        {
+            var entity = request.ConvertTo<User>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Generic Document
@@ -192,8 +201,10 @@ namespace MyApp.API
     public class UpdateUser : User { }
 
     [Route("/User", "DELETE")]
-    [Route("/User/{Id}", "DELETE")]
     public class DeleteUser : User { }
+
+    [Route("/User/{Id}", "DELETE")]
+    public class DeleteByIdUser : User { }
     #endregion
 
     #region Generic Documents

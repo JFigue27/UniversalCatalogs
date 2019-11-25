@@ -8,30 +8,30 @@ using System.Threading.Tasks;
 using ServiceStack.Text;
 using Reusable.Rest.Implementations.SS;
 
-///start:slot:imports<<<///end:slot:imports<<<
+
 
 namespace MyApp.API
 {
     // [Authenticate]
-    public class EmailService : BaseService<EmailLogic>
+    public class ActivityService : BaseService<ActivityLogic>
     {
         #region Endpoints - Generic Read Only
-        public object Get(GetAllEmails request)
+        public object Get(GetAllActivitys request)
         {
             return WithDb(db => Logic.GetAll());
         }
 
-        public object Get(GetEmailById request)
+        public object Get(GetActivityById request)
         {
             return WithDb(db => Logic.GetById(request.Id));
         }
 
-        public object Get(GetEmailWhere request)
+        public object Get(GetActivityWhere request)
         {
             return WithDb(db => Logic.GetSingleWhere(request.Property, request.Value));
         }
 
-        public object Get(GetPagedEmails request)
+        public object Get(GetPagedActivitys request)
         {
             return WithDb(db => Logic.GetPaged(
                 request.Limit,
@@ -41,11 +41,11 @@ namespace MyApp.API
         #endregion
 
         #region Endpoints - Generic Write
-        public object Post(CreateEmailInstance request)
+        public object Post(CreateActivityInstance request)
         {
             return WithDb(db =>
             {
-                var entity = request.ConvertTo<Email>();
+                var entity = request.ConvertTo<Activity>();
                 return new HttpResult(new CommonResponse(Logic.CreateInstance(entity)))
                 {
                     ResultScope = () => JsConfig.With(new Config { IncludeNullValues = true })
@@ -53,9 +53,9 @@ namespace MyApp.API
             });
         }
 
-        public object Post(InsertEmail request)
+        public object Post(InsertActivity request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Activity>();
             return InTransaction(db =>
             {
                 Logic.Add(entity);
@@ -63,27 +63,27 @@ namespace MyApp.API
             });
         }
 
-        public object Put(UpdateEmail request)
+        public object Put(UpdateActivity request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Activity>();
             return InTransaction(db =>
             {
                 Logic.Update(entity);
                 return new CommonResponse(Logic.GetById(entity.Id));
             });
         }
-        public object Delete(DeleteEmail request)
+        public object Delete(DeleteActivity request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Activity>();
             return InTransaction(db =>
             {
                 Logic.Remove(entity);
                 return new CommonResponse();
             });
         }
-        public object Delete(DeleteByIdEmail request)
+        public object Delete(DeleteByIdActivity request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Activity>();
             return InTransaction(db =>
             {
                 Logic.RemoveById(entity.Id);
@@ -93,9 +93,9 @@ namespace MyApp.API
         #endregion
 
         #region Endpoints - Generic Document
-        virtual public object Post(FinalizeEmail request)
+        virtual public object Post(FinalizeActivity request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Activity>();
             return InTransaction(db =>
             {
                 Logic.Finalize(entity);
@@ -103,9 +103,9 @@ namespace MyApp.API
             });
         }
 
-        virtual public object Post(UnfinalizeEmail request)
+        virtual public object Post(UnfinalizeActivity request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Activity>();
             return InTransaction(db =>
             {
                 Logic.Unfinalize(entity);
@@ -113,9 +113,9 @@ namespace MyApp.API
             });
         }
 
-        virtual public object Post(MakeEmailRevision request)
+        virtual public object Post(MakeActivityRevision request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Activity>();
             return InTransaction(db =>
             {
                 Logic.MakeRevision(entity);
@@ -123,9 +123,9 @@ namespace MyApp.API
             });
         }
 
-        virtual public object Post(CheckoutEmail request)
+        virtual public object Post(CheckoutActivity request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Activity>();
             return InTransaction(db =>
             {
                 Logic.Checkout(entity.Id);
@@ -133,9 +133,9 @@ namespace MyApp.API
             });
         }
 
-        virtual public object Post(CancelCheckoutEmail request)
+        virtual public object Post(CancelCheckoutActivity request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Activity>();
             return InTransaction(db =>
             {
                 Logic.CancelCheckout(entity.Id);
@@ -143,9 +143,9 @@ namespace MyApp.API
             });
         }
 
-        virtual public object Post(CheckinEmail request)
+        virtual public object Post(CheckinActivity request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Activity>();
             return InTransaction(db =>
             {
                 Logic.Checkin(entity);
@@ -153,9 +153,9 @@ namespace MyApp.API
             });
         }
 
-        virtual public object Post(CreateAndCheckoutEmail request)
+        virtual public object Post(CreateAndCheckoutActivity request)
         {
-            var entity = request.ConvertTo<Email>();
+            var entity = request.ConvertTo<Activity>();
             return InTransaction(db =>
             {
                 Logic.CreateAndCheckout(entity);
@@ -166,67 +166,67 @@ namespace MyApp.API
 
         #region Endpoints - Specific
         
-        ///start:slot:endpoints<<<///end:slot:endpoints<<<
+        
         #endregion
     }
 
     #region Specific
     
-    ///start:slot:endpointsRoutes<<<///end:slot:endpointsRoutes<<<
+    
     #endregion
 
     #region Generic Read Only
-    [Route("/Email", "GET")]
-    public class GetAllEmails : GetAll<Email> { }
+    [Route("/Activity", "GET")]
+    public class GetAllActivitys : GetAll<Activity> { }
 
-    [Route("/Email/{Id}", "GET")]
-    public class GetEmailById : GetSingleById<Email> { }
+    [Route("/Activity/{Id}", "GET")]
+    public class GetActivityById : GetSingleById<Activity> { }
 
-    [Route("/Email/GetSingleWhere", "GET")]
-    [Route("/Email/GetSingleWhere/{Property}/{Value}", "GET")]
-    public class GetEmailWhere : GetSingleWhere<Email> { }
+    [Route("/Activity/GetSingleWhere", "GET")]
+    [Route("/Activity/GetSingleWhere/{Property}/{Value}", "GET")]
+    public class GetActivityWhere : GetSingleWhere<Activity> { }
 
-    [Route("/Email/GetPaged/{Limit}/{Page}", "GET")]
-    public class GetPagedEmails : GetPaged<Email> { }
+    [Route("/Activity/GetPaged/{Limit}/{Page}", "GET")]
+    public class GetPagedActivitys : GetPaged<Activity> { }
     #endregion
 
     #region Generic Write
-    [Route("/Email/CreateInstance", "POST")]
-    public class CreateEmailInstance : Email { }
+    [Route("/Activity/CreateInstance", "POST")]
+    public class CreateActivityInstance : Activity { }
 
-    [Route("/Email", "POST")]
-    public class InsertEmail : Email { }
+    [Route("/Activity", "POST")]
+    public class InsertActivity : Activity { }
 
-    [Route("/Email", "PUT")]
-    public class UpdateEmail : Email { }
+    [Route("/Activity", "PUT")]
+    public class UpdateActivity : Activity { }
 
-    [Route("/Email", "DELETE")]
-    public class DeleteEmail : Email { }
+    [Route("/Activity", "DELETE")]
+    public class DeleteActivity : Activity { }
 
-    [Route("/Email/{Id}", "DELETE")]
-    public class DeleteByIdEmail : Email { }
+    [Route("/Activity/{Id}", "DELETE")]
+    public class DeleteByIdActivity : Activity { }
     #endregion
 
     #region Generic Documents
-    [Route("/Email/Finalize", "POST")]
-    public class FinalizeEmail : Email { }
+    [Route("/Activity/Finalize", "POST")]
+    public class FinalizeActivity : Activity { }
 
-    [Route("/Email/Unfinalize", "POST")]
-    public class UnfinalizeEmail : Email { }
+    [Route("/Activity/Unfinalize", "POST")]
+    public class UnfinalizeActivity : Activity { }
 
-    [Route("/Email/MakeRevision", "POST")]
-    public class MakeEmailRevision : Email { }
+    [Route("/Activity/MakeRevision", "POST")]
+    public class MakeActivityRevision : Activity { }
 
-    [Route("/Email/Checkout/{Id}", "POST")]
-    public class CheckoutEmail : Email { }
+    [Route("/Activity/Checkout/{Id}", "POST")]
+    public class CheckoutActivity : Activity { }
 
-    [Route("/Email/CancelCheckout/{Id}", "POST")]
-    public class CancelCheckoutEmail : Email { }
+    [Route("/Activity/CancelCheckout/{Id}", "POST")]
+    public class CancelCheckoutActivity : Activity { }
 
-    [Route("/Email/Checkin", "POST")]
-    public class CheckinEmail : Email { }
+    [Route("/Activity/Checkin", "POST")]
+    public class CheckinActivity : Activity { }
 
-    [Route("/Email/CreateAndCheckout", "POST")]
-    public class CreateAndCheckoutEmail : Email { }
+    [Route("/Activity/CreateAndCheckout", "POST")]
+    public class CreateAndCheckoutActivity : Activity { }
     #endregion
 }

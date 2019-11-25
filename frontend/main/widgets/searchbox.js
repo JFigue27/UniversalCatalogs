@@ -1,5 +1,5 @@
 import { withStyles } from '@material-ui/core/styles';
-import { InputBase, Icon, NoSsr } from '@material-ui/core';
+import { InputBase, Icon, NoSsr, IconButton } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 
@@ -25,7 +25,8 @@ const styles = theme => ({
     pointerEvents: 'none',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    left: 5
   },
   inputRoot: {
     color: 'inherit',
@@ -56,6 +57,7 @@ const searchBox = props => {
         <div className={classes.searchIcon}>
           <SearchIcon />
         </div>
+
         <InputBase
           placeholder='Search...'
           name='filterGeneral'
@@ -67,6 +69,13 @@ const searchBox = props => {
             input: classes.inputInput
           }}
           value={props.value || ''}
+          startAdornment={
+            props.value && (
+              <IconButton color='inherit' size='small' onClick={props.clear} disableRipple disableFocusRipple>
+                <Icon>clear</Icon>
+              </IconButton>
+            )
+          }
         />
       </div>
     </NoSsr>

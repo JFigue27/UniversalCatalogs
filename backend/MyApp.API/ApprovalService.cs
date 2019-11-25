@@ -81,6 +81,15 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdApproval request)
+        {
+            var entity = request.ConvertTo<Approval>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Generic Document
@@ -192,8 +201,10 @@ namespace MyApp.API
     public class UpdateApproval : Approval { }
 
     [Route("/Approval", "DELETE")]
-    [Route("/Approval/{Id}", "DELETE")]
     public class DeleteApproval : Approval { }
+
+    [Route("/Approval/{Id}", "DELETE")]
+    public class DeleteByIdApproval : Approval { }
     #endregion
 
     #region Generic Documents

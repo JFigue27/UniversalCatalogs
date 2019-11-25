@@ -81,6 +81,15 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdToken request)
+        {
+            var entity = request.ConvertTo<Token>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Specific
@@ -120,7 +129,9 @@ namespace MyApp.API
     public class UpdateToken : Token { }
 
     [Route("/Token", "DELETE")]
-    [Route("/Token/{Id}", "DELETE")]
     public class DeleteToken : Token { }
+
+    [Route("/Token/{Id}", "DELETE")]
+    public class DeleteByIdToken : Token { }
     #endregion
 }

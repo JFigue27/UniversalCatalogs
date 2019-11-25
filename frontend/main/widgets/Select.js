@@ -255,7 +255,7 @@ export default function IntegrationReactSelect(props) {
     let options = opts || [];
     if (options.length) {
       return options.map(item => {
-        if (typeof item == 'string') {
+        if (typeof item != 'object') {
           return {
             value: item,
             label: item,
@@ -294,7 +294,7 @@ export default function IntegrationReactSelect(props) {
     <NoSsr>
       <div className={classes.root} style={props.style}>
         <Select
-          isClearable
+          isClearable={props.clean}
           classes={classes}
           styles={selectStyles}
           inputId='react-select-single'

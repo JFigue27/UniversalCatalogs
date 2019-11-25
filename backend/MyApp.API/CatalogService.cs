@@ -31,13 +31,13 @@ namespace MyApp.API
             return WithDb(db => Logic.GetSingleWhere(request.Property, request.Value));
         }
 
-        public object Get(GetPagedCatalogs request)
-        {
-            return WithDb(db => Logic.GetPaged(
-                request.Limit,
-                request.Page,
-                request.FilterGeneral));
-        }
+        //public object Get(GetPagedCatalogs request)
+        //{
+        //    return WithDb(db => Logic.GetPaged(
+        //        request.Limit,
+        //        request.Page,
+        //        request.FilterGeneral));
+        //}
         #endregion
 
         #region Endpoints - Generic Write
@@ -81,20 +81,26 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdCatalog request)
+        {
+            var entity = request.ConvertTo<Catalog>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Specific
-        [Route("/Catalog", "GET")]
-        [Route("/Catalog/{Limit}/{Page}", "GET")]
-        [Route("/Catalog/{ignore}", "GET")]
-        [Route("/Catalog/GetPaged/{Limit}/{Page}", "GET")]
-        public class GetPagedCustomCatalogs : GetPaged<Catalog> { }
+
         public object Get(GetPagedCustomCatalogs request)
         {
             return WithDb(db => Logic.GetPaged(
                 request.Limit,
                 request.Page,
-                request.FilterGeneral));
+                request.FilterGeneral,
+                requiresKeysInJsons: request.RequiresKeysInJsons));
         }
 
         [Route("/Catalog/OnlyValues/{Type}", "GET")]
@@ -112,8 +118,17 @@ namespace MyApp.API
     }
 
     #region Specific
-    
-    ///start:slot:endpointsRoutes<<<///end:slot:endpointsRoutes<<<
+
+    ///start:slot:endpointsRoutes<<<
+    [Route("/Catalog", "GET")]
+    [Route("/Catalog/{Limit}/{Page}", "GET")]
+    [Route("/Catalog/{ignore}", "GET")]
+    [Route("/Catalog/GetPaged/{Limit}/{Page}", "GET")]
+    public class GetPagedCustomCatalogs : GetPaged<Catalog>
+    {
+        public bool RequiresKeysInJsons { get; set; }
+    }
+    ///end:slot:endpointsRoutes<<<
     #endregion
 
     #region Generic Read Only
@@ -127,8 +142,8 @@ namespace MyApp.API
     [Route("/Catalog/GetSingleWhere/{Property}/{Value}", "GET")]
     public class GetCatalogWhere : GetSingleWhere<Catalog> { }
 
-    [Route("/Catalog/GetPaged/{Limit}/{Page}", "GET")]
-    public class GetPagedCatalogs : GetPaged<Catalog> { }
+    //[Route("/Catalog/GetPaged/{Limit}/{Page}", "GET")]
+    //public class GetPagedCatalogs : GetPaged<Catalog> { }
     #endregion
 
     #region Generic Write
@@ -142,7 +157,9 @@ namespace MyApp.API
     public class UpdateCatalog : Catalog { }
 
     [Route("/Catalog", "DELETE")]
-    [Route("/Catalog/{Id}", "DELETE")]
     public class DeleteCatalog : Catalog { }
+
+    [Route("/Catalog/{Id}", "DELETE")]
+    public class DeleteByIdCatalog : Catalog { }
     #endregion
 }

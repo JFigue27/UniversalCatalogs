@@ -81,6 +81,15 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdFilterData request)
+        {
+            var entity = request.ConvertTo<FilterData>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Specific
@@ -120,7 +129,9 @@ namespace MyApp.API
     public class UpdateFilterData : FilterData { }
 
     [Route("/FilterData", "DELETE")]
-    [Route("/FilterData/{Id}", "DELETE")]
     public class DeleteFilterData : FilterData { }
+
+    [Route("/FilterData/{Id}", "DELETE")]
+    public class DeleteByIdFilterData : FilterData { }
     #endregion
 }

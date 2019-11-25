@@ -90,18 +90,19 @@
   </ItemGroup>
   <ItemGroup>
     <!-- start:generated:services -->
+    <Compile Include="ActivityService.cs" />
     <Compile Include="ApprovalService.cs" />
     <Compile Include="EmailService.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="AdditionalFieldService.cs" />
     <Compile Include="AdvancedSortService.cs" />
-    <Compile Include="CatalogService.cs" />
-    <Compile Include="CatalogTypeService.cs" />
     <Compile Include="FilterDataService.cs" />
     <Compile Include="SortDataService.cs" />
     <Compile Include="TaskService.cs" />
     <Compile Include="TokenService.cs" />
     <!-- end:generated:services -->
+    <Compile Include="CatalogService.cs" />
+    <Compile Include="CatalogTypeService.cs" />
     <Compile Include="MyServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

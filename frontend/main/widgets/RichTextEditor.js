@@ -13,7 +13,6 @@ class App extends React.Component {
   handleToolbarClick = event => {
     // let el = this.el.current;
     // el.imageModule.uploadObj.uploading = function(args) {
-    //   debugger;
     //   args.customFormData.push('AttachmentKind', 'NCN');
     // };
   };

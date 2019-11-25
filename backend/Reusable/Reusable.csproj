@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" 
-  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -107,21 +106,21 @@
     <Compile Include="Attachments\IAttachment.cs" />
     <Compile Include="Barcode\BarcodeEntity.cs" />
     <Compile Include="Barcode\Barcoder.cs" />
-    <Compile Include="CRUD\Contract\Document\BaseDocument.cs" />
+    <Compile Include="CRUD\Contract\Entity\BaseDocument.cs" />
+    <Compile Include="CRUD\Contract\Entity\IsJson.cs" />
     <Compile Include="CRUD\Contract\Logic\ILogicDocument.cs" />
-    <Compile Include="CRUD\Contract\Document\IRepositoryDocument.cs" />
+    <Compile Include="CRUD\Contract\Repository\IRepositoryDocument.cs" />
     <Compile Include="CRUD\Contract\Entity\BaseEntity.cs" />
     <Compile Include="CRUD\Contract\Entity\IEntity.cs" />
     <Compile Include="CRUD\Contract\Logic\ILogic.cs" />
     <Compile Include="CRUD\Contract\Logic\ILogicReadOnly.cs" />
     <Compile Include="CRUD\Contract\Entity\IRecursiveEntity.cs" />
-    <Compile Include="CRUD\Contract\Entity\IRepository.cs" />
-    <Compile Include="CRUD\Contract\Entity\IRepositoryReadOnly.cs" />
+    <Compile Include="CRUD\Contract\Repository\IRepository.cs" />
+    <Compile Include="CRUD\Contract\Repository\IRepositoryReadOnly.cs" />
     <Compile Include="CRUD\Contract\Logic\ILogicWrite.cs" />
-    <Compile Include="CRUD\Contract\Track\Trackable.cs" />
     <Compile Include="CRUD\Entities\JsonEntities\Contact.cs" />
     <Compile Include="CRUD\Entities\Revision.cs" />
-    <Compile Include="CRUD\Entities\Track.cs" />
+    <Compile Include="CRUD\Contract\Entity\Trackable.cs" />
     <Compile Include="CRUD\Implementations\SS\BaseLogic.cs" />
     <Compile Include="CRUD\Implementations\SS\LogicWrite.cs" />
     <Compile Include="CRUD\Implementations\SS\LogicDocument.cs" />
@@ -133,11 +132,9 @@
     <Compile Include="Reports\Report.cs" />
     <Compile Include="Rest\GenericRoutesDTOs.cs" />
     <Compile Include="Rest\CommonResponse.cs" />
-    <Compile Include="CRUD\Implementations\SS\Logic\TrackLogic.cs" />
     <Compile Include="CRUD\Implementations\SS\Logic\RevisionLogic.cs" />
     <Compile Include="Rest\Implementations\SS\BaseService.cs" />
     <Compile Include="Rest\Implementations\SS\CacheService.cs" />
-    <Compile Include="Rest\Implementations\SS\TrackService.cs" />
     <Compile Include="Rest\Implementations\SS\RevisionService.cs" />
     <Compile Include="Rest\Implementations\SS\AttachmentService.cs" />
     <Compile Include="Rest\Implementations\SS\PingService.cs" />

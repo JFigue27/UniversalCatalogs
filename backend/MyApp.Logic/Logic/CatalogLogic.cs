@@ -9,9 +9,11 @@ using Reusable.Rest;
 using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.OrmLite;
+using ServiceStack.Text;
 using ServiceStack.Web;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,6 +42,8 @@ namespace MyApp.Logic
             var name = Request.QueryString["name"];
             if (IsValidJSValue(name))
                 query.Where(e => e.CatalogType == name);
+
+            query.OrderBy(e => e.Value);
 
             ///start:slot:listQuery<<<///end:slot:listQuery<<<
 

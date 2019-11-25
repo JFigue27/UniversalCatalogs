@@ -81,6 +81,15 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdAdditionalField request)
+        {
+            var entity = request.ConvertTo<AdditionalField>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Specific
@@ -120,7 +129,9 @@ namespace MyApp.API
     public class UpdateAdditionalField : AdditionalField { }
 
     [Route("/AdditionalField", "DELETE")]
-    [Route("/AdditionalField/{Id}", "DELETE")]
     public class DeleteAdditionalField : AdditionalField { }
+
+    [Route("/AdditionalField/{Id}", "DELETE")]
+    public class DeleteByIdAdditionalField : AdditionalField { }
     #endregion
 }

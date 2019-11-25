@@ -81,6 +81,15 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdTask request)
+        {
+            var entity = request.ConvertTo<Task>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Specific
@@ -120,7 +129,9 @@ namespace MyApp.API
     public class UpdateTask : Task { }
 
     [Route("/Task", "DELETE")]
-    [Route("/Task/{Id}", "DELETE")]
     public class DeleteTask : Task { }
+
+    [Route("/Task/{Id}", "DELETE")]
+    public class DeleteByIdTask : Task { }
     #endregion
 }

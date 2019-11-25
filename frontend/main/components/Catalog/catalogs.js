@@ -10,7 +10,7 @@ import { TableHead } from '@material-ui/core';
 import { TableBody } from '@material-ui/core';
 import { TableRow } from '@material-ui/core';
 import { TableCell } from '@material-ui/core';
-import { Button } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
 import { Icon } from '@material-ui/core';
 import { InputBase } from '@material-ui/core';
 
@@ -40,9 +40,12 @@ class CatalogsList extends ListContainer {
 
   componentDidMount() {
     console.log('List did mount');
-    this.load(this.props.router.query);
+    let name = this.getParameterByName('Name');
+    if (!name) return;
+    this.load('Name=' + name);
     ///start:slot:load<<<
-    catalogTypeService.GetSingleWhere('Name', this.props.router.query.name).then(response => {
+
+    catalogTypeService.GetSingleWhere('Name', name).then(response => {
       this.setState({ additionalFields: response.ConvertedFields, parentType: response.ParentType });
     });
     ///end:slot:load<<<
@@ -57,8 +60,10 @@ class CatalogsList extends ListContainer {
     console.log('AFTER_CREATE', instance);
 
     ///start:slot:afterCreate<<<
-    instance.CatalogType = this.props.router.query.name;
-    this.openDialog(instance);
+    let name = this.getParameterByName('Name');
+    if (!name) throw 'Error. Name query param is missing.';
+    instance.CatalogType = name;
+    this.openDialog('catalog', instance);
     ///end:slot:afterCreate<<<
   };
 
@@ -76,35 +81,20 @@ class CatalogsList extends ListContainer {
     console.log('ON_OPEN_ITEM', item);
 
     ///start:slot:onOpenItem<<<
-    this.openDialog(item);
+    this.openDialog('catalog', item);
     ///end:slot:onOpenItem<<<
   };
 
-  openDialog = item => {
-    this.setState({
-      catalog: item
-    });
-  };
-
-  closeDialog = feedback => {
-    if (feedback == 'ok') {
-      this.refresh();
-    }
-    this.setState({
-      catalog: false
-    });
-  };
-  ///start:slot:js<<<
-  UNSAFE_componentWillMount() {
-    this.initFilterOptions(this.props.router.query.name);
-    this.initSortOptions(this.props.router.query.name);
-  }
-  ///end:slot:js<<<
+  ///start:slot:js<<<///end:slot:js<<<
 
   render() {
-    const { additionalFields, parentType } = this.state;
+    const { additionalFields, parentType, baseList, filterOptions } = this.state;
     return (
       <NoSsr>
+        <Button variant='outlined' style={{ margin: 20, width: 220 }} onClick={() => this.navigateTo('/')}>
+          <Icon>arrow_back</Icon>
+          Catalogs
+        </Button>
         <Container style={{ padding: 20 }} maxWidth='lg'>
           <Typography variant='h4' className='h4' gutterBottom>
             {this.props.router.query.name}
@@ -112,12 +102,12 @@ class CatalogsList extends ListContainer {
           <Grid container direction='row'>
             <Grid item xs />
             <Pagination
-              activePage={this.state.filterOptions.page}
-              itemsCountPerPage={this.state.filterOptions.limit}
-              totalItemsCount={this.state.filterOptions.totalItems}
+              activePage={filterOptions.page}
+              itemsCountPerPage={filterOptions.limit}
+              totalItemsCount={filterOptions.itemsCount}
               pageRangeDisplayed={5}
               onChange={newPage => {
-                this.pageChanged(newPage || 0);
+                this.pageChanged(newPage);
               }}
             />
           </Grid>
@@ -125,7 +115,7 @@ class CatalogsList extends ListContainer {
             <Table className='' size='small'>
               <TableHead>
                 <TableRow>
-                  <TableCell />
+                  <TableCell width={100} />
                   <TableCell>Value</TableCell>
                   {parentType && <TableCell>Parent</TableCell>}
                   <TableCell>Hidden</TableCell>
@@ -133,38 +123,54 @@ class CatalogsList extends ListContainer {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {this.state.baseList &&
-                  this.state.baseList.map(item => (
+                {baseList &&
+                  baseList.map(item => (
                     <TableRow key={item.Id}>
                       <TableCell>
-                        <Grid container direction='row' className='row' justify='center' alignItems='center' spacing={2}>
+                        <Grid container direction='row' className='row' justify='center' alignItems='center' spacing={0}>
                           <Grid item xs>
-                            <Button
+                            <IconButton
                               variant='contained'
                               color='default'
-                              className=''
                               onClick={event => {
                                 this.openItem(event, item);
                               }}
                               size='small'
                             >
-                              <Icon>edit</Icon>Open
-                            </Button>
+                              <Icon>edit</Icon>
+                            </IconButton>
+                          </Grid>
+                          <Grid item xs>
+                            <IconButton
+                              variant='contained'
+                              color='default'
+                              onClick={event => {
+                                this.removeItem(event, item);
+                              }}
+                              size='small'
+                            >
+                              <Icon>delete</Icon>
+                            </IconButton>
                           </Grid>
                         </Grid>
                       </TableCell>
                       <TableCell>{item.Value}</TableCell>
                       {parentType && <TableCell>{item.Parent}</TableCell>}
-                      <TableCell>{(item.Hidden || '').toString().toUpperCase()}</TableCell>
+                      <TableCell>{(item.Hidden || '').toString()}</TableCell>
                       {additionalFields &&
-                        additionalFields.map(field => <TableCell key={field.FieldName}>{item.ConvertedMeta[field.FieldName]}</TableCell>)}
+                        additionalFields.map(field => (
+                          <TableCell key={field.FieldName}>
+                            {(item.ConvertedMeta[field.FieldName] && item.ConvertedMeta[field.FieldName].toString()) || ''}
+                          </TableCell>
+                        ))}
                     </TableRow>
                   ))}
               </TableBody>
             </Table>
           </Paper>
         </Container>
-        <Dialog open={!!this.state.catalog} onClose={this.closeDialog} draggable title='Catalog' okLabel='Save'>
+        {/* <pre>{JSON.stringify(baseList, null, 3)}</pre> */}
+        <Dialog opener={this} id='catalog' title='Catalog' okLabel='Save'>
           {dialog => {
             return (
               !this.state.isLoading && (
@@ -180,17 +186,21 @@ class CatalogsList extends ListContainer {
         </Dialog>
         <AppBar position='fixed' style={{ top: 'auto', bottom: 0, backgroundColor: '#333333' }}>
           <Toolbar variant='dense'>
-            <SearchBox bindFilterInput={this.bindFilterInput} value={this.state.filterOptions.filterGeneral} />
+            <SearchBox
+              bindFilterInput={this.bindFilterInput}
+              value={filterOptions.filterGeneral}
+              clear={() => this.clearInput('filterGeneral')}
+            />
             <Grid item xs />
             <Button
               variant='contained'
               color='default'
               className=''
               onClick={event => {
-                this.createInstance(event, {});
+                this.createInstance({});
               }}
             >
-              <Icon>add_circle</Icon> New
+              <Icon>add_circle</Icon>New
             </Button>
           </Toolbar>
         </AppBar>

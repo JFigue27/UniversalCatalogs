@@ -22,20 +22,20 @@ function DraggableDialog(props) {
 
 class DialogWidget extends React.Component {
   onOk = () => {}; //To be defined on children
-  close = () => {}; //Overwritten from props.
+  close = feedback => {}; //Overwritten from props
 
   render() {
-    const { draggable, okLabel, title, onClose, open, maxWidth, fullScreen, actionsOff, children, actions } = this.props;
-    this.close = onClose;
+    const { okLabel, title, onClose, open, maxWidth = 'sm', fullScreen, actionsOff, children, actions, opener, id, fixed } = this.props;
+    this.close = opener ? opener.closeDialog.bind(null, id) : this.close;
 
     return (
       <Dialog
         fullScreen={fullScreen}
-        open={open || false}
-        onClose={onClose}
+        open={open || (opener && id ? !!opener.state[id] : false)}
+        onClose={this.close}
         maxWidth={maxWidth}
         fullWidth={true}
-        PaperComponent={draggable && !fullScreen ? DraggableDialog : Paper}
+        PaperComponent={fixed || fullScreen ? Paper : DraggableDialog}
       >
         {title && <DialogTitle>{title}</DialogTitle>}
         <DialogContent dividers={true} style={{ padding: 10 }}>
@@ -45,7 +45,7 @@ class DialogWidget extends React.Component {
         {!actionsOff &&
           (actions || (
             <DialogActions>
-              <Button onClick={onClose} color='primary'>
+              <Button onClick={this.close} color='primary'>
                 Close
               </Button>
 

@@ -6,6 +6,9 @@ const withBundleAnalyzer = require('@zeit/next-bundle-analyzer');
 module.exports = withBundleAnalyzer(
   withFonts(
     withSass({
+      devIndicators: {
+        autoPrerender: false
+      },
       target: 'serverless',
       // assetPrefix: isProd ? 'http://apps.capsonic.com/UniversalCatalogs/main' : '',
       // exportPathMap: function() {

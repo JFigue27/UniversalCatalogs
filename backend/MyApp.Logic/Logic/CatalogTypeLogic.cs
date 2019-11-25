@@ -9,9 +9,11 @@ using Reusable.Rest;
 using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.OrmLite;
+using ServiceStack.Text;
 using ServiceStack.Web;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,7 +39,7 @@ namespace MyApp.Logic
 
         protected override SqlExpression<CatalogType> OnGetList(SqlExpression<CatalogType> query)
         {
-            
+            query.OrderBy(e => e.Name);
             ///start:slot:listQuery<<<///end:slot:listQuery<<<
 
             return query;

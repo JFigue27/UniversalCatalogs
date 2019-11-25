@@ -81,7 +81,7 @@ export default class Chips extends React.Component {
   };
 
   render() {
-    const { onChange, placeholder, placement } = this.props;
+    const { onChange, placeholder, placement, disabled, readOnly } = this.props;
     const { selected, allOptions } = this.state;
     const { keyProp = 'Id', labelProp = 'Value' } = this.props;
     this.onChange = onChange;
@@ -102,19 +102,22 @@ export default class Chips extends React.Component {
                   className={`Person-Chip ${item.classes || ''}`}
                   onDelete={() => this.onRemove(index)}
                   icon={item.icon && <Icon style={{ color: 'inherit', fontSize: '1.2em' }}>{item.icon}</Icon>}
+                  disabled={disabled}
                 />
               );
             })}
-            <Select
-              options={(allOptions || []).filter(opt => !selected.some(s => s.value == opt.value))}
-              onChange={this.handleSelectChange}
-              placement={placement || 'top'}
-              label={''}
-              value={this.state.selectValue || ''}
-              style={{ width: 200, maxWidth: 200, display: 'inline-block' }}
-              keyProp={keyProp}
-              labelProp={labelProp}
-            />
+            {!disabled && !readOnly && (
+              <Select
+                options={(allOptions || []).filter(opt => !selected.some(s => s.value == opt.value))}
+                onChange={this.handleSelectChange}
+                placement={placement || 'top'}
+                label={''}
+                value={this.state.selectValue || ''}
+                style={{ width: 200, maxWidth: 200, display: 'inline-block' }}
+                keyProp={keyProp}
+                labelProp={labelProp}
+              />
+            )}
           </Paper>
         </NoSsr>
       </>

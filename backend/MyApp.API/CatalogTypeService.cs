@@ -12,7 +12,8 @@ using Reusable.Rest.Implementations.SS;
 
 namespace MyApp.API
 {
-    // [Authenticate]
+    [Authenticate]
+    [RequiredRole(ApplyTo.Post | ApplyTo.Put | ApplyTo.Delete, "admin")]
     public class CatalogTypeService : BaseService<CatalogTypeLogic>
     {
         #region Endpoints - Generic Read Only
@@ -81,6 +82,15 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdCatalogType request)
+        {
+            var entity = request.ConvertTo<CatalogType>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Specific
@@ -120,7 +130,9 @@ namespace MyApp.API
     public class UpdateCatalogType : CatalogType { }
 
     [Route("/CatalogType", "DELETE")]
-    [Route("/CatalogType/{Id}", "DELETE")]
     public class DeleteCatalogType : CatalogType { }
+
+    [Route("/CatalogType/{Id}", "DELETE")]
+    public class DeleteByIdCatalogType : CatalogType { }
     #endregion
 }

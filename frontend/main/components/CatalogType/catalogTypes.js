@@ -50,7 +50,7 @@ class CatalogTypesList extends ListContainer {
     console.log('AFTER_CREATE', instance);
 
     ///start:slot:afterCreate<<<
-    this.openDialog(instance);
+    this.openDialog('catalog', instance);
     ///end:slot:afterCreate<<<
   };
 
@@ -68,7 +68,7 @@ class CatalogTypesList extends ListContainer {
     console.log('ON_OPEN_ITEM', item);
 
     ///start:slot:onOpenItem<<<
-    this.openDialog(item);
+    this.openDialog('catalog', item);
     ///end:slot:onOpenItem<<<
   };
 
@@ -76,20 +76,6 @@ class CatalogTypesList extends ListContainer {
     Router.push(`/catalog?name=${item.Name}`);
   };
 
-  openDialog = item => {
-    this.setState({
-      catalog: item
-    });
-  };
-
-  closeDialog = feedback => {
-    if (feedback == 'ok') {
-      this.refresh();
-    }
-    this.setState({
-      catalog: false
-    });
-  };
   ///start:slot:js<<<///end:slot:js<<<
 
   render() {
@@ -97,14 +83,14 @@ class CatalogTypesList extends ListContainer {
       <NoSsr>
         <Container style={{ padding: 20 }}>
           <Typography variant='h4' className='h4' gutterBottom>
-            Catalog Types
+            Catalogs
           </Typography>
           <Grid container direction='row'>
             <Grid item xs />
             <Pagination
               activePage={this.state.filterOptions.page}
               itemsCountPerPage={this.state.filterOptions.limit}
-              totalItemsCount={this.state.filterOptions.totalItems}
+              totalItemsCount={this.state.filterOptions.itemsCount}
               pageRangeDisplayed={5}
               onChange={newPage => {
                 this.pageChanged(newPage);
@@ -114,9 +100,9 @@ class CatalogTypesList extends ListContainer {
           <Table className='' size='small'>
             <TableHead>
               <TableRow>
-                <TableCell />
-                <TableCell>Name</TableCell>
-                <TableCell>Parent Type</TableCell>
+                <TableCell width={210} />
+                <TableCell width={170}>Name</TableCell>
+                <TableCell width={170}>Parent Type</TableCell>
                 <TableCell>Fields</TableCell>
               </TableRow>
             </TableHead>
@@ -124,25 +110,25 @@ class CatalogTypesList extends ListContainer {
               {this.state.baseList &&
                 this.state.baseList.map(item => (
                   <TableRow key={item.Id}>
-                    <TableCell width={200}>
+                    <TableCell>
                       <Grid container direction='row' className='row' justify='center' alignItems='center' spacing={2}>
                         <Grid item xs>
                           <Button
                             variant='contained'
                             color='default'
-                            className=''
+                            size='small'
                             onClick={event => {
                               this.openItem(event, item);
                             }}
                           >
-                            Type
+                            Definition
                           </Button>
                         </Grid>
                         <Grid item xs>
                           <Button
                             variant='contained'
                             color='default'
-                            className=''
+                            size='small'
                             onClick={() => {
                               this.open(item);
                             }}
@@ -160,21 +146,25 @@ class CatalogTypesList extends ListContainer {
             </TableBody>
           </Table>
         </Container>
-        <Dialog open={!!this.state.catalog} onClose={this.closeDialog} draggable title='Catalog Type' okLabel='Save'>
+        <Dialog opener={this} id='catalog' title='Catalog Type' okLabel='Save'>
           {dialog => {
             return !this.state.isLoading && <CatalogType dialog={dialog} data={this.state.catalog} />;
           }}
         </Dialog>
         <AppBar position='fixed' style={{ top: 'auto', bottom: 0, backgroundColor: '#333333' }}>
           <Toolbar variant='dense'>
-            <SearchBox bindFilterInput={this.bindFilterInput} value={this.state.filterOptions.filterGeneral} />
+            <SearchBox
+              bindFilterInput={this.bindFilterInput}
+              value={this.state.filterOptions.filterGeneral}
+              clear={() => this.clearInput('filterGeneral')}
+            />
             <Grid item xs />
             <Button
               variant='contained'
               color='default'
               className=''
               onClick={event => {
-                this.createInstance(event, {});
+                this.createInstance({});
               }}
             >
               <Icon>add_circle</Icon>New

@@ -1,4 +1,4 @@
-@import './static/styles/bootstrap.css';
+@import './static/styles/bootstrap.scss';
 
 @import './node_modules/@syncfusion/ej2-base/styles/material.css';
 @import './node_modules/@syncfusion/ej2-icons/styles/material.css';
@@ -11,8 +11,6 @@
 @import './node_modules/@syncfusion/ej2-richtexteditor/styles/material.css';
 
 //Calendar
-@import './node_modules/@syncfusion/ej2-base/styles/material.css';
-@import './node_modules/@syncfusion/ej2-buttons/styles/material.css';
 @import './node_modules/@syncfusion/ej2-react-calendars/styles/material.css';
 
 // Theme Styles
@@ -21,7 +19,7 @@
 body {
   font-family: 'Roboto';
   padding-top: 60px;
-  // padding-bottom: 60px;
+  padding-bottom: 60px;
 }
 
 .filled {
@@ -76,6 +74,12 @@ input[type='number']::-webkit-outer-spin-button {
 
 .Sheet {
   max-width: 1200px;
+  margin: auto;
+  padding: 15px;
+}
+
+.SheetLandscape {
+  max-width: 1600px;
   margin: auto;
   padding: 15px;
 }
@@ -146,8 +150,9 @@ input[type='number']::-webkit-outer-spin-button {
 
 .Attachments {
   padding: 3px;
-  border: solid #f6f6f6 2px;
+  border: solid #e0e0e0 3px;
   border-style: dotted;
+  outline: none;
   .AttachmentsRow {
     padding-left: 3px;
     border-bottom: 1px solid lightgray;
@@ -158,5 +163,10 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .BottomSheetButton {
-  padding: 5px !important;
+  padding: 15px !important;
+}
+
+.e-richtexteditor .e-rte-content .e-content,
+.e-richtexteditor .e-source-content .e-content {
+  min-height: 75px !important;
 }

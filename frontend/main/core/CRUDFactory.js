@@ -98,6 +98,7 @@ export class CRUDFactory {
   }
 
   async Checkin(entity) {
+    this.ADAPTER_OUT(entity);
     return await Post(this.EndPoint + '/Checkin', entity)
       .then(r => this.UseCommonResponse(r))
       .catch(this.GeneralError);
@@ -264,7 +265,7 @@ export class CRUDFactory {
         this.closeRevisions(entity);
         this.ADAPTER_IN(entity);
       });
-    } else if (typeof response.Result === 'object') {
+    } else if (response.Result && typeof response.Result === 'object') {
       this.closeRevisions(response.Result);
       this.ADAPTER_IN(response.Result);
     }
@@ -349,6 +350,10 @@ export class CRUDFactory {
     return null;
   };
 
+  toJavascriptDate = from => {
+    return from ? new Date(from) : null;
+  };
+
   formatCurrency = (number, decimals = 2) => {
     if (!isNaN(number) && number > 0) {
       return new Intl.NumberFormat('en-IN', { maximumFractionDigits: decimals }).format(number);
@@ -367,13 +372,13 @@ export class CRUDFactory {
 
   //Catalogs:====================================================================
   async GetCatalog(name, params = '', limit = 0, page = 1) {
-    return await Get(`catalog/${limit}/${page}?name=${name}&${params}`)
+    return await Get(`catalog/${limit}/${page}?CatalogType=${name}&${params}`)
       .then(r => r.Result)
       .catch(this.GeneralError);
   }
 
   async GetUniversalCatalog(name, params = '', limit = 0, page = 1) {
-    return await Get(`catalog/${limit}/${page}?name=${name}&${params}`, null, AppConfig.UniversalCatalogsURL)
+    return await Get(`catalog/${limit}/${page}?CatalogType=${name}&${params}`, null, AppConfig.UniversalCatalogsURL)
       .then(r => r.Result)
       .catch(this.GeneralError);
   }
