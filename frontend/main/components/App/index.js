@@ -15,6 +15,7 @@ import { GlobalContext } from './globals-context';
 class App extends React.Component {
   pages = [
     ///start:slot:pages<<<
+    { href: '/employees', label: 'Employees' }
     ///end:slot:pages<<<
   ];
 

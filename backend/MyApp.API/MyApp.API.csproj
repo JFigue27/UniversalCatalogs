@@ -96,6 +96,7 @@
     <Compile Include="UserService.cs" />
     <Compile Include="AdditionalFieldService.cs" />
     <Compile Include="AdvancedSortService.cs" />
+    <Compile Include="EmployeeService.cs" />
     <Compile Include="FilterDataService.cs" />
     <Compile Include="SortDataService.cs" />
     <Compile Include="TaskService.cs" />

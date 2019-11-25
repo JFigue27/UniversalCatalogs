@@ -24,6 +24,7 @@ namespace MyApp.Database
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<AdditionalField> AdditionalFields { get; set; }
         public virtual DbSet<AdvancedSort> AdvancedSorts { get; set; }
+        public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<FilterData> FilterDatas { get; set; }
         public virtual DbSet<SortData> SortDatas { get; set; }
         public virtual DbSet<Task> Tasks { get; set; }

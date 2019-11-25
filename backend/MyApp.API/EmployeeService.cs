@@ -81,6 +81,15 @@ namespace MyApp.API
                 return new CommonResponse();
             });
         }
+        public object Delete(DeleteByIdEmployee request)
+        {
+            var entity = request.ConvertTo<Employee>();
+            return InTransaction(db =>
+            {
+                Logic.RemoveById(entity.Id);
+                return new CommonResponse();
+            });
+        }
         #endregion
 
         #region Endpoints - Specific
@@ -120,7 +129,9 @@ namespace MyApp.API
     public class UpdateEmployee : Employee { }
 
     [Route("/Employee", "DELETE")]
-    [Route("/Employee/{Id}", "DELETE")]
     public class DeleteEmployee : Employee { }
+
+    [Route("/Employee/{Id}", "DELETE")]
+    public class DeleteByIdEmployee : Employee { }
     #endregion
 }

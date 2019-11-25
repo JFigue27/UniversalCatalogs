@@ -1,0 +1,19 @@
+name: Employee
+type: ''
+fields:
+  SAPNumber: string
+  Name: string
+  LastName: string
+  SecondLastName: string
+  CURP: string
+  PersonalNumber: string
+  TimeIdNumber: string
+  STPSPosition: string
+  Area: int
+  Shift: int
+  JobPosition: int
+  SupervisedBy: int
+relationships:
+  oneToParent: []
+  oneToMany: []
+  manyToOne: []

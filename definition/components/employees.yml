@@ -1,0 +1,34 @@
+name: employees
+type: list
+entity: Employee
+layout:
+  - container xl:
+      - h5: Employees
+      - pagination
+      - table:
+          columns:
+            - row:
+                - button: openItem
+            - SAPNumber
+            - Name
+            - LastName
+            - SecondLastName
+            - CURP
+            - PersonalNumber
+            - TimeIdNumber
+            - STPSPosition
+            - Area
+            - Shift
+            - JobPosition
+            - SupervisedBy
+  - dialog:
+      id: employee
+      title: Employee Form
+      ok: Save
+      maxWidth: md
+      content:
+        - component: employee
+  - nav:
+      - search
+      - space
+      - button: create

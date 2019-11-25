@@ -1,0 +1,16 @@
+name: additionalFields
+type: list
+entity: AdditionalField
+load: |
+  let baseList = this.props.parent.ConvertedFields || [];
+  baseList.push({});
+  this.setState({
+    baseList
+  });
+  this.AFTER_LOAD();
+layout:
+  - table:
+      columns:
+        - field filled: Field Name | editable
+        - field filled: Field Type | editable
+        - button: localRemoveItem

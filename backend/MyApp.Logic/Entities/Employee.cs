@@ -19,7 +19,7 @@ namespace MyApp.Logic.Entities
             ///start:slot:ctor<<<///end:slot:ctor<<<
         }
 
-        public string Value { get; set; }
+        public string SAPNumber { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
         public string SecondLastName { get; set; }

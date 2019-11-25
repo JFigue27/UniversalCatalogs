@@ -1,0 +1,19 @@
+name: employee
+type: form
+entity: Employee
+layout:
+  - container md:
+      - sheet:
+          - row:
+          - field: SAPNumber
+          - field: Name
+          - field: LastName
+          - field: SecondLastName
+          - field: CURP
+          - field: PersonalNumber
+          - field: TimeIdNumber
+          - field: STPSPosition
+          - field: Area
+          - field: Shift
+          - field: JobPosition
+          - field: SupervisedBy

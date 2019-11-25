@@ -94,6 +94,7 @@
     <Compile Include="Entities\User.cs" />
     <Compile Include="Entities\AdditionalField.cs" />
     <Compile Include="Entities\AdvancedSort.cs" />
+    <Compile Include="Entities\Employee.cs" />
     <Compile Include="Entities\FilterData.cs" />
     <Compile Include="Entities\SortData.cs" />
     <Compile Include="Entities\Task.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Logic\UserLogic.cs" />
     <Compile Include="Logic\AdditionalFieldLogic.cs" />
     <Compile Include="Logic\AdvancedSortLogic.cs" />
+    <Compile Include="Logic\EmployeeLogic.cs" />
     <Compile Include="Logic\FilterDataLogic.cs" />
     <Compile Include="Logic\SortDataLogic.cs" />
     <Compile Include="Logic\TaskLogic.cs" />

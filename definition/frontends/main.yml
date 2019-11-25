@@ -1,4 +1,6 @@
 name: main
 displayName: Universal Catalogs
-pages: {}
+pages:
+  employees | menu: employees
+  # employees: employees
 components: []
